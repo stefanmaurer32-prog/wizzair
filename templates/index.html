@@ -6,10 +6,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- =====================================
-     FLYHOPGO WEBSITE INFORMATION
-===================================== -->
-
 <title>FlyHopGo | Wizz Air All You Can Fly Route Explorer</title>
 
 <meta name="description"
@@ -19,17 +15,11 @@ content="Explore possible Wizz Air All You Can Fly routes with FlyHopGo. Discove
 
 <link rel="canonical" href="https://flyhopgo.com/">
 
-<!-- =====================================
-     FACEBOOK & WHATSAPP PREVIEW
-===================================== -->
+<!-- FACEBOOK & WHATSAPP PREVIEW -->
 
 <meta property="og:type" content="website">
-
-<meta property="og:url"
-content="https://flyhopgo.com/">
-
-<meta property="og:site_name"
-content="FlyHopGo">
+<meta property="og:url" content="https://flyhopgo.com/">
+<meta property="og:site_name" content="FlyHopGo">
 
 <meta property="og:title"
 content="✈️ FlyHopGo – Discover Your Next Destination">
@@ -37,9 +27,7 @@ content="✈️ FlyHopGo – Discover Your Next Destination">
 <meta property="og:description"
 content="Find possible Wizz Air All You Can Fly routes, explore stopovers and discover new destinations with FlyHopGo. Free and easy to use!">
 
-<!-- =====================================
-     TWITTER / X PREVIEW
-===================================== -->
+<!-- TWITTER / X PREVIEW -->
 
 <meta name="twitter:card" content="summary">
 
@@ -49,18 +37,11 @@ content="✈️ FlyHopGo – Discover Your Next Destination">
 <meta name="twitter:description"
 content="Explore possible Wizz Air routes and discover new destinations with FlyHopGo. Your free All You Can Fly route finder.">
 
-<!-- =====================================
-     GOOGLE ADSENSE
-===================================== -->
+<!-- GOOGLE ADSENSE -->
 
 <script async
 src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1802246293259496"
-crossorigin="anonymous">
-</script>
-
-<!-- =====================================
-     WEBSITE DESIGN
-===================================== -->
+crossorigin="anonymous"></script>
 
 <style>
 
@@ -80,21 +61,8 @@ body {
 
 main {
   max-width: 850px;
-  margin: 35px auto;
+  margin: 20px auto;
   padding: 20px;
-}
-
-h1 {
-  font-size: clamp(27px, 5vw, 43px);
-  margin: 0 0 10px;
-}
-
-h2 {
-  margin-top: 30px;
-}
-
-.accent {
-  color: #ef67c5;
 }
 
 .sub,
@@ -102,6 +70,24 @@ h2 {
 small {
   color: #c9b8d7;
 }
+
+.sub {
+  font-size: 20px;
+  font-weight: 650;
+  margin: 0 0 20px;
+}
+
+/* TOP GOOGLE AD */
+
+.top-ad {
+  width: 100%;
+  min-height: 100px;
+  margin: 0 auto 25px;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* PANELS */
 
 .panel,
 .result {
@@ -241,7 +227,7 @@ footer p {
 @media (max-width: 600px) {
 
   main {
-    margin: 15px auto;
+    margin: 10px auto;
     padding: 15px;
   }
 
@@ -270,14 +256,42 @@ footer p {
 <main>
 
 <!-- =====================================
-     HEADER
+     GOOGLE ADSENSE - TOP AD
+===================================== -->
+
+<div class="top-ad" id="top-ad">
+
+  <!--
+    Replace YOUR_AD_SLOT_ID with your numeric
+    Google AdSense ad unit ID.
+
+    Example: data-ad-slot="1234567890"
+
+    Then remove the comment markers around
+    the ad code below.
+  -->
+
+  <!--
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-1802246293259496"
+       data-ad-slot="YOUR_AD_SLOT_ID"
+       data-ad-format="auto"
+       data-full-width-responsive="true">
+  </ins>
+
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+  -->
+
+</div>
+
+<!-- =====================================
+     HEADER - WITHOUT FLYHOPGO HEADING
 ===================================== -->
 
 <header>
-
-<h1>
-✈️ <span class="accent">FlyHopGo</span>
-</h1>
 
 <p class="sub">
 Wizz Air All You Can Fly · Free Route Explorer
@@ -332,21 +346,10 @@ Maximum Number of Stops
 
 <select id="max">
 
-<option value="0">
-Direct Flight
-</option>
-
-<option value="1">
-1 Stop
-</option>
-
-<option value="2" selected>
-2 Stops
-</option>
-
-<option value="3">
-3 Stops
-</option>
+<option value="0">Direct Flight</option>
+<option value="1">1 Stop</option>
+<option value="2" selected>2 Stops</option>
+<option value="3">3 Stops</option>
 
 </select>
 
@@ -420,10 +423,6 @@ and is not affiliated with or endorsed by Wizz Air.
 
 </main>
 
-<!-- =====================================
-     JAVASCRIPT
-===================================== -->
-
 <script>
 
 let graph = new Map();
@@ -440,9 +439,7 @@ let currentPage = 0;
 let routeLimitReached = false;
 
 
-/* =====================================
-   NORMALIZE AIRPORT NAMES
-===================================== */
+/* NORMALIZE AIRPORT NAMES */
 
 function key(x) {
 
@@ -455,9 +452,7 @@ function key(x) {
 }
 
 
-/* =====================================
-   HTML ESCAPING
-===================================== */
+/* HTML ESCAPING */
 
 function escapeHtml(x) {
 
@@ -475,24 +470,17 @@ function escapeHtml(x) {
 }
 
 
-/* =====================================
-   LOAD OFFICIAL WIZZ AIR ROUTES
-===================================== */
+/* LOAD OFFICIAL ROUTES */
 
 async function load() {
 
   try {
 
     const response = await fetch("/api/routes");
-
     const data = await response.json();
 
     if (!response.ok) {
-
-      throw Error(
-        data.error || "Failed to load routes"
-      );
-
+      throw Error(data.error || "Failed to load routes");
     }
 
     graph.clear();
@@ -507,13 +495,10 @@ async function load() {
       names.set(kb, b);
 
       if (!graph.has(ka)) {
-
         graph.set(ka, new Set());
-
       }
 
       graph.get(ka).add(kb);
-
     }
 
     const cities = [...names.values()].sort();
@@ -554,25 +539,16 @@ async function load() {
       "Update information unavailable";
 
     go.disabled = true;
-
   }
-
 }
 
 
-/* =====================================
-   SEARCH FLIGHT ROUTES
-===================================== */
+/* SEARCH FLIGHT ROUTES */
 
 function search() {
 
-  const a = key(
-    document.getElementById("from").value
-  );
-
-  const b = key(
-    document.getElementById("to").value
-  );
+  const a = key(document.getElementById("from").value);
+  const b = key(document.getElementById("to").value);
 
   const max = Number(
     document.getElementById("max").value
@@ -594,7 +570,6 @@ function search() {
       "</div>";
 
     return;
-
   }
 
   if (a === b) {
@@ -605,25 +580,20 @@ function search() {
       "</div>";
 
     return;
-
   }
 
   function walk(path) {
 
     if (foundRoutes.length >= ROUTE_LIMIT) {
-
       routeLimitReached = true;
       return;
-
     }
 
     const current = path[path.length - 1];
 
     if (current === b) {
-
       foundRoutes.push([...path]);
       return;
-
     }
 
     if (path.length > max) {
@@ -641,9 +611,7 @@ function search() {
       if (routeLimitReached) {
         return;
       }
-
     }
-
   }
 
   walk([a]);
@@ -653,13 +621,10 @@ function search() {
   );
 
   showPage(0);
-
 }
 
 
-/* =====================================
-   PAGINATION
-===================================== */
+/* PAGINATION */
 
 function showPage(page) {
 
@@ -678,7 +643,6 @@ function showPage(page) {
       "</div>";
 
     return;
-
   }
 
   if (page < 0 || page >= totalPages) {
@@ -749,7 +713,6 @@ function showPage(page) {
 
         "</article>"
       );
-
     }).join("");
 
   html +=
@@ -790,7 +753,6 @@ function showPage(page) {
         behavior: "smooth",
         block: "start"
       });
-
     });
 
   document
@@ -803,15 +765,11 @@ function showPage(page) {
         behavior: "smooth",
         block: "start"
       });
-
     });
-
 }
 
 
-/* =====================================
-   EVENTS
-===================================== */
+/* EVENTS */
 
 go.addEventListener("click", search);
 
