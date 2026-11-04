@@ -1,17 +1,15 @@
 
+from flask import Flask, jsonify, render_template
+from urllib.request import Request, urlopen
+from io import BytesIO
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
 import os
 import re
 import time
 import threading
-
-from datetime import datetime
-from zoneinfo import ZoneInfo
-from io import BytesIO
-
-import requests
 import pdfplumber
-
-from flask import Flask, jsonify, render_template
 
 
 app = Flask(__name__)
@@ -20,32 +18,29 @@ app = Flask(__name__)
 # SETTINGS
 # -----------------------------------------
 
-PDF_URL = (
-    "https://multipass.wizzair.com/"
-    "aycf-availability.pdf"
-)
-
-TIMEZONE = ZoneInfo("Europe/Zurich")
+URL = "https://multipass.wizzair.com/aycf-availability.pdf"
 
 CACHE_SECONDS = 3600
 
 cache = {
+    "at": 0,
     "routes": [],
-    "count": 0,
     "period": "",
-    "updated": "",
-    "timestamp": 0,
+    "updated": ""
 }
 
 cache_lock = threading.Lock()
 
 
 # -----------------------------------------
-# ENGLISH DATE AND TIME WITH AM / PM
+# ENGLISH DATE WITH AM / PM
 # -----------------------------------------
 
 def english_datetime():
-    now = datetime.now(TIMEZONE)
+
+    now = datetime.now(
+        ZoneInfo("Europe/Zurich")
+    )
 
     months = [
         "Jan", "Feb", "Mar", "Apr",
@@ -62,231 +57,97 @@ def english_datetime():
 
 
 # -----------------------------------------
-# CLEAN TEXT
+# FETCH OFFICIAL WIZZ AIR ROUTES
 # -----------------------------------------
 
-def clean_text(value):
-    if value is None:
-        return ""
-
-    return re.sub(
-        r"\s+",
-        " ",
-        str(value)
-    ).strip()
-
-
-# -----------------------------------------
-# DOWNLOAD OFFICIAL WIZZ AIR PDF
-# -----------------------------------------
-
-def download_pdf():
-
-    headers = {
-        "User-Agent": "Mozilla/5.0",
-        "Accept": "application/pdf,*/*",
-    }
-
-    response = requests.get(
-        PDF_URL,
-        headers=headers,
-        timeout=45
-    )
-
-    response.raise_for_status()
-
-    if not response.content.startswith(b"%PDF"):
-        raise ValueError(
-            "The Wizz Air server did not return a valid PDF."
-        )
-
-    return response.content
-
-
-# -----------------------------------------
-# EXTRACT ROUTES FROM PDF
-# -----------------------------------------
-
-def extract_routes(pdf_content):
-
-    routes = set()
-    period = ""
-
-    with pdfplumber.open(
-        BytesIO(pdf_content)
-    ) as pdf:
-
-        for page in pdf.pages:
-
-            text = page.extract_text() or ""
-
-            # Look for a validity period
-            if not period:
-
-                match = re.search(
-                    r"(?:valid|period|availability)"
-                    r"[^\n]{0,100}",
-                    text,
-                    re.IGNORECASE
-                )
-
-                if match:
-                    period = clean_text(
-                        match.group(0)
-                    )
-
-            # Extract structured PDF tables
-            tables = page.extract_tables()
-
-            for table in tables:
-
-                for row in table:
-
-                    if not row:
-                        continue
-
-                    values = [
-                        clean_text(cell)
-                        for cell in row
-                    ]
-
-                    values = [
-                        value for value in values
-                        if value
-                    ]
-
-                    if len(values) < 2:
-                        continue
-
-                    origin = values[0]
-                    destination = values[1]
-
-                    if not valid_airport(origin):
-                        continue
-
-                    if not valid_airport(destination):
-                        continue
-
-                    if origin.lower() == destination.lower():
-                        continue
-
-                    routes.add(
-                        (origin, destination)
-                    )
-
-            # Fallback for simple text lines
-            for line in text.splitlines():
-
-                line = clean_text(line)
-
-                # Example: London - Budapest
-                match = re.match(
-                    r"^(.+?)\s+(?:-|–|—|→)\s+(.+?)$",
-                    line
-                )
-
-                if match:
-
-                    origin = clean_text(
-                        match.group(1)
-                    )
-
-                    destination = clean_text(
-                        match.group(2)
-                    )
-
-                    if (
-                        valid_airport(origin)
-                        and valid_airport(destination)
-                        and origin.lower() != destination.lower()
-                    ):
-                        routes.add(
-                            (origin, destination)
-                        )
-
-    return sorted(routes), period
-
-
-# -----------------------------------------
-# VALIDATE AIRPORT / CITY NAMES
-# -----------------------------------------
-
-def valid_airport(name):
-
-    if not name:
-        return False
-
-    if len(name) < 3 or len(name) > 80:
-        return False
-
-    if not re.search(r"[A-Za-z]", name):
-        return False
-
-    if re.search(r"https?://|www\.", name, re.I):
-        return False
-
-    if re.search(
-        r"^(from|to|origin|destination|"
-        r"departure|arrival|route|date|"
-        r"airport|city)$",
-        name,
-        re.I
-    ):
-        return False
-
-    return True
-
-
-# -----------------------------------------
-# LOAD AND CACHE ROUTES
-# -----------------------------------------
-
-def get_routes():
+def fetch_routes():
 
     with cache_lock:
 
-        now = time.time()
-
         if (
             cache["routes"]
-            and now - cache["timestamp"] < CACHE_SECONDS
+            and time.time() - cache["at"] < CACHE_SECONDS
         ):
             return dict(cache)
 
-        try:
+        # Download official PDF
+        req = Request(
+            URL,
+            headers={
+                "User-Agent": "Mozilla/5.0 WizzRouteExplorer/1.0"
+            }
+        )
 
-            pdf_content = download_pdf()
+        with urlopen(req, timeout=25) as response:
+            raw = response.read(5_000_000)
 
-            routes, period = extract_routes(
-                pdf_content
+        if not raw.startswith(b"%PDF"):
+            raise ValueError(
+                "The Wizz Air server did not return a valid PDF."
             )
 
-            if not routes:
-                raise ValueError(
-                    "No flight routes could be extracted "
-                    "from the official PDF."
-                )
+        routes = set()
 
-            cache["routes"] = routes
-            cache["count"] = len(routes)
-            cache["period"] = period
-            cache["updated"] = english_datetime()
-            cache["timestamp"] = now
+        # Read PDF tables
+        with pdfplumber.open(BytesIO(raw)) as pdf:
 
-            print(
-                f"Loaded {len(routes)} Wizz Air routes",
-                flush=True
+            for page in pdf.pages:
+
+                for table in page.extract_tables():
+
+                    for row in table:
+
+                        if not row:
+                            continue
+
+                        cells = [
+                            re.sub(
+                                r"\s+",
+                                " ",
+                                str(c or "")
+                            ).strip()
+                            for c in row
+                        ]
+
+                        # Read airport pairs
+                        for i in range(0, len(cells) - 1, 2):
+
+                            a, b = cells[i:i + 2]
+
+                            if (
+                                a
+                                and b
+                                and a.lower() not in (
+                                    "departure city",
+                                    "departure"
+                                )
+                                and b.lower() not in (
+                                    "arrival city",
+                                    "arrival"
+                                )
+                                and len(a) < 65
+                                and len(b) < 65
+                            ):
+
+                                routes.add((a, b))
+
+        if not routes:
+            raise ValueError(
+                "No flight routes could be extracted from the PDF."
             )
 
-        except Exception as error:
+        # Update cache
+        cache.update(
+            at=time.time(),
+            routes=sorted(routes),
+            period="",
+            updated=english_datetime()
+        )
 
-            print(
-                f"Wizz Air PDF error: {error}",
-                flush=True
-            )
-
-            if not cache["routes"]:
-                raise
+        print(
+            f"Successfully loaded {len(routes)} Wizz Air routes.",
+            flush=True
+        )
 
         return dict(cache)
 
@@ -295,39 +156,46 @@ def get_routes():
 # HOMEPAGE
 # -----------------------------------------
 
-@app.route("/")
-def home():
+@app.get("/")
+def index():
 
-    return render_template(
-        "index.html"
-    )
+    return render_template("index.html")
 
 
 # -----------------------------------------
-# API FOR ROUTE EXPLORER
+# ROUTE API
 # -----------------------------------------
 
-@app.route("/api/routes")
+@app.get("/api/routes")
 def api_routes():
 
     try:
 
-        data = get_routes()
+        data = fetch_routes()
 
         return jsonify({
             "routes": data["routes"],
-            "count": data["count"],
             "period": data["period"],
             "updated": data["updated"],
-            "source": PDF_URL,
+            "source": URL,
+            "count": len(data["routes"]),
+            "note": (
+                "Official route list only. "
+                "Flight schedules, connections and "
+                "seat availability are not guaranteed."
+            )
         })
 
-    except Exception as error:
+    except Exception as exc:
+
+        print(
+            f"Route loading error: {exc}",
+            flush=True
+        )
 
         return jsonify({
-            "error": str(error),
-            "routes": [],
-            "count": 0,
+            "error": str(exc),
+            "source": URL
         }), 503
 
 
@@ -335,12 +203,12 @@ def api_routes():
 # HEALTH CHECK
 # -----------------------------------------
 
-@app.route("/health")
+@app.get("/health")
 def health():
 
     return jsonify({
         "status": "ok",
-        "service": "Wizz Air Route Explorer",
+        "service": "Wizz Air Route Explorer"
     })
 
 
