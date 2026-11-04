@@ -27,8 +27,14 @@ def fetch_routes():
                         if a and b and a.lower() not in ('departure city','departure') and b.lower() not in ('arrival city','arrival') and len(a)<65 and len(b)<65:
                             routes.add((a,b))
     if not routes: raise ValueError('Keine Strecken aus PDF extrahierbar')
-    cache.update(at=time.time(),routes=sorted(routes),period=' | '.join(x for x in header if 'Departure period:' in x),updated=' | '.join(x for x in header if 'Last run:' in x))
-    return cache
+    cache.update(now = datetime.now(ZoneInfo("Europe/Zurich"))
+
+cache.update(
+    at=time.time(),
+    routes=sorted(routes),
+    period="",
+    updated=now.strftime("%d.%m.%Y, %H:%M Uhr")
+)
 
 @app.get('/health')
 def health(): return jsonify({'status':'ok'})
