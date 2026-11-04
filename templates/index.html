@@ -130,6 +130,22 @@ footer p {
 .booking:hover {
   background: #a90070;
 }
+
+.pagination {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.pagination button {
+  margin-top: 0;
+}
+
+.page-info {
+  text-align: center;
+  color: #c9b8d7;
+  margin: 12px 0;
+}
 </style>
 </head>
 
@@ -236,6 +252,13 @@ let names = new Map();
 const status = document.getElementById('status');
 const go = document.getElementById('go');
 
+const PAGE_SIZE = 40;
+const ROUTE_LIMIT = 300;
+
+let foundRoutes = [];
+let currentPage = 0;
+let routeLimitReached = false;
+
 function key(x) {
   return x.trim()
     .toLocaleLowerCase('en')
@@ -290,12 +313,10 @@ async function load() {
       '✓ ' + data.count +
       ' Strecken erfolgreich von der offiziellen Wizz Air Webseite geladen';
 
-    // Datum der letzten erfolgreichen Aktualisierung
     document.getElementById('updated').textContent =
       '🔄 Wizz-Air-Streckenliste zuletzt aktualisiert: ' +
       (data.updated || 'Keine Angabe');
 
-    // Zeitraum aus der offiziellen Liste
     document.getElementById('period').textContent =
       data.period
         ? 'Gültigkeitszeitraum: ' + data.period
@@ -321,36 +342,39 @@ async function load() {
 function search() {
   const a = key(document.getElementById('from').value);
   const b = key(document.getElementById('to').value);
+  const max = Number(document.getElementById('max').value) + 1;
 
-  const max =
-    Number(document.getElementById('max').value) + 1;
-
-  const out = [];
   const area = document.getElementById('results');
+
+  foundRoutes = [];
+  currentPage = 0;
+  routeLimitReached = false;
 
   if (!names.has(a) || !names.has(b)) {
     area.innerHTML =
       '<div class="panel">' +
-      'Start oder Ziel nicht in der aktuellen ' +
-      'Wizz-Air-Liste gefunden. Bitte einen ' +
-      'Eintrag aus den Vorschlägen wählen.' +
+      'Start oder Ziel nicht in der aktuellen Wizz-Air-Liste gefunden. ' +
+      'Bitte einen Eintrag aus den Vorschlägen wählen.' +
       '</div>';
     return;
   }
 
   if (a === b) {
     area.innerHTML =
-      '<div class="panel">' +
-      'Start und Ziel sind identisch.' +
-      '</div>';
+      '<div class="panel">Start und Ziel sind identisch.</div>';
     return;
   }
 
   function walk(path) {
+    if (foundRoutes.length >= ROUTE_LIMIT) {
+      routeLimitReached = true;
+      return;
+    }
+
     const cur = path[path.length - 1];
 
     if (cur === b) {
-      out.push([...path]);
+      foundRoutes.push([...path]);
       return;
     }
 
@@ -358,50 +382,115 @@ function search() {
 
     for (const next of graph.get(cur) || []) {
       if (path.includes(next)) continue;
-      if (out.length >= 300) return;
 
       walk([...path, next]);
+
+      if (routeLimitReached) return;
     }
   }
 
   walk([a]);
 
-  out.sort((x, y) => x.length - y.length);
+  foundRoutes.sort((x, y) => x.length - y.length);
 
-  area.innerHTML =
+  showPage(0);
+}
+
+function showPage(page) {
+  const area = document.getElementById('results');
+
+  const totalPages = Math.ceil(foundRoutes.length / PAGE_SIZE);
+
+  if (foundRoutes.length === 0) {
+    area.innerHTML =
+      '<h2>0 mögliche Streckenketten</h2>' +
+      '<div class="panel">' +
+      'Keine Verbindung mit der gewählten Anzahl Zwischenstopps gefunden.' +
+      '</div>';
+    return;
+  }
+
+  if (page < 0 || page >= totalPages) return;
+
+  currentPage = page;
+
+  const start = currentPage * PAGE_SIZE;
+  const end = Math.min(start + PAGE_SIZE, foundRoutes.length);
+
+  let html =
     '<h2>' +
-    out.length +
-    (out.length >= 300 ? '+' : '') +
-    ' mögliche Streckenketten</h2>' +
+    foundRoutes.length +
+    (routeLimitReached ? '+' : '') +
+    ' mögliche Streckenketten</h2>';
 
-    (out.length
-      ? out.slice(0, 40).map((p, i) =>
-          '<article class="result">' +
-          '<h3>Route ' + (i + 1) +
-          ' · ' + (p.length - 2) +
-          ' Zwischenstopps</h3>' +
+  html +=
+    '<p class="muted">Zeige Verbindung ' +
+    (start + 1) +
+    ' bis ' +
+    end +
+    ' von ' +
+    foundRoutes.length +
+    (routeLimitReached ? '+' : '') +
+    '</p>';
 
-          '<div class="route">' +
-          p.map(k =>
-            '<span class="tag">' +
-            escapeHtml(names.get(k)) +
-            '</span>'
-          ).join(' → ') +
-          '</div>' +
+  html += foundRoutes.slice(start, end).map((p, i) =>
+    '<article class="result">' +
+    '<h3>Route ' + (start + i + 1) +
+    ' · ' + (p.length - 2) +
+    ' Zwischenstopps</h3>' +
 
-          '<small>' +
-          'Nur theoretische Streckenfolge: ' +
-          'Flugzeiten und tatsächliche ' +
-          'Umsteigbarkeit nicht geprüft.' +
-          '</small>' +
-          '</article>'
-        ).join('')
+    '<div class="route">' +
+    p.map(k =>
+      '<span class="tag">' +
+      escapeHtml(names.get(k)) +
+      '</span>'
+    ).join(' → ') +
+    '</div>' +
 
-      : '<div class="panel">' +
-        'Keine Verbindung mit der gewählten Anzahl ' +
-        'Zwischenstopps in der aktuellen Liste gefunden.' +
-        '</div>'
-    );
+    '<small>' +
+    'Nur theoretische Streckenfolge: Flugzeiten und ' +
+    'tatsächliche Umsteigbarkeit nicht geprüft.' +
+    '</small>' +
+    '</article>'
+  ).join('');
+
+  html +=
+    '<div class="panel">' +
+    '<p class="page-info">Seite ' +
+    (currentPage + 1) +
+    ' von ' +
+    totalPages +
+    '</p>' +
+
+    '<div class="pagination">' +
+
+    '<button id="prevPage" ' +
+    (currentPage === 0 ? 'disabled' : '') +
+    '>← Zurück</button>' +
+
+    '<button id="nextPage" ' +
+    (currentPage >= totalPages - 1 ? 'disabled' : '') +
+    '>Weiter →</button>' +
+
+    '</div></div>';
+
+  area.innerHTML = html;
+
+  document.getElementById('prevPage').addEventListener('click', () => {
+    showPage(currentPage - 1);
+    area.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  });
+
+  document.getElementById('nextPage').addEventListener('click', () => {
+    showPage(currentPage + 1);
+    area.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  });
 }
 
 go.addEventListener('click', search);
