@@ -27,7 +27,7 @@ def fetch_routes():
                         if a and b and a.lower() not in ('departure city','departure') and b.lower() not in ('arrival city','arrival') and len(a)<65 and len(b)<65:
                             routes.add((a,b))
     if not routes: raise ValueError('Keine Strecken aus PDF extrahierbar')
-    cache.update(now = datetime.now(ZoneInfo("Europe/Zurich"))
+    cache.update(now = datetime.now(ZoneInfo(("Europe/Zurich"))
 
 cache.update(
     at=time.time(),
