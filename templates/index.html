@@ -1,11 +1,12 @@
 
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>✈️ Wizz Air All You Can Fly · AYCF</title>
+<title>✈️ Wizz Air Route Explorer | All You Can Fly</title>
+<meta name="description" content="Explore possible Wizz Air All You Can Fly routes and connections with up to 3 stops using the official route list.">
 
 <!-- Google AdSense -->
 <script async
@@ -15,7 +16,7 @@
 
 <style>
 :root {
-  font-family: system-ui, -apple-system, Arial;
+  font-family: system-ui, -apple-system, Arial, sans-serif;
   color: #f9f5ff;
   background: #110720;
 }
@@ -74,7 +75,10 @@ button {
   width: 100%;
 }
 
-button:disabled { opacity: .5; }
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
 
 .tag {
   display: inline-block;
@@ -158,49 +162,49 @@ footer p {
 </h1>
 
 <p class="sub">
-  All You Can Fly · Kostenloser Routenfinder
+  All You Can Fly · Free Route Finder
 </p>
 
 <div class="panel">
 
   <div id="status">
-    Lade die offizielle Wizz-Air-Streckenliste …
+    Loading the official Wizz Air route list...
   </div>
 
   <div class="updated" id="updated">
-    🔄 Wizz-Air-Streckenliste wird geladen …
+    🔄 Loading route list update information...
   </div>
 
   <p class="muted" id="period"></p>
 
-  <label for="from">Startflughafen</label>
+  <label for="from">Departure Airport</label>
   <input
     id="from"
     list="cities"
-    placeholder="z. B. Sofia"
+    placeholder="e.g. Sofia"
     value="Sofia"
   >
 
-  <label for="to">Zielflughafen</label>
+  <label for="to">Destination Airport</label>
   <input
     id="to"
     list="cities"
-    placeholder="z. B. Basel"
+    placeholder="e.g. Basel"
   >
 
   <datalist id="cities"></datalist>
 
-  <label for="max">Maximale Zwischenstopps</label>
+  <label for="max">Maximum Number of Stops</label>
 
   <select id="max">
-    <option value="0">Direkt</option>
-    <option value="1">1 Zwischenstopp</option>
-    <option value="2" selected>2 Zwischenstopps</option>
-    <option value="3">3 Zwischenstopps</option>
+    <option value="0">Direct Flight</option>
+    <option value="1">1 Stop</option>
+    <option value="2" selected>2 Stops</option>
+    <option value="3">3 Stops</option>
   </select>
 
   <button id="go" disabled>
-    Verbindungen suchen
+    Search Flight Routes
   </button>
 
   <a
@@ -209,7 +213,7 @@ footer p {
     target="_blank"
     rel="noopener noreferrer"
   >
-    ✈️ Wizz Air All You Can Fly – Buchen
+    ✈️ Wizz Air All You Can Fly – Book Now
   </a>
 
 </div>
@@ -219,26 +223,27 @@ footer p {
 <footer>
 
   <p>
-    Dieses Tool hilft dir, dein gewünschtes Zielland mit Wizz Air
-    zu erreichen. Anhand der offiziellen Streckenliste zeigt es
-    dir mögliche Flugrouten und Zwischenstopps, damit du
-    herausfinden kannst, über welche Städte du an dein Ziel gelangst.
+    This tool helps you find possible ways to reach your desired
+    destination with Wizz Air. Based on the official route list,
+    it displays potential flight routes and stopovers, helping
+    you discover which cities you can travel through to reach
+    your destination.
   </p>
 
   <p>
-    <strong>Wichtig:</strong><br>
-    Konkrete Flugzeiten, passende Anschlüsse und freie Sitzplätze
-    werden nicht garantiert.
+    <strong>Important:</strong><br>
+    Specific flight times, suitable connections and available
+    seats are not guaranteed.
   </p>
 
   <p>
-    Jede Teilstrecke muss einzeln im offiziellen Wizz-Air-Portal
-    auf Verfügbarkeit geprüft und gebucht werden.
+    Each flight segment must be checked and booked separately
+    through the official Wizz Air portal.
   </p>
 
   <p>
-    <strong>Buchungsfenster:</strong><br>
-    Frühestens 72 Stunden und spätestens 3 Stunden vor Abflug.
+    <strong>Booking Window:</strong><br>
+    From 72 hours up to 3 hours before departure.
   </p>
 
 </footer>
@@ -282,7 +287,7 @@ async function load() {
     const data = await r.json();
 
     if (!r.ok) {
-      throw Error(data.error || 'Abruf fehlgeschlagen');
+      throw Error(data.error || 'Failed to load routes');
     }
 
     graph.clear();
@@ -311,15 +316,15 @@ async function load() {
 
     status.textContent =
       '✓ ' + data.count +
-      ' Strecken erfolgreich von der offiziellen Wizz Air Webseite geladen';
+      ' routes successfully loaded from the official Wizz Air route list';
 
     document.getElementById('updated').textContent =
-      '🔄 Wizz-Air-Streckenliste zuletzt aktualisiert: ' +
-      (data.updated || 'Keine Angabe');
+      '🔄 Wizz Air route list last updated: ' +
+      (data.updated || 'Not available');
 
     document.getElementById('period').textContent =
       data.period
-        ? 'Gültigkeitszeitraum: ' + data.period
+        ? 'Validity period: ' + data.period
         : '';
 
     go.disabled = false;
@@ -328,12 +333,12 @@ async function load() {
     status.className = 'error';
 
     status.textContent =
-      'Live-Abruf fehlgeschlagen: ' +
+      'Failed to load route data: ' +
       e.message +
-      ' — Bitte später erneut versuchen.';
+      ' — Please try again later.';
 
     document.getElementById('updated').textContent =
-      'Aktualisierungszeitpunkt nicht verfügbar';
+      'Update information unavailable';
 
     go.disabled = true;
   }
@@ -353,15 +358,15 @@ function search() {
   if (!names.has(a) || !names.has(b)) {
     area.innerHTML =
       '<div class="panel">' +
-      'Start oder Ziel nicht in der aktuellen Wizz-Air-Liste gefunden. ' +
-      'Bitte einen Eintrag aus den Vorschlägen wählen.' +
+      'Departure or destination airport not found in the current Wizz Air route list. ' +
+      'Please select an airport from the suggestions.' +
       '</div>';
     return;
   }
 
   if (a === b) {
     area.innerHTML =
-      '<div class="panel">Start und Ziel sind identisch.</div>';
+      '<div class="panel">Departure and destination are identical.</div>';
     return;
   }
 
@@ -403,9 +408,9 @@ function showPage(page) {
 
   if (foundRoutes.length === 0) {
     area.innerHTML =
-      '<h2>0 Mögliche Flugrouten</h2>' +
+      '<h2>0 Possible Flight Routes</h2>' +
       '<div class="panel">' +
-      'Keine Verbindung mit der gewählten Anzahl Zwischenstopps gefunden.' +
+      'No flight routes found with the selected number of stops.' +
       '</div>';
     return;
   }
@@ -421,14 +426,14 @@ function showPage(page) {
     '<h2>' +
     foundRoutes.length +
     (routeLimitReached ? '+' : '') +
-    ' Mögliche Flugrouten</h2>';
+    ' Possible Flight Routes</h2>';
 
   html +=
-    '<p class="muted">Zeige Verbindung ' +
+    '<p class="muted">Showing routes ' +
     (start + 1) +
-    ' bis ' +
+    ' to ' +
     end +
-    ' von ' +
+    ' of ' +
     foundRoutes.length +
     (routeLimitReached ? '+' : '') +
     '</p>';
@@ -437,7 +442,7 @@ function showPage(page) {
     '<article class="result">' +
     '<h3>Route ' + (start + i + 1) +
     ' · ' + (p.length - 2) +
-    ' Zwischenstopps</h3>' +
+    ' Stop(s)</h3>' +
 
     '<div class="route">' +
     p.map(k =>
@@ -448,17 +453,17 @@ function showPage(page) {
     '</div>' +
 
     '<small>' +
-    'Nur theoretische Streckenfolge: Flugzeiten und ' +
-    'tatsächliche Umsteigbarkeit nicht geprüft.' +
+    'Theoretical route only. Flight schedules, connections ' +
+    'and actual availability have not been verified.' +
     '</small>' +
     '</article>'
   ).join('');
 
   html +=
     '<div class="panel">' +
-    '<p class="page-info">Seite ' +
+    '<p class="page-info">Page ' +
     (currentPage + 1) +
-    ' von ' +
+    ' of ' +
     totalPages +
     '</p>' +
 
@@ -466,11 +471,11 @@ function showPage(page) {
 
     '<button id="prevPage" ' +
     (currentPage === 0 ? 'disabled' : '') +
-    '>← Zurück</button>' +
+    '>← Previous</button>' +
 
     '<button id="nextPage" ' +
     (currentPage >= totalPages - 1 ? 'disabled' : '') +
-    '>Weiter →</button>' +
+    '>Next →</button>' +
 
     '</div></div>';
 
