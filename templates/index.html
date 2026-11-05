@@ -5,22 +5,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>FlyHopGo | Wizz Air All You Can Fly Route Explorer</title>
+<title>FlyHopGo | Free Wizz Air All You Can Fly Route Explorer</title>
 
 <meta name="description"
-content="Explore possible Wizz Air All You Can Fly routes with FlyHopGo. Discover flight connections, stopovers and new destinations for free.">
+content="Explore possible Wizz Air All You Can Fly routes for free. Discover destinations and connections with up to 5 stopovers using FlyHopGo.">
 
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://flyhopgo.com/">
 
-<!-- Social media -->
+<!-- Social Media -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://flyhopgo.com/">
 <meta property="og:site_name" content="FlyHopGo">
 <meta property="og:title"
 content="FlyHopGo – Free Wizz Air Route Explorer">
 <meta property="og:description"
-content="Discover possible Wizz Air flight routes and stopovers for free.">
+content="Discover possible Wizz Air flight routes with up to 5 stopovers. 100% free!">
 <meta property="og:image"
 content="https://flyhopgo.com/static/icon-512.png">
 
@@ -28,11 +28,11 @@ content="https://flyhopgo.com/static/icon-512.png">
 <meta name="twitter:title"
 content="FlyHopGo – Free Flight Route Explorer">
 <meta name="twitter:description"
-content="Explore possible Wizz Air flight routes and stopovers for free.">
+content="Explore possible Wizz Air routes and stopovers for free.">
 <meta name="twitter:image"
 content="https://flyhopgo.com/static/icon-512.png">
 
-<!-- App icons -->
+<!-- App Icons -->
 <link rel="icon" type="image/png" href="/static/favicon.png">
 <link rel="apple-touch-icon" href="/static/icon-192.png">
 <link rel="manifest" href="/static/manifest.json">
@@ -88,7 +88,7 @@ h2 {
 
 .free-label {
   display: inline-block;
-  padding: 7px 14px;
+  padding: 8px 16px;
   background: #e42ca2;
   color: white;
   border-radius: 20px;
@@ -269,14 +269,15 @@ footer p {
 <body>
 <main>
 
-<!-- TOP AD AREA -->
+<!-- TOP ADVERTISING AREA -->
 <div class="top-ad">
 
 <!--
-  Optional manual AdSense unit.
-  Replace YOUR_AD_SLOT_ID with a real
-  numeric AdSense ad slot ID and remove
-  these comment markers to activate it.
+Optional manual AdSense unit.
+
+Replace YOUR_AD_SLOT_ID with your real
+numeric AdSense ad slot ID and remove
+the comment markers to activate it.
 
 <ins class="adsbygoogle"
      style="display:block"
@@ -285,14 +286,15 @@ footer p {
      data-ad-format="auto"
      data-full-width-responsive="true">
 </ins>
+
 <script>
 (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-
 -->
 
 </div>
 
+<!-- HEADER -->
 <header>
 
 <div class="free-label">
@@ -320,7 +322,6 @@ footer p {
 
 <p class="muted" id="period"></p>
 
-<!-- DEPARTURE DROPDOWN -->
 <label for="from">✈️ Departure Airport</label>
 
 <select id="from" disabled>
@@ -331,7 +332,6 @@ footer p {
   Select your departure city from the official route list.
 </p>
 
-<!-- DESTINATION DROPDOWN -->
 <label for="to">📍 Destination Airport</label>
 
 <select id="to" disabled>
@@ -343,7 +343,6 @@ footer p {
   and maximum number of stops.
 </p>
 
-<!-- MAXIMUM STOPS -->
 <label for="max">🔄 Maximum Number of Stops</label>
 
 <select id="max">
@@ -351,6 +350,8 @@ footer p {
   <option value="1">1 Stop</option>
   <option value="2" selected>2 Stops</option>
   <option value="3">3 Stops</option>
+  <option value="4">4 Stops</option>
+  <option value="5">5 Stops</option>
 </select>
 
 <button id="go" disabled>
@@ -426,7 +427,7 @@ let foundRoutes = [];
 let currentPage = 0;
 let routeLimitReached = false;
 
-/* NORMALIZE NAMES */
+/* NORMALIZE AIRPORT NAMES */
 
 function key(value) {
   return String(value)
@@ -451,7 +452,7 @@ function escapeHtml(value) {
   );
 }
 
-/* SORT AIRPORTS ALPHABETICALLY */
+/* SORT AIRPORTS */
 
 function sortAirports(values) {
   return [...values].sort((a, b) =>
@@ -481,14 +482,7 @@ function fillSelect(select, values, placeholder) {
   }
 }
 
-/* FIND ALL REACHABLE DESTINATIONS
-
-   Uses the maximum number of stops.
-   0 stops = 1 flight
-   1 stop  = 2 flights
-   2 stops = 3 flights
-   3 stops = 4 flights
-*/
+/* FIND REACHABLE DESTINATIONS */
 
 function getReachableDestinations(start, maxEdges) {
   const reachable = new Set();
@@ -572,7 +566,7 @@ function updateDestinations() {
     " stop(s).";
 }
 
-/* LOAD ROUTES FROM FLASK API */
+/* LOAD ROUTES */
 
 async function load() {
   try {
@@ -649,7 +643,7 @@ async function load() {
   }
 }
 
-/* SEARCH ROUTES */
+/* SEARCH FLIGHT ROUTES */
 
 function search() {
   const start = fromSelect.value;
@@ -722,7 +716,7 @@ function search() {
   showPage(0);
 }
 
-/* SHOW SEARCH RESULTS */
+/* SHOW RESULTS */
 
 function showPage(page) {
   const totalPages = Math.ceil(
