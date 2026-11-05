@@ -13,21 +13,30 @@ content="Explore possible Wizz Air All You Can Fly routes with FlyHopGo. Discove
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://flyhopgo.com/">
 
-<!-- WhatsApp & Facebook -->
+<!-- Social media -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://flyhopgo.com/">
 <meta property="og:site_name" content="FlyHopGo">
 <meta property="og:title"
-content="✈️ FlyHopGo – Discover Your Next Destination">
+content="FlyHopGo – Free Wizz Air Route Explorer">
 <meta property="og:description"
-content="Find possible Wizz Air All You Can Fly routes, explore stopovers and discover new destinations with FlyHopGo. Free and easy to use!">
+content="Discover possible Wizz Air flight routes and stopovers for free.">
+<meta property="og:image"
+content="https://flyhopgo.com/static/icon-512.png">
 
-<!-- Twitter / X -->
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title"
-content="✈️ FlyHopGo – Discover Your Next Destination">
+content="FlyHopGo – Free Flight Route Explorer">
 <meta name="twitter:description"
-content="Explore possible Wizz Air routes and discover new destinations with FlyHopGo. Your free All You Can Fly route finder.">
+content="Explore possible Wizz Air flight routes and stopovers for free.">
+<meta name="twitter:image"
+content="https://flyhopgo.com/static/icon-512.png">
+
+<!-- App icons -->
+<link rel="icon" type="image/png" href="/static/favicon.png">
+<link rel="apple-touch-icon" href="/static/icon-192.png">
+<link rel="manifest" href="/static/manifest.json">
+<meta name="theme-color" content="#110720">
 
 <!-- Google AdSense -->
 <script async
@@ -55,7 +64,6 @@ main {
   padding: 20px;
 }
 
-/* Main heading */
 h1 {
   font-size: clamp(28px, 5vw, 42px);
   font-weight: 800;
@@ -68,9 +76,7 @@ h2 {
   margin-top: 30px;
 }
 
-.sub,
-.muted,
-small {
+.sub, .muted, small {
   color: #c9b8d7;
 }
 
@@ -80,7 +86,16 @@ small {
   margin: 0 0 20px;
 }
 
-/* Top advertising area */
+.free-label {
+  display: inline-block;
+  padding: 7px 14px;
+  background: #e42ca2;
+  color: white;
+  border-radius: 20px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
 .top-ad {
   width: 100%;
   min-height: 100px;
@@ -89,8 +104,7 @@ small {
   overflow: hidden;
 }
 
-.panel,
-.result {
+.panel, .result {
   background: #241332;
   border: 1px solid #51335f;
   border-radius: 18px;
@@ -100,19 +114,24 @@ small {
 
 label {
   display: block;
-  margin: 12px 0 7px;
+  margin: 15px 0 8px;
   font-weight: 650;
 }
 
-input,
 select {
   width: 100%;
-  padding: 13px;
+  padding: 14px;
   border-radius: 10px;
   border: 1px solid #805e90;
   background: #180d24;
   color: white;
   font-size: 16px;
+  cursor: pointer;
+}
+
+select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 button {
@@ -137,10 +156,16 @@ button:disabled {
   cursor: not-allowed;
 }
 
+.hint {
+  font-size: 13px;
+  color: #bca9ca;
+  margin: 8px 0;
+}
+
 .tag {
   display: inline-block;
   background: #463052;
-  padding: 5px 9px;
+  padding: 6px 10px;
   border-radius: 7px;
   margin: 4px 5px 4px 0;
   font-size: 13px;
@@ -150,17 +175,13 @@ button:disabled {
   margin: 0 0 12px;
 }
 
-.error {
-  color: #ffb8b8;
-}
-
-a {
-  color: #ff8dd6;
-}
-
 .route {
   font-size: 17px;
   line-height: 2;
+}
+
+.error {
+  color: #ffb8b8;
 }
 
 .updated {
@@ -182,7 +203,6 @@ a {
   border-radius: 10px;
   font-weight: bold;
   text-decoration: none;
-  font-size: 16px;
 }
 
 .booking:hover {
@@ -224,14 +244,13 @@ footer p {
   font-size: 16px;
 }
 
-@media (max-width: 600px) {
+@media(max-width:600px) {
   main {
     margin: 10px auto;
     padding: 15px;
   }
 
-  .panel,
-  .result {
+  .panel, .result {
     padding: 16px;
   }
 
@@ -250,42 +269,35 @@ footer p {
 <body>
 <main>
 
-<!-- =====================================
-     GOOGLE ADSENSE - TOP AD
-===================================== -->
+<!-- TOP AD AREA -->
+<div class="top-ad">
 
-<div class="top-ad" id="top-ad">
+<!--
+  Optional manual AdSense unit.
+  Replace YOUR_AD_SLOT_ID with a real
+  numeric AdSense ad slot ID and remove
+  these comment markers to activate it.
 
-  <!--
-    Insert your numeric Google AdSense
-    ad slot ID below, then remove the
-    surrounding HTML comment markers.
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-1802246293259496"
+     data-ad-slot="YOUR_AD_SLOT_ID"
+     data-ad-format="auto"
+     data-full-width-responsive="true">
+</ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 
-    The publisher ID is already included
-    in the script in the head section.
-  -->
-
-  <!--
-  <ins class="adsbygoogle"
-       style="display:block"
-       data-ad-client="ca-pub-1802246293259496"
-       data-ad-slot="YOUR_AD_SLOT_ID"
-       data-ad-format="auto"
-       data-full-width-responsive="true">
-  </ins>
-
-  <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
-  -->
+-->
 
 </div>
 
-<!-- =====================================
-     HEADER
-===================================== -->
-
 <header>
+
+<div class="free-label">
+  100% FREE ROUTE EXPLORER
+</div>
 
 <h1>Find Your Next Flight Route ✈️</h1>
 
@@ -295,124 +307,117 @@ footer p {
 
 </header>
 
-<!-- =====================================
-     FLIGHT SEARCH
-===================================== -->
-
+<!-- FLIGHT SEARCH -->
 <div class="panel">
 
-  <div id="status">
-    Loading the official Wizz Air route list...
-  </div>
+<div id="status">
+  Loading the official Wizz Air route list...
+</div>
 
-  <div class="updated" id="updated">
-    🔄 Loading route list update information...
-  </div>
+<div class="updated" id="updated">
+  🔄 Loading update information...
+</div>
 
-  <p class="muted" id="period"></p>
+<p class="muted" id="period"></p>
 
-  <label for="from">Departure Airport</label>
-  <input
-    id="from"
-    list="cities"
-    placeholder="e.g. Sofia"
-    value="Sofia"
-    autocomplete="off"
-  >
+<!-- DEPARTURE DROPDOWN -->
+<label for="from">✈️ Departure Airport</label>
 
-  <label for="to">Destination Airport</label>
-  <input
-    id="to"
-    list="cities"
-    placeholder="e.g. Basel"
-    autocomplete="off"
-  >
+<select id="from" disabled>
+  <option value="">Loading airports...</option>
+</select>
 
-  <datalist id="cities"></datalist>
+<p class="hint">
+  Select your departure city from the official route list.
+</p>
 
-  <label for="max">Maximum Number of Stops</label>
+<!-- DESTINATION DROPDOWN -->
+<label for="to">📍 Destination Airport</label>
 
-  <select id="max">
-    <option value="0">Direct Flight</option>
-    <option value="1">1 Stop</option>
-    <option value="2" selected>2 Stops</option>
-    <option value="3">3 Stops</option>
-  </select>
+<select id="to" disabled>
+  <option value="">Select departure first</option>
+</select>
 
-  <button id="go" disabled>
-    🔎 Search Flight Routes
-  </button>
+<p class="hint" id="destinationHint">
+  Destinations are filtered by your departure airport
+  and maximum number of stops.
+</p>
 
-  <a
-    class="booking"
-    href="https://multipass.wizzair.com"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    ✈️ Wizz Air All You Can Fly – Book Now
-  </a>
+<!-- MAXIMUM STOPS -->
+<label for="max">🔄 Maximum Number of Stops</label>
+
+<select id="max">
+  <option value="0">Direct Flight</option>
+  <option value="1">1 Stop</option>
+  <option value="2" selected>2 Stops</option>
+  <option value="3">3 Stops</option>
+</select>
+
+<button id="go" disabled>
+  🔎 Search Flight Routes
+</button>
+
+<a class="booking"
+   href="https://multipass.wizzair.com"
+   target="_blank"
+   rel="noopener noreferrer">
+  ✈️ Wizz Air All You Can Fly – Book Now
+</a>
 
 </div>
 
-<!-- Search results -->
 <section id="results" aria-live="polite"></section>
-
-<!-- =====================================
-     FOOTER
-===================================== -->
 
 <footer>
 
-<p class="footer-brand">
-  ✈️ FlyHopGo.com
+<p class="footer-brand">✈️ FlyHopGo.com</p>
+
+<p>
+FlyHopGo helps you discover possible ways to reach
+your desired destination with Wizz Air.
+Based on the official route list, it displays
+potential flight routes and stopovers.
 </p>
 
 <p>
-  FlyHopGo helps you discover possible ways to reach
-  your desired destination with Wizz Air.
-  Based on the official route list, it displays
-  potential flight routes and stopovers, helping
-  you explore which cities you can travel through
-  to reach your destination.
+<strong>Important:</strong><br>
+Specific flight times, suitable connections
+and available seats are not guaranteed.
 </p>
 
 <p>
-  <strong>Important:</strong><br>
-  Specific flight times, suitable connections
-  and available seats are not guaranteed.
+Each flight segment must be checked and booked
+separately through the official Wizz Air portal.
 </p>
 
 <p>
-  Each flight segment must be checked
-  and booked separately through the
-  official Wizz Air portal.
+<strong>Booking Window:</strong><br>
+From 72 hours up to 3 hours before departure.
 </p>
 
 <p>
-  <strong>Booking Window:</strong><br>
-  From 72 hours up to 3 hours before departure.
+FlyHopGo is an independent route exploration tool
+and is not affiliated with or endorsed by Wizz Air.
 </p>
 
-<p>
-  FlyHopGo is an independent route exploration tool
-  and is not affiliated with or endorsed by Wizz Air.
-</p>
-
-<p>
-  © <span id="year"></span> FlyHopGo.com
-</p>
+<p>© <span id="year"></span> FlyHopGo.com</p>
 
 </footer>
-
 </main>
 
 <script>
 
+/* GLOBAL VARIABLES */
+
 let graph = new Map();
 let names = new Map();
 
-const statusElement = document.getElementById("status");
+const fromSelect = document.getElementById("from");
+const toSelect = document.getElementById("to");
+const maxSelect = document.getElementById("max");
 const go = document.getElementById("go");
+const statusElement = document.getElementById("status");
+const resultsElement = document.getElementById("results");
 
 const PAGE_SIZE = 40;
 const ROUTE_LIMIT = 300;
@@ -421,20 +426,20 @@ let foundRoutes = [];
 let currentPage = 0;
 let routeLimitReached = false;
 
-/* NORMALIZE AIRPORT NAMES */
+/* NORMALIZE NAMES */
 
-function key(x) {
-  return String(x)
+function key(value) {
+  return String(value)
     .trim()
     .toLocaleLowerCase("en")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "");
 }
 
-/* HTML ESCAPING */
+/* ESCAPE HTML */
 
-function escapeHtml(x) {
-  return String(x).replace(
+function escapeHtml(value) {
+  return String(value).replace(
     /[&<>"']/g,
     c => ({
       "&": "&amp;",
@@ -446,7 +451,128 @@ function escapeHtml(x) {
   );
 }
 
-/* LOAD OFFICIAL ROUTES */
+/* SORT AIRPORTS ALPHABETICALLY */
+
+function sortAirports(values) {
+  return [...values].sort((a, b) =>
+    (names.get(a) || a).localeCompare(
+      names.get(b) || b,
+      "en",
+      { sensitivity: "base" }
+    )
+  );
+}
+
+/* CREATE DROPDOWN OPTIONS */
+
+function fillSelect(select, values, placeholder) {
+  select.innerHTML = "";
+
+  const first = document.createElement("option");
+  first.value = "";
+  first.textContent = placeholder;
+  select.appendChild(first);
+
+  for (const airport of sortAirports(values)) {
+    const option = document.createElement("option");
+    option.value = airport;
+    option.textContent = names.get(airport) || airport;
+    select.appendChild(option);
+  }
+}
+
+/* FIND ALL REACHABLE DESTINATIONS
+
+   Uses the maximum number of stops.
+   0 stops = 1 flight
+   1 stop  = 2 flights
+   2 stops = 3 flights
+   3 stops = 4 flights
+*/
+
+function getReachableDestinations(start, maxEdges) {
+  const reachable = new Set();
+  const visited = new Set([start]);
+
+  let frontier = [start];
+
+  for (let depth = 1; depth <= maxEdges; depth++) {
+    const nextFrontier = [];
+
+    for (const airport of frontier) {
+      for (const next of graph.get(airport) || []) {
+        if (next === start) {
+          continue;
+        }
+
+        reachable.add(next);
+
+        if (!visited.has(next)) {
+          visited.add(next);
+          nextFrontier.push(next);
+        }
+      }
+    }
+
+    frontier = nextFrontier;
+
+    if (frontier.length === 0) {
+      break;
+    }
+  }
+
+  return reachable;
+}
+
+/* UPDATE DESTINATION DROPDOWN */
+
+function updateDestinations() {
+  const start = fromSelect.value;
+  const previousDestination = toSelect.value;
+
+  foundRoutes = [];
+  resultsElement.innerHTML = "";
+
+  if (!start) {
+    fillSelect(toSelect, [], "Select departure first");
+    toSelect.disabled = true;
+    go.disabled = true;
+
+    document.getElementById("destinationHint").textContent =
+      "Please select a departure airport.";
+    return;
+  }
+
+  const maxEdges = Number(maxSelect.value) + 1;
+
+  const destinations = getReachableDestinations(
+    start,
+    maxEdges
+  );
+
+  fillSelect(
+    toSelect,
+    destinations,
+    "Select destination..."
+  );
+
+  if (destinations.has(previousDestination)) {
+    toSelect.value = previousDestination;
+  }
+
+  toSelect.disabled = destinations.size === 0;
+  go.disabled = !toSelect.value;
+
+  document.getElementById("destinationHint").textContent =
+    destinations.size +
+    " possible destinations from " +
+    (names.get(start) || start) +
+    " with up to " +
+    maxSelect.value +
+    " stop(s).";
+}
+
+/* LOAD ROUTES FROM FLASK API */
 
 async function load() {
   try {
@@ -454,7 +580,7 @@ async function load() {
     const data = await response.json();
 
     if (!response.ok) {
-      throw Error(data.error || "Failed to load routes");
+      throw new Error(data.error || "Failed to load routes");
     }
 
     graph.clear();
@@ -474,22 +600,30 @@ async function load() {
       graph.get(ka).add(kb);
     }
 
-    const cities = [...names.values()].sort();
+    const departures = [...graph.keys()];
 
-    document.getElementById("cities").innerHTML =
-      cities.map(city =>
-        '<option value="' +
-        escapeHtml(city) +
-        '"></option>'
-      ).join("");
+    fillSelect(
+      fromSelect,
+      departures,
+      "Select departure airport..."
+    );
+
+    /* Default departure: Basel/Mulhouse */
+    const basel = key("Basel/Mulhouse");
+
+    if (graph.has(basel)) {
+      fromSelect.value = basel;
+    }
+
+    fromSelect.disabled = false;
 
     statusElement.textContent =
       "✓ " +
       data.count +
-      " routes successfully loaded from the official Wizz Air route list";
+      " routes loaded from the official Wizz Air route list";
 
     document.getElementById("updated").textContent =
-      "🔄 Wizz Air route list last updated: " +
+      "🔄 Route list last fetched: " +
       (data.updated || "Not available");
 
     document.getElementById("period").textContent =
@@ -497,71 +631,70 @@ async function load() {
         ? "Validity period: " + data.period
         : "";
 
-    go.disabled = false;
+    updateDestinations();
 
   } catch (error) {
     statusElement.className = "error";
 
     statusElement.textContent =
       "Failed to load route data: " +
-      error.message +
-      " — Please try again later.";
+      error.message;
 
     document.getElementById("updated").textContent =
       "Update information unavailable";
 
+    fromSelect.disabled = true;
+    toSelect.disabled = true;
     go.disabled = true;
   }
 }
 
-/* SEARCH FLIGHT ROUTES */
+/* SEARCH ROUTES */
 
 function search() {
-  const a = key(document.getElementById("from").value);
-  const b = key(document.getElementById("to").value);
-
-  const max = Number(
-    document.getElementById("max").value
-  ) + 1;
-
-  const area = document.getElementById("results");
+  const start = fromSelect.value;
+  const destination = toSelect.value;
+  const maxEdges = Number(maxSelect.value) + 1;
 
   foundRoutes = [];
   currentPage = 0;
   routeLimitReached = false;
 
-  if (!names.has(a) || !names.has(b)) {
-    area.innerHTML =
+  if (!start || !destination) {
+    resultsElement.innerHTML =
       '<div class="panel">' +
-      "Departure or destination airport not found " +
-      "in the current Wizz Air route list. " +
-      "Please select an airport from the suggestions." +
+      "Please select departure and destination." +
       "</div>";
     return;
   }
 
-  if (a === b) {
-    area.innerHTML =
+  if (start === destination) {
+    resultsElement.innerHTML =
       '<div class="panel">' +
       "Departure and destination are identical." +
       "</div>";
     return;
   }
 
-  function walk(path) {
+  /* Search shortest routes first */
+
+  function walk(path, targetEdges) {
     if (foundRoutes.length >= ROUTE_LIMIT) {
       routeLimitReached = true;
       return;
     }
 
     const current = path[path.length - 1];
+    const edgesUsed = path.length - 1;
 
-    if (current === b) {
-      foundRoutes.push([...path]);
+    if (current === destination) {
+      if (edgesUsed === targetEdges) {
+        foundRoutes.push([...path]);
+      }
       return;
     }
 
-    if (path.length > max) {
+    if (edgesUsed >= targetEdges) {
       return;
     }
 
@@ -570,7 +703,7 @@ function search() {
         continue;
       }
 
-      walk([...path, next]);
+      walk([...path, next], targetEdges);
 
       if (routeLimitReached) {
         return;
@@ -578,29 +711,29 @@ function search() {
     }
   }
 
-  walk([a]);
+  for (let edges = 1; edges <= maxEdges; edges++) {
+    walk([start], edges);
 
-  foundRoutes.sort(
-    (x, y) => x.length - y.length
-  );
+    if (routeLimitReached) {
+      break;
+    }
+  }
 
   showPage(0);
 }
 
-/* PAGINATION */
+/* SHOW SEARCH RESULTS */
 
 function showPage(page) {
-  const area = document.getElementById("results");
-
   const totalPages = Math.ceil(
     foundRoutes.length / PAGE_SIZE
   );
 
   if (foundRoutes.length === 0) {
-    area.innerHTML =
+    resultsElement.innerHTML =
       "<h2>0 Possible Flight Routes</h2>" +
       '<div class="panel">' +
-      "No flight routes found with the selected number of stops." +
+      "No routes found with the selected number of stops." +
       "</div>";
     return;
   }
@@ -611,7 +744,7 @@ function showPage(page) {
 
   currentPage = page;
 
-  const start = currentPage * PAGE_SIZE;
+  const start = page * PAGE_SIZE;
   const end = Math.min(
     start + PAGE_SIZE,
     foundRoutes.length
@@ -644,6 +777,12 @@ function showPage(page) {
           ? "1 Stop"
           : stops + " Stops";
 
+      const cities = path.map(airport =>
+        '<span class="tag">' +
+        escapeHtml(names.get(airport) || airport) +
+        "</span>"
+      ).join(" → ");
+
       return (
         '<article class="result">' +
         "<h3>Route " +
@@ -653,11 +792,7 @@ function showPage(page) {
         "</h3>" +
 
         '<div class="route">' +
-        path.map(airport =>
-          '<span class="tag">' +
-          escapeHtml(names.get(airport)) +
-          "</span>"
-        ).join(" → ") +
+        cities +
         "</div>" +
 
         "<small>" +
@@ -671,9 +806,10 @@ function showPage(page) {
 
   html +=
     '<div class="panel">' +
+
     '<p class="page-info">' +
     "Page " +
-    (currentPage + 1) +
+    (page + 1) +
     " of " +
     totalPages +
     "</p>" +
@@ -681,27 +817,23 @@ function showPage(page) {
     '<div class="pagination">' +
 
     '<button id="prevPage" ' +
-    (currentPage === 0 ? "disabled" : "") +
+    (page === 0 ? "disabled" : "") +
     ">← Previous</button>" +
 
     '<button id="nextPage" ' +
-    (
-      currentPage >= totalPages - 1
-        ? "disabled"
-        : ""
-    ) +
+    (page >= totalPages - 1 ? "disabled" : "") +
     ">Next →</button>" +
 
     "</div></div>";
 
-  area.innerHTML = html;
+  resultsElement.innerHTML = html;
 
   document
     .getElementById("prevPage")
     .addEventListener("click", () => {
       showPage(currentPage - 1);
 
-      area.scrollIntoView({
+      resultsElement.scrollIntoView({
         behavior: "smooth",
         block: "start"
       });
@@ -712,7 +844,7 @@ function showPage(page) {
     .addEventListener("click", () => {
       showPage(currentPage + 1);
 
-      area.scrollIntoView({
+      resultsElement.scrollIntoView({
         behavior: "smooth",
         block: "start"
       });
@@ -720,6 +852,22 @@ function showPage(page) {
 }
 
 /* EVENTS */
+
+fromSelect.addEventListener(
+  "change",
+  updateDestinations
+);
+
+maxSelect.addEventListener(
+  "change",
+  updateDestinations
+);
+
+toSelect.addEventListener("change", () => {
+  go.disabled = !toSelect.value;
+  foundRoutes = [];
+  resultsElement.innerHTML = "";
+});
 
 go.addEventListener("click", search);
 
@@ -729,6 +877,5 @@ document.getElementById("year").textContent =
 load();
 
 </script>
-
 </body>
 </html>
