@@ -127,6 +127,7 @@ button:disabled, select:disabled {
   padding: 11px;
   margin-top: 12px;
   color: #e9c5df;
+  line-height: 1.7;
 }
 
 .booking {
@@ -192,7 +193,7 @@ button:disabled, select:disabled {
   display: none !important;
 }
 
-/* LEAFLET-KARTE */
+/* LEAFLET MAP */
 
 .map-panel {
   width: 100%;
@@ -440,7 +441,7 @@ footer {
   <section id="radarResults" aria-live="polite"></section>
 </section>
 
-<!-- KARTE AUSSERHALB BEIDER ANSICHTEN -->
+<!-- FLIGHT ROUTE MAP -->
 
 <section class="panel map-panel" id="mapPanel" hidden>
   <h2>🗺️ Flight Route Map</h2>
@@ -530,6 +531,52 @@ function fill(select, keys, placeholder, nameMap) {
   if (keys.includes(previous)) {
     select.value = previous;
   }
+}
+
+/* SWISS DATE AND TIME */
+
+function formatSwissTime(timestamp) {
+  if (!timestamp) return "Unknown";
+
+  const date = new Date(timestamp);
+
+  if (Number.isNaN(date.getTime())) {
+    return String(timestamp);
+  }
+
+  return new Intl.DateTimeFormat("de-CH", {
+    timeZone: "Europe/Zurich",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23"
+  }).format(date);
+}
+
+function swissTimeZoneLabel(timestamp) {
+  const date = timestamp
+    ? new Date(timestamp)
+    : new Date();
+
+  if (Number.isNaN(date.getTime())) {
+    return "Schweizer Zeit";
+  }
+
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Zurich",
+    timeZoneName: "shortOffset"
+  }).formatToParts(date);
+
+  const offset = parts.find(
+    part => part.type === "timeZoneName"
+  )?.value;
+
+  return offset === "GMT+2" ? "MESZ" :
+         offset === "GMT+1" ? "MEZ" :
+         "Schweizer Zeit";
 }
 
 /* ROUTE GRAPH */
@@ -845,7 +892,11 @@ async function loadRadar() {
 
     for (const node of data.nodes) {
       if (typeof node.city !== "string") continue;
-      radarNames.set(key(node.city), node.city);
+
+      radarNames.set(
+        key(node.city),
+        node.city
+      );
     }
 
     fill(
@@ -858,9 +909,15 @@ async function loadRadar() {
     $("radarFrom").disabled = false;
     updateRadarDestinations();
 
+    const updated = formatSwissTime(status.updatedAt);
+    const zone = swissTimeZoneLabel(status.updatedAt);
+
     $("radarStatus").textContent =
-      "Flight data: " + (status.period || "Current window") +
-      " · Updated: " + (status.updatedAt || "Unknown");
+      "AYCF Flight Period: " +
+      (status.period || "Unknown") +
+      " · Updated: " +
+      updated +
+      " (" + zone + ")";
 
   } catch (error) {
     $("radarStatus").textContent =
