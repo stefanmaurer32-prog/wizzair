@@ -7,35 +7,25 @@
 
 <title>FlyHopGo | Wizz Air All You Can Fly Route Explorer</title>
 
-<meta name="description"
-      content="Explore Wizz Air All You Can Fly routes and timed flight connections for free. Find departure airports, destinations and possible stopovers.">
-
+<meta name="description" content="Explore Wizz Air All You Can Fly routes, destinations and timed flight connections for free. Find routes with stopovers and discover new destinations.">
 <meta name="robots" content="index,follow">
 <meta name="theme-color" content="#110720">
 
 <link rel="canonical" href="https://flyhopgo.com/">
-
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://flyhopgo.com/">
 <meta property="og:title" content="FlyHopGo – Free Wizz Air Route Explorer">
-<meta property="og:description"
-      content="Find Wizz Air All You Can Fly routes and connections. 100% free.">
-<meta property="og:image"
-      content="https://flyhopgo.com/static/icon-512.png">
+<meta property="og:description" content="Find Wizz Air All You Can Fly routes and connections. 100% free.">
+<meta property="og:image" content="https://flyhopgo.com/static/icon-512.png">
 
 <link rel="icon" href="/static/favicon.png">
 <link rel="apple-touch-icon" href="/static/icon-192.png">
 <link rel="manifest" href="/static/manifest.json">
 
-<link rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<script defer
-        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<script async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1802246293259496"
-        crossorigin="anonymous"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1802246293259496" crossorigin="anonymous"></script>
 
 <style>
 :root {
@@ -43,45 +33,22 @@
     color: #f9f5ff;
     background: #110720;
 }
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-}
-
+* { box-sizing: border-box; }
+body { margin: 0; }
 main {
     max-width: 900px;
     margin: 20px auto;
     padding: 18px;
 }
-
 h1 {
     font-size: clamp(28px, 5vw, 42px);
     color: #ef67c5;
     margin: 0 0 10px;
 }
-
-h2 {
-    font-size: 23px;
-}
-
-h3 {
-    margin-top: 0;
-}
-
-.sub,
-.muted,
-small {
-    color: #cbb9d8;
-}
-
-.sub {
-    font-size: 19px;
-}
-
+h2 { font-size: 23px; }
+h3 { margin-top: 0; }
+.sub, .muted, small { color: #cbb9d8; }
+.sub { font-size: 19px; }
 .free {
     display: inline-block;
     background: #e42ca2;
@@ -90,9 +57,7 @@ small {
     font-weight: 750;
     margin-bottom: 16px;
 }
-
-.panel,
-.result {
+.panel, .result {
     background: #241332;
     border: 1px solid #51335f;
     border-radius: 16px;
@@ -100,15 +65,12 @@ small {
     margin: 18px 0;
     min-width: 0;
 }
-
 label {
     display: block;
     font-weight: 650;
     margin: 16px 0 8px;
 }
-
-select,
-input {
+select, input {
     width: 100%;
     padding: 13px;
     border-radius: 10px;
@@ -117,7 +79,6 @@ input {
     border: 1px solid #805e90;
     font-size: 16px;
 }
-
 button {
     width: 100%;
     margin-top: 15px;
@@ -130,23 +91,16 @@ button {
     font-size: 16px;
     cursor: pointer;
 }
-
-button:hover:not(:disabled) {
-    filter: brightness(1.1);
-}
-
-button:disabled,
-select:disabled {
+button:hover:not(:disabled) { filter: brightness(1.1); }
+button:disabled, select:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
-
 .hint {
     font-size: 13px;
     color: #c9b8d7;
     line-height: 1.6;
 }
-
 .updated {
     background: #352044;
     border-radius: 9px;
@@ -155,7 +109,6 @@ select:disabled {
     color: #e9c5df;
     line-height: 1.7;
 }
-
 .booking {
     display: block;
     text-align: center;
@@ -167,7 +120,6 @@ select:disabled {
     padding: 14px;
     margin-top: 14px;
 }
-
 .tag {
     display: inline-block;
     background: #463052;
@@ -175,61 +127,39 @@ select:disabled {
     padding: 5px 8px;
     margin: 4px 3px;
 }
-
 .route {
     line-height: 2.2;
     overflow-wrap: anywhere;
 }
-
 .pagination {
     display: flex;
     gap: 12px;
 }
-
-.pagination button {
-    flex: 1;
-}
-
-.error {
-    color: #ffb8b8;
-}
-
+.pagination button { flex: 1; }
+.error { color: #ffb8b8; }
 .tabbar {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
 }
-
 .tabbar button {
     width: auto;
     flex: 1;
     margin: 0;
     background: #3a254a;
 }
-
-.tabbar button.active {
-    background: #e42ca2;
-}
-
+.tabbar button.active { background: #e42ca2; }
 .grid2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
 }
-
-.grid2 > * {
-    min-width: 0;
-}
-
+.grid2 > * { min-width: 0; }
 .time {
     font-weight: 700;
     color: #ffb3e4;
 }
-
-[hidden] {
-    display: none !important;
-}
-
+[hidden] { display: none !important; }
 .map-panel {
     width: 100%;
     max-width: 100%;
@@ -237,7 +167,6 @@ select:disabled {
     overflow: hidden;
     position: relative;
 }
-
 #flightMap {
     width: 100%;
     height: 420px;
@@ -246,28 +175,24 @@ select:disabled {
     border-radius: 12px;
     background: #20152b;
 }
-
 .map-note {
     font-size: 13px;
     color: #cbb9d8;
     margin: 12px 0;
     line-height: 1.6;
 }
-
 .map-button {
     width: auto;
     margin: 8px 6px 0 0;
     padding: 9px 14px;
     font-size: 14px;
 }
-
 .save-button {
     width: auto;
     background: #49305d;
     padding: 9px 14px;
     font-size: 14px;
 }
-
 .saved-route {
     display: flex;
     gap: 10px;
@@ -276,18 +201,15 @@ select:disabled {
     border-bottom: 1px solid #51335f;
     padding: 12px 0;
 }
-
 .saved-route span {
     flex: 1;
     min-width: 160px;
 }
-
 .saved-route button {
     width: auto;
     margin: 0;
     padding: 8px 12px;
 }
-
 .connection-leg {
     border-left: 3px solid #e42ca2;
     padding: 8px 12px;
@@ -296,7 +218,6 @@ select:disabled {
     border-radius: 0 8px 8px 0;
     line-height: 1.8;
 }
-
 footer {
     border-top: 1px solid #51335f;
     margin-top: 40px;
@@ -305,93 +226,47 @@ footer {
     font-size: 14px;
     line-height: 1.7;
 }
-
 @media (max-width: 580px) {
-    .grid2 {
-        grid-template-columns: 1fr;
-    }
-
-    main {
-        padding: 13px;
-    }
-
-    .panel,
-    .result {
-        padding: 15px;
-    }
-
-    #flightMap {
-        height: 350px;
-    }
+    .grid2 { grid-template-columns: 1fr; }
+    main { padding: 13px; }
+    .panel, .result { padding: 15px; }
+    #flightMap { height: 350px; }
 }
 </style>
 </head>
 
 <body>
-
 <main>
 
-<div class="free">
-    100% FREE · NO LOGIN REQUIRED
-</div>
+<div class="free">100% FREE · NO LOGIN REQUIRED</div>
 
 <h1>Find Your Next Flight Route ✈️</h1>
-
-<p class="sub">
-    Wizz Air All You Can Fly · Free Route Explorer
-</p>
+<p class="sub">Wizz Air All You Can Fly · Free Route Explorer</p>
 
 <div class="tabbar">
-    <button id="tabRoutes"
-            class="active"
-            type="button">
-        Route Explorer
-    </button>
-
-    <button id="tabRadar"
-            type="button">
-        Flight Times &amp; Connections
-    </button>
+    <button id="tabRoutes" class="active" type="button">Route Explorer</button>
+    <button id="tabRadar" type="button">Flight Times &amp; Connections</button>
 </div>
 
-<!-- ROUTE EXPLORER -->
-
 <section id="routesView">
-
     <div class="panel">
-
         <h2>✈️ Explore Routes</h2>
 
-        <div id="status">
-            Loading official Wizz Air routes...
-        </div>
-
-        <div class="updated" id="updated">
-            Loading update information...
-        </div>
-
+        <div id="status">Loading official Wizz Air routes...</div>
+        <div class="updated" id="updated">Loading update information...</div>
         <p id="period" class="muted"></p>
 
-        <label for="from">
-            Departure Airport
-        </label>
-
+        <label for="from">Departure Airport</label>
         <select id="from" disabled>
             <option>Loading...</option>
         </select>
 
-        <label for="to">
-            Destination Airport
-        </label>
-
+        <label for="to">Destination Airport</label>
         <select id="to" disabled>
             <option>Select departure first</option>
         </select>
 
-        <label for="max">
-            Maximum Number of Stops
-        </label>
-
+        <label for="max">Maximum Number of Stops</label>
         <select id="max">
             <option value="0">Direct Flight</option>
             <option value="1">1 Stop</option>
@@ -403,9 +278,7 @@ footer {
 
         <p class="hint" id="destinationHint"></p>
 
-        <button id="go" disabled>
-            🔎 Search Flight Routes
-        </button>
+        <button id="go" disabled>🔎 Search Flight Routes</button>
 
         <a class="booking"
            href="https://multipass.wizzair.com/"
@@ -413,30 +286,22 @@ footer {
            rel="noopener noreferrer">
             ✈️ Check &amp; Book on Wizz Air
         </a>
-
     </div>
 
     <section id="results" aria-live="polite"></section>
 
     <section class="panel" id="favoritesPanel">
         <h2>♡ Saved Routes</h2>
-
         <p class="hint">
             Save your favourite routes without an account.
             They are stored in this browser only.
         </p>
-
         <div id="savedRoutes"></div>
     </section>
-
 </section>
 
-<!-- FLIGHT TIMES -->
-
 <section id="radarView" hidden>
-
     <div class="panel">
-
         <h2>📅 Flight Times &amp; Connections</h2>
 
         <p class="muted">
@@ -449,39 +314,24 @@ footer {
         </div>
 
         <div class="grid2">
-
             <div>
-                <label for="radarFrom">
-                    Departure Airport
-                </label>
-
+                <label for="radarFrom">Departure Airport</label>
                 <select id="radarFrom" disabled>
                     <option>Loading...</option>
                 </select>
             </div>
-
             <div>
-                <label for="radarTo">
-                    Destination Airport
-                </label>
-
+                <label for="radarTo">Destination Airport</label>
                 <select id="radarTo" disabled>
                     <option>Select departure first</option>
                 </select>
             </div>
-
         </div>
 
-        <label for="flightDate">
-            Departure Date (optional)
-        </label>
-
+        <label for="flightDate">Departure Date (optional)</label>
         <input id="flightDate" type="date">
 
-        <label for="radarStops">
-            Timed Connections
-        </label>
-
+        <label for="radarStops">Timed Connections</label>
         <select id="radarStops">
             <option value="1">Up to 1 Stop</option>
             <option value="2">Up to 2 Stops</option>
@@ -502,57 +352,39 @@ footer {
            rel="noopener noreferrer">
             Check Availability &amp; Book on Wizz Air
         </a>
-
     </div>
 
     <section id="radarResults" aria-live="polite"></section>
-
 </section>
 
-<!-- MAP -->
-
 <section class="panel map-panel" id="mapPanel" hidden>
-
     <h2>🗺️ Flight Route Map</h2>
-
     <p id="mapStatus" class="map-note">
         Select a route to display it.
     </p>
-
     <div id="flightMap"></div>
-
     <p class="map-note">
-        Approximate city-centre positions, not exact
-        airport locations or actual flight paths.
-        Map © OpenStreetMap contributors.
+        Approximate city-centre positions, not exact airport locations
+        or actual flight paths. Map © OpenStreetMap contributors.
     </p>
-
 </section>
 
 <footer>
-
     <p>
         <strong>FlyHopGo.com</strong> is an independent
         route-planning tool and is not affiliated with Wizz Air.
     </p>
-
     <p>
         <strong>Important:</strong>
         Routes, schedules, connections and free AYCF seats
         are not guaranteed. Check every flight segment
         on the official Wizz Air website.
     </p>
-
     <p>
         <strong>Booking window:</strong>
-        72 to 3 hours before departure,
-        subject to Wizz Air rules.
+        72 to 3 hours before departure, subject to Wizz Air rules.
     </p>
-
-    <p>
-        © <span id="year"></span> FlyHopGo.com
-    </p>
-
+    <p>© <span id="year"></span> FlyHopGo.com</p>
 </footer>
 
 </main>
@@ -588,160 +420,83 @@ function key(value) {
 }
 
 function sleep(milliseconds) {
-    return new Promise(resolve =>
-        setTimeout(resolve, milliseconds)
-    );
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
 
 /* =====================================================
    AIRPORT COUNTRIES
-
-   Country information from /api/routes has priority.
-   The local list is only a fallback.
-
-   Unknown countries are not guessed.
+   Backend metadata has priority.
 ===================================================== */
 
 const AIRPORT_COUNTRIES = {
-    AAL:"Denmark",
-    AAR:"Denmark",
-    ADB:"Turkey",
-    AGA:"Morocco",
-    AGP:"Spain",
-    AHO:"Italy",
-    ALC:"Spain",
-    AMM:"Jordan",
-    AMS:"Netherlands",
-    ARN:"Sweden",
-    ATH:"Greece",
-    AUH:"United Arab Emirates",
-    AYT:"Turkey",
-    BCN:"Spain",
-    BEG:"Serbia",
-    BGY:"Italy",
-    BHX:"United Kingdom",
-    BLL:"Denmark",
-    BLQ:"Italy",
-    BOD:"France",
-    BRI:"Italy",
-    BRQ:"Czech Republic",
-    BRS:"United Kingdom",
-    BSL:"Switzerland",
-    BTS:"Slovakia",
-    BUD:"Hungary",
-    BVA:"France",
-    BZG:"Poland",
-    CAI:"Egypt",
-    CAG:"Italy",
-    CDG:"France",
-    CFU:"Greece",
-    CIA:"Italy",
-    CLJ:"Romania",
-    CPH:"Denmark",
-    CRL:"Belgium",
-    CTA:"Italy",
-    DLM:"Turkey",
-    DMM:"Saudi Arabia",
-    DTM:"Germany",
-    DXB:"United Arab Emirates",
-    EDI:"United Kingdom",
-    EIN:"Netherlands",
-    EVN:"Armenia",
-    FAO:"Portugal",
-    FCO:"Italy",
-    FMM:"Germany",
-    FNC:"Portugal",
-    GDN:"Poland",
-    GLA:"United Kingdom",
-    GOT:"Sweden",
-    GRZ:"Austria",
-    GVA:"Switzerland",
-    GYD:"Azerbaijan",
-    HAM:"Germany",
-    HEL:"Finland",
-    HER:"Greece",
-    HHN:"Germany",
-    IAS:"Romania",
-    IBZ:"Spain",
-    INI:"Serbia",
-    IST:"Turkey",
-    JED:"Saudi Arabia",
-    KLU:"Austria",
-    KTW:"Poland",
-    KUT:"Georgia",
-    KUN:"Lithuania",
-    LCA:"Cyprus",
-    LGW:"United Kingdom",
-    LIS:"Portugal",
-    LJU:"Slovenia",
-    LPA:"Spain",
-    LPL:"United Kingdom",
-    LTN:"United Kingdom",
-    LUX:"Luxembourg",
-    MAD:"Spain",
-    MAN:"United Kingdom",
-    MLA:"Malta",
-    MMX:"Sweden",
-    MPL:"France",
-    MRS:"France",
-    MXP:"Italy",
-    NAP:"Italy",
-    NCE:"France",
-    NUE:"Germany",
-    OHD:"North Macedonia",
-    OPO:"Portugal",
-    ORY:"France",
-    OSL:"Norway",
-    OTP:"Romania",
-    PFO:"Cyprus",
-    PMI:"Spain",
-    PMO:"Italy",
-    PRG:"Czech Republic",
-    PRN:"Kosovo",
-    PSA:"Italy",
-    PSR:"Italy",
-    PUY:"Croatia",
-    RAK:"Morocco",
-    RHO:"Greece",
-    RIX:"Latvia",
-    RMI:"Italy",
-    RMO:"Moldova",
-    RZE:"Poland",
-    SAW:"Turkey",
-    SBZ:"Romania",
-    SKG:"Greece",
-    SKP:"North Macedonia",
-    SOF:"Bulgaria",
-    SPU:"Croatia",
-    STN:"United Kingdom",
-    STR:"Germany",
-    SUF:"Italy",
-    SVQ:"Spain",
-    TBS:"Georgia",
-    TFS:"Spain",
-    TGD:"Montenegro",
-    TIA:"Albania",
-    TLL:"Estonia",
-    TLV:"Israel",
-    TRF:"Norway",
-    TRN:"Italy",
-    TSR:"Romania",
-    TUN:"Tunisia",
-    VAR:"Bulgaria",
-    VCE:"Italy",
-    VIE:"Austria",
-    VNO:"Lithuania",
-    VRN:"Italy",
-    WAW:"Poland",
-    WMI:"Poland",
-    WRO:"Poland",
-    XRY:"Spain",
-    ZAD:"Croatia",
-    ZAG:"Croatia",
-    ZRH:"Switzerland"
+    AAL:"Denmark", AAR:"Denmark", ADB:"Turkey",
+    AGA:"Morocco", AGP:"Spain", AHO:"Italy",
+    ALC:"Spain", AMM:"Jordan", AMS:"Netherlands",
+    ARN:"Sweden", ATH:"Greece",
+    AUH:"United Arab Emirates", AYT:"Turkey",
+    BCN:"Spain", BEG:"Serbia", BGY:"Italy",
+    BHX:"United Kingdom", BLL:"Denmark",
+    BLQ:"Italy", BOD:"France", BRI:"Italy",
+    BRQ:"Czech Republic", BRS:"United Kingdom",
+    BSL:"Switzerland", BTS:"Slovakia",
+    BUD:"Hungary", BVA:"France", BZG:"Poland",
+    CAI:"Egypt", CAG:"Italy", CDG:"France",
+    CFU:"Greece", CIA:"Italy", CLJ:"Romania",
+    CPH:"Denmark", CRL:"Belgium", CTA:"Italy",
+    DLM:"Turkey", DMM:"Saudi Arabia",
+    DTM:"Germany", DXB:"United Arab Emirates",
+    EDI:"United Kingdom", EIN:"Netherlands",
+    EVN:"Armenia", FAO:"Portugal",
+    FCO:"Italy", FMM:"Germany", FNC:"Portugal",
+    GDN:"Poland", GLA:"United Kingdom",
+    GOT:"Sweden", GRZ:"Austria",
+    GVA:"Switzerland", GYD:"Azerbaijan",
+    HAM:"Germany", HEL:"Finland",
+    HER:"Greece", HHN:"Germany",
+    IAS:"Romania", IBZ:"Spain", INI:"Serbia",
+    IST:"Turkey", JED:"Saudi Arabia",
+    KLU:"Austria", KTW:"Poland",
+    KUT:"Georgia", KUN:"Lithuania",
+    LCA:"Cyprus", LGW:"United Kingdom",
+    LIS:"Portugal", LJU:"Slovenia",
+    LPA:"Spain", LPL:"United Kingdom",
+    LTN:"United Kingdom", LUX:"Luxembourg",
+    MAD:"Spain", MAN:"United Kingdom",
+    MLA:"Malta", MMX:"Sweden",
+    MPL:"France", MRS:"France",
+    MXP:"Italy", NAP:"Italy", NCE:"France",
+    NUE:"Germany", OHD:"North Macedonia",
+    OPO:"Portugal", ORY:"France",
+    OSL:"Norway", OTP:"Romania",
+    OVD:"Spain", PFO:"Cyprus",
+    PMI:"Spain", PMO:"Italy",
+    PRG:"Czech Republic", PRN:"Kosovo",
+    PSA:"Italy", PSR:"Italy", PUY:"Croatia",
+    RAK:"Morocco", RHO:"Greece",
+    RIX:"Latvia", RMI:"Italy",
+    RMO:"Moldova", RZE:"Poland",
+    SAW:"Turkey", SBZ:"Romania",
+    SKG:"Greece", SKP:"North Macedonia",
+    SOF:"Bulgaria", SPU:"Croatia",
+    STN:"United Kingdom", STR:"Germany",
+    SUF:"Italy", SVQ:"Spain",
+    TBS:"Georgia", TFS:"Spain",
+    TGD:"Montenegro", TIA:"Albania",
+    TLL:"Estonia", TLV:"Israel",
+    TRF:"Norway", TRN:"Italy",
+    TSR:"Romania", TUN:"Tunisia",
+    VAR:"Bulgaria", VCE:"Italy",
+    VIE:"Austria", VNO:"Lithuania",
+    VRN:"Italy", WAW:"Poland",
+    WMI:"Poland", WRO:"Poland",
+    XRY:"Spain", ZAD:"Croatia",
+    ZAG:"Croatia", ZRH:"Switzerland"
 };
 
 const CITY_COUNTRIES = {
+    "asturias":"Spain",
+    "asturien":"Spain",
+    "oviedo":"Spain",
     "zurich":"Switzerland",
     "zürich":"Switzerland",
     "geneva":"Switzerland",
@@ -797,6 +552,7 @@ const CITY_COUNTRIES = {
     "skopje":"North Macedonia",
     "ohrid":"North Macedonia",
     "pristina":"Kosovo",
+    "prishtina":"Kosovo",
     "podgorica":"Montenegro",
     "zagreb":"Croatia",
     "split":"Croatia",
@@ -837,27 +593,13 @@ const CITY_COUNTRIES = {
     "tunis":"Tunisia"
 };
 
-/*
-   Metadata received from Flask.
-   Example:
-   {
-       city: "Budapest",
-       country: "Hungary"
-   }
-*/
-
 const airportMetadata = new Map();
 
 function airportCode(value) {
     const text = String(value || "");
+    const bracket = text.match(/\(([A-Z]{3})\)/i);
 
-    const bracket = text.match(
-        /\(([A-Z]{3})\)/i
-    );
-
-    if (bracket) {
-        return bracket[1].toUpperCase();
-    }
+    if (bracket) return bracket[1].toUpperCase();
 
     if (/^[A-Z]{3}$/i.test(text.trim())) {
         return text.trim().toUpperCase();
@@ -867,9 +609,7 @@ function airportCode(value) {
 }
 
 function registerAirportRecord(record) {
-    if (!record || typeof record !== "object") {
-        return;
-    }
+    if (!record || typeof record !== "object") return;
 
     const country =
         record.country ||
@@ -877,9 +617,7 @@ function registerAirportRecord(record) {
         record.country_name ||
         "";
 
-    if (!country) {
-        return;
-    }
+    if (!country) return;
 
     const identifiers = [
         record.city,
@@ -890,14 +628,8 @@ function registerAirportRecord(record) {
     ];
 
     for (const identifier of identifiers) {
-        if (
-            typeof identifier === "string" &&
-            identifier.trim()
-        ) {
-            airportMetadata.set(
-                key(identifier),
-                String(country)
-            );
+        if (typeof identifier === "string" && identifier.trim()) {
+            airportMetadata.set(key(identifier), String(country));
         }
     }
 }
@@ -905,38 +637,17 @@ function registerAirportRecord(record) {
 function countryForAirport(value) {
     const text = String(value || "").trim();
 
-    if (!text) {
-        return "";
-    }
-
-    /*
-       1. Country metadata supplied by Flask.
-       This has priority over local fallback lists.
-    */
+    if (!text) return "";
 
     const exact = airportMetadata.get(key(text));
-
-    if (exact) {
-        return exact;
-    }
-
-    /*
-       2. Remove the IATA code and try city metadata.
-    */
+    if (exact) return exact;
 
     const city = text
         .replace(/\s*\([A-Z]{3}\)\s*/gi, " ")
         .trim();
 
     const cityCountry = airportMetadata.get(key(city));
-
-    if (cityCountry) {
-        return cityCountry;
-    }
-
-    /*
-       3. Check known IATA codes.
-    */
+    if (cityCountry) return cityCountry;
 
     const code = airportCode(text);
 
@@ -944,33 +655,19 @@ function countryForAirport(value) {
         return AIRPORT_COUNTRIES[code];
     }
 
-    /*
-       4. Use city fallback.
-    */
-
     return CITY_COUNTRIES[key(city)] || "";
 }
 
 function airportLabel(value) {
     const text = String(value ?? "").trim();
-
-    if (!text) {
-        return "";
-    }
+    if (!text) return "";
 
     const country = countryForAirport(text);
-
-    if (!country) {
-        return text;
-    }
+    if (!country) return text;
 
     if (
-        text.toLowerCase().endsWith(
-            " - " + country.toLowerCase()
-        ) ||
-        text.toLowerCase().endsWith(
-            " – " + country.toLowerCase()
-        )
+        text.toLowerCase().endsWith(" - " + country.toLowerCase()) ||
+        text.toLowerCase().endsWith(" – " + country.toLowerCase())
     ) {
         return text;
     }
@@ -985,72 +682,41 @@ function airportLabel(value) {
 function fill(select, keys, placeholder, nameMap) {
     const previous = select.value;
 
-    select.replaceChildren(
-        new Option(placeholder, "")
-    );
+    select.replaceChildren(new Option(placeholder, ""));
 
     const sorted = [...keys].sort((a, b) => {
-        const labelA = airportLabel(
-            nameMap.get(a) || a
-        );
-
-        const labelB = airportLabel(
-            nameMap.get(b) || b
-        );
-
+        const labelA = airportLabel(nameMap.get(a) || a);
+        const labelB = airportLabel(nameMap.get(b) || b);
         return labelA.localeCompare(labelB);
     });
 
     for (const item of sorted) {
         const name = nameMap.get(item) || item;
-
-        select.add(
-            new Option(
-                airportLabel(name),
-                item
-            )
-        );
+        select.add(new Option(airportLabel(name), item));
     }
 
-    if (keys.includes(previous)) {
-        select.value = previous;
-    }
+    if (keys.includes(previous)) select.value = previous;
 }
 
 function refreshAirportSelects() {
-    /*
-       Refresh labels after country metadata arrives.
-       Selected values remain unchanged.
-    */
-
-    if (names.size) {
-        const from = $("from");
-
-        if (!from.disabled) {
-            fill(
-                from,
-                [...graph.keys()],
-                "Select departure...",
-                names
-            );
-
-            updateDestinations(false);
-        }
+    if (names.size && !$("from").disabled) {
+        fill(
+            $("from"),
+            [...graph.keys()],
+            "Select departure...",
+            names
+        );
+        updateDestinations(false);
     }
 
-    if (radarNames.size) {
-        const from = $("radarFrom");
-
-        if (!from.disabled) {
-            fill(
-                from,
-                [...radarNames.keys()],
-                "Select departure...",
-                radarNames
-            );
-
-            updateRadarDestinations(false);
-        }
+    if (radarNames.size && !$("radarFrom").disabled) {
+        fill(
+            $("radarFrom"),
+            [...radarNames.keys()],
+            "Select departure...",
+            radarNames
+        );
+        updateRadarDestinations(false);
     }
 
     renderFavorites();
@@ -1061,9 +727,7 @@ function refreshAirportSelects() {
 ===================================================== */
 
 function formatSwissTime(timestamp) {
-    if (!timestamp) {
-        return "Unknown";
-    }
+    if (!timestamp) return "Unknown";
 
     const date = new Date(timestamp);
 
@@ -1084,13 +748,9 @@ function formatSwissTime(timestamp) {
 }
 
 function swissTimeZoneLabel(timestamp) {
-    const date = timestamp
-        ? new Date(timestamp)
-        : new Date();
+    const date = timestamp ? new Date(timestamp) : new Date();
 
-    if (Number.isNaN(date.getTime())) {
-        return "Swiss time";
-    }
+    if (Number.isNaN(date.getTime())) return "Swiss time";
 
     const parts = new Intl.DateTimeFormat("en-GB", {
         timeZone: "Europe/Zurich",
@@ -1101,13 +761,8 @@ function swissTimeZoneLabel(timestamp) {
         part => part.type === "timeZoneName"
     )?.value;
 
-    if (offset === "GMT+2") {
-        return "CEST";
-    }
-
-    if (offset === "GMT+1") {
-        return "CET";
-    }
+    if (offset === "GMT+2") return "CEST";
+    if (offset === "GMT+1") return "CET";
 
     return "Swiss time";
 }
@@ -1117,9 +772,7 @@ function formatDuration(minutes) {
         minutes === null ||
         minutes === undefined ||
         minutes === ""
-    ) {
-        return "Unknown";
-    }
+    ) return "Unknown";
 
     const total = Number(minutes);
 
@@ -1131,13 +784,8 @@ function formatDuration(minutes) {
     const hours = Math.floor(rounded / 60);
     const mins = rounded % 60;
 
-    if (hours === 0) {
-        return mins + " min";
-    }
-
-    if (mins === 0) {
-        return hours + " h";
-    }
+    if (hours === 0) return mins + " min";
+    if (mins === 0) return hours + " h";
 
     return hours + " h " + mins + " min";
 }
@@ -1159,21 +807,13 @@ const ROUTE_LIMIT = 300;
 function reachable(start, maxEdges) {
     const seen = new Set([start]);
     const result = new Set();
-
     let front = [start];
 
-    for (
-        let depth = 0;
-        depth < maxEdges;
-        depth++
-    ) {
+    for (let depth = 0; depth < maxEdges; depth++) {
         const next = [];
 
         for (const airport of front) {
-            for (
-                const destination of
-                graph.get(airport) || []
-            ) {
+            for (const destination of graph.get(airport) || []) {
                 if (destination !== start) {
                     result.add(destination);
                 }
@@ -1186,10 +826,7 @@ function reachable(start, maxEdges) {
         }
 
         front = next;
-
-        if (!front.length) {
-            break;
-        }
+        if (!front.length) break;
     }
 
     return [...result];
@@ -1199,10 +836,7 @@ function updateDestinations(clearResults = true) {
     const start = $("from").value;
 
     const destinations = start
-        ? reachable(
-            start,
-            Number($("max").value) + 1
-        )
+        ? reachable(start, Number($("max").value) + 1)
         : [];
 
     fill(
@@ -1213,12 +847,10 @@ function updateDestinations(clearResults = true) {
     );
 
     $("to").disabled = !destinations.length;
-
     $("go").disabled = !$("to").value;
 
     $("destinationHint").textContent =
-        destinations.length +
-        " possible destinations.";
+        destinations.length + " possible destinations.";
 
     if (clearResults) {
         $("results").replaceChildren();
@@ -1240,11 +872,6 @@ async function loadRoutes() {
             throw Error("Invalid route list");
         }
 
-        /*
-           IMPORTANT:
-           Load all airport-country metadata first.
-        */
-
         if (Array.isArray(data.airports)) {
             for (const airport of data.airports) {
                 registerAirportRecord(airport);
@@ -1255,29 +882,15 @@ async function loadRoutes() {
         names.clear();
 
         for (const pair of data.routes) {
-            if (
-                !Array.isArray(pair) ||
-                pair.length < 2
-            ) {
-                continue;
-            }
+            if (!Array.isArray(pair) || pair.length < 2) continue;
 
             const departure = key(pair[0]);
             const destination = key(pair[1]);
 
-            if (!departure || !destination) {
-                continue;
-            }
+            if (!departure || !destination) continue;
 
-            names.set(
-                departure,
-                String(pair[0])
-            );
-
-            names.set(
-                destination,
-                String(pair[1])
-            );
+            names.set(departure, String(pair[0]));
+            names.set(destination, String(pair[1]));
 
             if (!graph.has(departure)) {
                 graph.set(departure, new Set());
@@ -1301,27 +914,18 @@ async function loadRoutes() {
             " routes loaded";
 
         $("updated").textContent =
-            "Last updated: " +
-            (data.updated || "Unknown");
+            "Last updated: " + (data.updated || "Unknown");
 
         $("period").textContent = data.period
             ? "Validity period: " + data.period
             : "";
 
         updateDestinations();
-
-        /*
-           Country data may also improve
-           labels in the radar tab.
-        */
-
         refreshAirportSelects();
 
     } catch (error) {
         $("status").textContent =
-            "Unable to load routes: " +
-            error.message;
-
+            "Unable to load routes: " + error.message;
         $("status").className = "error";
     }
 }
@@ -1335,17 +939,13 @@ function searchRoutes() {
 
     const start = $("from").value;
     const end = $("to").value;
-
-    const maxEdges =
-        Number($("max").value) + 1;
+    const maxEdges = Number($("max").value) + 1;
 
     foundRoutes = [];
     truncated = false;
     page = 0;
 
-    if (!start || !end) {
-        return;
-    }
+    if (!start || !end) return;
 
     function dfs(path, targetDepth) {
         if (foundRoutes.length >= ROUTE_LIMIT) {
@@ -1353,55 +953,31 @@ function searchRoutes() {
             return;
         }
 
-        const current =
-            path[path.length - 1];
+        const current = path[path.length - 1];
 
         if (current === end) {
-            if (
-                path.length - 1 === targetDepth
-            ) {
+            if (path.length - 1 === targetDepth) {
                 foundRoutes.push([...path]);
             }
-
             return;
         }
 
-        if (
-            path.length - 1 >= targetDepth
-        ) {
-            return;
-        }
+        if (path.length - 1 >= targetDepth) return;
 
-        for (
-            const next of
-            graph.get(current) || []
-        ) {
-            if (path.includes(next)) {
-                continue;
-            }
+        for (const next of graph.get(current) || []) {
+            if (path.includes(next)) continue;
 
             path.push(next);
-
             dfs(path, targetDepth);
-
             path.pop();
 
-            if (truncated) {
-                return;
-            }
+            if (truncated) return;
         }
     }
 
-    for (
-        let depth = 1;
-        depth <= maxEdges;
-        depth++
-    ) {
+    for (let depth = 1; depth <= maxEdges; depth++) {
         dfs([start], depth);
-
-        if (truncated) {
-            break;
-        }
+        if (truncated) break;
     }
 
     showPage(0);
@@ -1414,156 +990,98 @@ function showPage(p) {
 
     if (!count) {
         $("results").innerHTML =
-            '<div class="panel">' +
-            'No possible routes found.' +
-            '</div>';
-
+            '<div class="panel">No possible routes found.</div>';
         return;
     }
 
-    const pages =
-        Math.ceil(count / PAGE_SIZE);
-
+    const pages = Math.ceil(count / PAGE_SIZE);
     const start = p * PAGE_SIZE;
 
     let html =
-        "<h2>" +
-        count +
-        (truncated ? "+" : "") +
+        "<h2>" + count + (truncated ? "+" : "") +
         " Possible Routes</h2>" +
-
-        '<p class="hint">' +
-        "Theoretical routes only. " +
-        "Schedules and seats are not verified." +
-        "</p>";
+        '<p class="hint">Theoretical routes only. ' +
+        "Schedules and seats are not verified.</p>";
 
     for (
         let i = start;
-        i < Math.min(
-            start + PAGE_SIZE,
-            count
-        );
+        i < Math.min(start + PAGE_SIZE, count);
         i++
     ) {
         const path = foundRoutes[i];
 
-        const routeHtml = path.map(
-            airport => {
-                const name =
-                    names.get(airport) || airport;
+        const routeHtml = path.map(airport => {
+            const name = names.get(airport) || airport;
 
-                return (
-                    '<span class="tag">' +
-                    escapeHtml(
-                        airportLabel(name)
-                    ) +
-                    "</span>"
-                );
-            }
-        ).join(" → ");
+            return '<span class="tag">' +
+                escapeHtml(airportLabel(name)) +
+                "</span>";
+        }).join(" → ");
 
         html += `
             <article class="result">
-
                 <h3>
                     Route ${i + 1}
                     · ${path.length - 2} stops
                 </h3>
 
-                <div class="route">
-                    ${routeHtml}
-                </div>
+                <div class="route">${routeHtml}</div>
 
-                <button class="map-button"
-                        data-map="${i}">
+                <button class="map-button" data-map="${i}">
                     🗺️ Show on Map
                 </button>
 
-                <button class="save-button"
-                        data-save="${i}">
+                <button class="save-button" data-save="${i}">
                     ♡ Save Route
                 </button>
-
             </article>
         `;
     }
 
     html += `
         <div class="pagination">
-
-            <button id="prev"
-                ${p === 0 ? "disabled" : ""}>
+            <button id="prev" ${p === 0 ? "disabled" : ""}>
                 Previous
             </button>
-
-            <button id="next"
-                ${p === pages - 1 ? "disabled" : ""}>
+            <button id="next" ${p === pages - 1 ? "disabled" : ""}>
                 Next
             </button>
-
         </div>
-
-        <p class="hint">
-            Page ${p + 1} of ${pages}
-        </p>
+        <p class="hint">Page ${p + 1} of ${pages}</p>
     `;
 
     $("results").innerHTML = html;
 
-    $("results")
-        .querySelectorAll("[data-map]")
-        .forEach(button => {
-            button.onclick = () => {
-                const route = foundRoutes[
-                    Number(button.dataset.map)
-                ];
+    $("results").querySelectorAll("[data-map]").forEach(button => {
+        button.onclick = () => {
+            const route = foundRoutes[Number(button.dataset.map)];
 
-                showRouteOnMap(
-                    route.map(
-                        airport =>
-                            names.get(airport) ||
-                            airport
-                    )
-                );
-            };
-        });
+            showRouteOnMap(
+                route.map(airport => names.get(airport) || airport)
+            );
+        };
+    });
 
-    $("results")
-        .querySelectorAll("[data-save]")
-        .forEach(button => {
-            button.onclick = () => {
-                const route = foundRoutes[
-                    Number(button.dataset.save)
-                ];
+    $("results").querySelectorAll("[data-save]").forEach(button => {
+        button.onclick = () => {
+            const route = foundRoutes[Number(button.dataset.save)];
 
-                saveRoute(
-                    route.map(
-                        airport =>
-                            names.get(airport) ||
-                            airport
-                    )
-                );
-            };
-        });
+            saveRoute(
+                route.map(airport => names.get(airport) || airport)
+            );
+        };
+    });
 
-    $("prev").onclick = () =>
-        showPage(page - 1);
-
-    $("next").onclick = () =>
-        showPage(page + 1);
+    $("prev").onclick = () => showPage(page - 1);
+    $("next").onclick = () => showPage(page + 1);
 }
 
-$("from").onchange = () =>
-    updateDestinations();
-
-$("max").onchange = () =>
-    updateDestinations();
+$("from").onchange = () => updateDestinations();
+$("max").onchange = () => updateDestinations();
 
 $("to").onchange = () => {
     $("go").disabled = !$("to").value;
-
     $("results").replaceChildren();
-
     hideRouteMap();
 };
 
@@ -1581,22 +1099,12 @@ function tab(which) {
     $("routesView").hidden = radar;
     $("radarView").hidden = !radar;
 
-    $("tabRoutes").classList.toggle(
-        "active",
-        !radar
-    );
-
-    $("tabRadar").classList.toggle(
-        "active",
-        radar
-    );
+    $("tabRoutes").classList.toggle("active", !radar);
+    $("tabRadar").classList.toggle("active", radar);
 }
 
-$("tabRoutes").onclick = () =>
-    tab("routes");
-
-$("tabRadar").onclick = () =>
-    tab("radar");
+$("tabRoutes").onclick = () => tab("routes");
+$("tabRadar").onclick = () => tab("radar");
 
 /* =====================================================
    FLIGHT TIMES & CONNECTIONS
@@ -1606,13 +1114,10 @@ const radarNames = new Map();
 
 async function getJSON(url) {
     const response = await fetch(url);
-
     const data = await response.json();
 
     if (!response.ok) {
-        throw Error(
-            data.error || "Provider unavailable"
-        );
+        throw Error(data.error || "Provider unavailable");
     }
 
     return data;
@@ -1620,11 +1125,10 @@ async function getJSON(url) {
 
 async function loadRadar() {
     try {
-        const [status, data] =
-            await Promise.all([
-                getJSON("/api/radar/status"),
-                getJSON("/api/radar/graph")
-            ]);
+        const [status, data] = await Promise.all([
+            getJSON("/api/radar/status"),
+            getJSON("/api/radar/graph")
+        ]);
 
         if (!Array.isArray(data.nodes)) {
             throw Error("Invalid city list");
@@ -1633,23 +1137,11 @@ async function loadRadar() {
         radarNames.clear();
 
         for (const node of data.nodes) {
-            if (
-                typeof node.city !== "string"
-            ) {
-                continue;
-            }
-
-            /*
-               Register country metadata from
-               radar if provided.
-            */
+            if (typeof node.city !== "string") continue;
 
             registerAirportRecord(node);
 
-            radarNames.set(
-                key(node.city),
-                node.city
-            );
+            radarNames.set(key(node.city), node.city);
         }
 
         fill(
@@ -1660,39 +1152,31 @@ async function loadRadar() {
         );
 
         $("radarFrom").disabled = false;
-
         updateRadarDestinations();
 
-        const updated =
-            formatSwissTime(status.updatedAt);
-
-        const zone =
-            swissTimeZoneLabel(status.updatedAt);
+        const updated = formatSwissTime(status.updatedAt);
+        const zone = swissTimeZoneLabel(status.updatedAt);
 
         $("radarStatus").textContent =
             "AYCF Flight Period: " +
             (status.period || "Unknown") +
-            " · Updated: " +
-            updated +
+            " · Updated: " + updated +
             " (" + zone + ")";
+
+        refreshAirportSelects();
 
     } catch (error) {
         $("radarStatus").textContent =
-            "Flight data unavailable: " +
-            error.message;
+            "Flight data unavailable: " + error.message;
     }
 }
 
-function updateRadarDestinations(
-    clearResults = true
-) {
-    const origin =
-        $("radarFrom").value;
+function updateRadarDestinations(clearResults = true) {
+    const origin = $("radarFrom").value;
 
-    const cities =
-        [...radarNames.keys()].filter(
-            city => city !== origin
-        );
+    const cities = [...radarNames.keys()].filter(
+        city => city !== origin
+    );
 
     fill(
         $("radarTo"),
@@ -1704,243 +1188,196 @@ function updateRadarDestinations(
     $("radarTo").disabled = !origin;
 
     $("findConnections").disabled =
-        !origin ||
-        !$("radarTo").value;
+        !origin || !$("radarTo").value;
 
     if (clearResults) {
         $("radarResults").replaceChildren();
     }
 }
 
-$("radarFrom").onchange = () =>
-    updateRadarDestinations();
+$("radarFrom").onchange = () => updateRadarDestinations();
 
 $("radarTo").onchange = () => {
-    $("findConnections").disabled =
-        !$("radarTo").value;
-
+    $("findConnections").disabled = !$("radarTo").value;
     $("radarResults").replaceChildren();
 };
 
 function radarParams(extra = {}) {
     return new URLSearchParams({
-        from:
-            radarNames.get(
-                $("radarFrom").value
-            ) || "",
-
-        to:
-            radarNames.get(
-                $("radarTo").value
-            ) || "",
-
+        from: radarNames.get($("radarFrom").value) || "",
+        to: radarNames.get($("radarTo").value) || "",
         ...extra
     });
 }
 
 /* =====================================================
    TIMED CONNECTIONS
+   Includes fromCountry, toCountry, viaCountries.
 ===================================================== */
 
-function renderConnections(data) {
-    const connections =
-        Array.isArray(data.connections)
-            ? data.connections
-            : [];
+function registerConnectionCountries(connection) {
+    if (!connection || typeof connection !== "object") return;
 
-    const selected =
-        $("flightDate").value;
+    if (
+        Array.isArray(connection.via) &&
+        Array.isArray(connection.viaCountries)
+    ) {
+        connection.via.forEach((city, index) => {
+            registerAirportRecord({
+                city: city,
+                country: connection.viaCountries[index]
+            });
+        });
+    }
 
-    const filtered = connections.filter(
-        connection => {
-            if (!selected) {
-                return true;
-            }
+    if (Array.isArray(connection.legs)) {
+        for (const leg of connection.legs) {
+            if (!leg || typeof leg !== "object") continue;
 
-            if (
-                !Array.isArray(
-                    connection.legs
-                )
-            ) {
-                return false;
-            }
+            registerAirportRecord({
+                city: leg.from,
+                country: leg.fromCountry
+            });
 
-            return (
-                String(
-                    connection.legs[0]?.date
-                ) === selected
-            );
+            registerAirportRecord({
+                city: leg.to,
+                country: leg.toCountry
+            });
         }
-    );
+    }
+}
+
+function renderConnections(data) {
+    const connections = Array.isArray(data.connections)
+        ? data.connections
+        : [];
+
+    /*
+       Register ALL country metadata before rendering.
+       This ensures that the countries also appear
+       in the connection headings.
+    */
+    for (const connection of connections) {
+        registerConnectionCountries(connection);
+    }
+
+    const selected = $("flightDate").value;
+
+    const filtered = connections.filter(connection => {
+        if (!selected) return true;
+
+        if (!Array.isArray(connection.legs)) return false;
+
+        return String(connection.legs[0]?.date) === selected;
+    });
 
     if (!filtered.length) {
         $("radarResults").innerHTML =
-            '<div class="panel">' +
-            'No timed connections found.' +
-            '</div>';
-
+            '<div class="panel">No timed connections found.</div>';
         return;
     }
 
-    let html =
-        "<h2>Timed Connections (" +
-        filtered.length +
-        ")</h2>";
+    let html = "<h2>Timed Connections (" +
+        filtered.length + ")</h2>";
 
-    filtered.slice(0, 40).forEach(
-        (connection, index) => {
-            const via =
-                Array.isArray(connection.via)
-                    ? connection.via
-                        .map(airportLabel)
-                        .join(" → ")
-                    : "";
+    filtered.slice(0, 40).forEach((connection, index) => {
+        const via = Array.isArray(connection.via)
+            ? connection.via.map(airportLabel).join(" → ")
+            : "";
 
+        html += `
+            <article class="result">
+                <h3>Via ${escapeHtml(via || "Connection")}</h3>
+
+                <p>
+                    <strong>Total travel time:</strong>
+                    <span class="time">
+                        ${escapeHtml(formatDuration(connection.totalMin))}
+                    </span>
+                </p>
+        `;
+
+        for (const leg of connection.legs || []) {
             html += `
-                <article class="result">
+                <div class="connection-leg">
+                    <strong>
+                        ${escapeHtml(airportLabel(leg.from))}
+                        →
+                        ${escapeHtml(airportLabel(leg.to))}
+                    </strong>
 
-                    <h3>
-                        Via ${escapeHtml(
-                            via || "Connection"
-                        )}
-                    </h3>
-
-                    <p>
-                        <strong>
-                            Total travel time:
-                        </strong>
-
-                        <span class="time">
-                            ${escapeHtml(
-                                formatDuration(
-                                    connection.totalMin
-                                )
-                            )}
-                        </span>
-                    </p>
-            `;
-
-            for (
-                const leg of
-                connection.legs || []
-            ) {
-                registerAirportRecord(leg);
-
-                html += `
-                    <div class="connection-leg">
-
-                        <strong>
-                            ${escapeHtml(
-                                airportLabel(
-                                    leg.from
-                                )
-                            )}
-                            →
-                            ${escapeHtml(
-                                airportLabel(
-                                    leg.to
-                                )
-                            )}
-                        </strong>
-
-                        <div>
-                            Date:
-                            ${escapeHtml(
-                                leg.date
-                            )}
-                        </div>
-
-                        <div class="time">
-                            ${escapeHtml(
-                                leg.dep
-                            )}
-                            –
-                            ${escapeHtml(
-                                leg.arr
-                            )}
-                        </div>
-
+                    <div>
+                        Date: ${escapeHtml(leg.date)}
                     </div>
-                `;
-            }
 
-            html += `
-                    <button
-                        class="map-button"
-                        data-connection-map="${index}">
-                        🗺️ Show on Map
-                    </button>
-
-                    <p class="hint">
-                        Check every flight and
-                        AYCF seat at Wizz Air.
-                    </p>
-
-                </article>
+                    <div class="time">
+                        ${escapeHtml(leg.dep)}
+                        –
+                        ${escapeHtml(leg.arr)}
+                    </div>
+                </div>
             `;
         }
-    );
+
+        html += `
+                <button class="map-button"
+                        data-connection-map="${index}">
+                    🗺️ Show on Map
+                </button>
+
+                <p class="hint">
+                    Check every flight and AYCF seat at Wizz Air.
+                </p>
+            </article>
+        `;
+    });
 
     $("radarResults").innerHTML = html;
 
     $("radarResults")
-        .querySelectorAll(
-            "[data-connection-map]"
-        )
+        .querySelectorAll("[data-connection-map]")
         .forEach(button => {
             button.onclick = () => {
-                const connection =
-                    filtered[
-                        Number(
-                            button.dataset.connectionMap
-                        )
-                    ];
+                const connection = filtered[
+                    Number(button.dataset.connectionMap)
+                ];
 
-                const legs =
-                    connection.legs || [];
+                const legs = connection.legs || [];
 
                 if (legs.length) {
                     showRouteOnMap([
                         legs[0].from,
-                        ...legs.map(
-                            leg => leg.to
-                        )
+                        ...legs.map(leg => leg.to)
                     ]);
                 }
             };
         });
 }
 
-$("findConnections").onclick =
-    async () => {
-        const button =
-            $("findConnections");
+$("findConnections").onclick = async () => {
+    const button = $("findConnections");
+    button.disabled = true;
 
-        button.disabled = true;
+    $("radarResults").textContent =
+        "Searching timed connections...";
 
-        $("radarResults").textContent =
-            "Searching timed connections...";
+    try {
+        const data = await getJSON(
+            "/api/radar/connections?" +
+            radarParams({
+                stops: $("radarStops").value
+            })
+        );
 
-        try {
-            const data = await getJSON(
-                "/api/radar/connections?" +
-                radarParams({
-                    stops:
-                        $("radarStops").value
-                })
-            );
+        renderConnections(data);
 
-            renderConnections(data);
+    } catch (error) {
+        $("radarResults").textContent = error.message;
 
-        } catch (error) {
-            $("radarResults").textContent =
-                error.message;
-
-        } finally {
-            button.disabled =
-                !$("radarTo").value;
-        }
-    };
+    } finally {
+        button.disabled = !$("radarTo").value;
+    }
+};
 
 /* =====================================================
    LEAFLET MAP
@@ -1952,34 +1389,24 @@ let activeMapRequest = 0;
 let mapResizeObserver = null;
 
 const geoCache = new Map();
-
 let lastGeocode = 0;
 
 function hideRouteMap() {
     activeMapRequest++;
-
     $("mapPanel").hidden = true;
 }
 
 function cityQuery(city) {
     return String(city || "")
-        .replace(
-            /\s*\([^)]*\)\s*/g,
-            " "
-        )
-        .replace(
-            /\s+[–-]\s+[^–-]+$/,
-            ""
-        )
+        .replace(/\s*\([^)]*\)\s*/g, " ")
+        .replace(/\s+[–-]\s+[^–-]+$/, "")
         .trim();
 }
 
 async function geocodeCity(city) {
     const query = cityQuery(city);
 
-    if (!query) {
-        throw Error("Missing city");
-    }
+    if (!query) throw Error("Missing city");
 
     const cacheKey = key(query);
 
@@ -1989,19 +1416,14 @@ async function geocodeCity(city) {
 
     const wait = Math.max(
         0,
-        1100 - (
-            Date.now() - lastGeocode
-        )
+        1100 - (Date.now() - lastGeocode)
     );
 
-    if (wait) {
-        await sleep(wait);
-    }
+    if (wait) await sleep(wait);
 
     lastGeocode = Date.now();
 
-    const country =
-        countryForAirport(city);
+    const country = countryForAirport(city);
 
     const search = country
         ? query + ", " + country
@@ -2013,26 +1435,17 @@ async function geocodeCity(city) {
         encodeURIComponent(search);
 
     const response = await fetch(url, {
-        headers: {
-            "Accept": "application/json"
-        }
+        headers: { "Accept": "application/json" }
     });
 
     if (!response.ok) {
-        throw Error(
-            "Location service unavailable"
-        );
+        throw Error("Location service unavailable");
     }
 
     const rows = await response.json();
 
-    if (
-        !Array.isArray(rows) ||
-        !rows.length
-    ) {
-        throw Error(
-            "City not found: " + search
-        );
+    if (!Array.isArray(rows) || !rows.length) {
+        throw Error("City not found: " + search);
     }
 
     const point = [
@@ -2041,9 +1454,7 @@ async function geocodeCity(city) {
     ];
 
     if (!point.every(Number.isFinite)) {
-        throw Error(
-            "Invalid coordinates"
-        );
+        throw Error("Invalid coordinates");
     }
 
     geoCache.set(cacheKey, point);
@@ -2052,15 +1463,11 @@ async function geocodeCity(city) {
 }
 
 function refreshFlightMap() {
-    if (!flightMap) {
-        return;
-    }
+    if (!flightMap) return;
 
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-            if (
-                !$("mapPanel").hidden
-            ) {
+            if (!$("mapPanel").hidden) {
                 flightMap.invalidateSize({
                     pan: false,
                     animate: false
@@ -2071,25 +1478,18 @@ function refreshFlightMap() {
 }
 
 function initializeFlightMap() {
-    if (flightMap) {
-        return flightMap;
-    }
+    if (flightMap) return flightMap;
 
     if (typeof L === "undefined") {
-        throw Error(
-            "Leaflet library is not loaded"
-        );
+        throw Error("Leaflet library is not loaded");
     }
 
-    flightMap = L.map(
-        "flightMap",
-        {
-            scrollWheelZoom: false,
-            zoomControl: true,
-            attributionControl: true,
-            preferCanvas: true
-        }
-    );
+    flightMap = L.map("flightMap", {
+        scrollWheelZoom: false,
+        zoomControl: true,
+        attributionControl: true,
+        preferCanvas: true
+    });
 
     L.tileLayer(
         "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -2102,55 +1502,31 @@ function initializeFlightMap() {
         }
     ).addTo(flightMap);
 
-    flightMap.setView(
-        [48.5, 12],
-        4
-    );
+    flightMap.setView([48.5, 12], 4);
+    flightLayer = L.layerGroup().addTo(flightMap);
 
-    flightLayer =
-        L.layerGroup().addTo(flightMap);
+    if (typeof ResizeObserver !== "undefined") {
+        mapResizeObserver = new ResizeObserver(() => {
+            if (!$("mapPanel").hidden) {
+                refreshFlightMap();
+            }
+        });
 
-    if (
-        typeof ResizeObserver !== "undefined"
-    ) {
-        mapResizeObserver =
-            new ResizeObserver(() => {
-                if (
-                    !$("mapPanel").hidden
-                ) {
-                    refreshFlightMap();
-                }
-            });
-
-        mapResizeObserver.observe(
-            $("flightMap")
-        );
+        mapResizeObserver.observe($("flightMap"));
     }
 
     return flightMap;
 }
 
 async function showRouteOnMap(cities) {
-    const requestId =
-        ++activeMapRequest;
+    const requestId = ++activeMapRequest;
+    const panel = $("mapPanel");
+    const status = $("mapStatus");
 
-    const panel =
-        $("mapPanel");
-
-    const status =
-        $("mapStatus");
-
-    if (
-        !Array.isArray(cities) ||
-        !cities.length
-    ) {
-        return;
-    }
+    if (!Array.isArray(cities) || !cities.length) return;
 
     panel.hidden = false;
-
-    status.textContent =
-        "Loading flight route map...";
+    status.textContent = "Loading flight route map...";
 
     await new Promise(resolve => {
         requestAnimationFrame(() => {
@@ -2158,104 +1534,64 @@ async function showRouteOnMap(cities) {
         });
     });
 
-    if (
-        requestId !== activeMapRequest
-    ) {
-        return;
-    }
+    if (requestId !== activeMapRequest) return;
 
     try {
         initializeFlightMap();
-
         refreshFlightMap();
-
         flightLayer.clearLayers();
 
         const points = [];
 
-        for (
-            let i = 0;
-            i < cities.length;
-            i++
-        ) {
+        for (let i = 0; i < cities.length; i++) {
             const city = cities[i];
+            const coordinates = await geocodeCity(city);
 
-            const coordinates =
-                await geocodeCity(city);
-
-            if (
-                requestId !== activeMapRequest
-            ) {
-                return;
-            }
+            if (requestId !== activeMapRequest) return;
 
             points.push(coordinates);
 
-            let label =
-                "Stop " + i;
-
-            let markerColor =
-                "#e42ca2";
+            let label = "Stop " + i;
+            let markerColor = "#e42ca2";
 
             if (i === 0) {
                 label = "Departure";
                 markerColor = "#22c55e";
-
-            } else if (
-                i === cities.length - 1
-            ) {
+            } else if (i === cities.length - 1) {
                 label = "Destination";
                 markerColor = "#ef4444";
             }
 
-            const marker =
-                L.circleMarker(
-                    coordinates,
-                    {
-                        radius: 9,
-                        color: "#ffffff",
-                        weight: 2,
-                        fillColor: markerColor,
-                        fillOpacity: 1
-                    }
-                );
+            const marker = L.circleMarker(coordinates, {
+                radius: 9,
+                color: "#ffffff",
+                weight: 2,
+                fillColor: markerColor,
+                fillOpacity: 1
+            });
 
-            const popup =
-                document.createElement("div");
-
-            const title =
-                document.createElement("strong");
-
+            const popup = document.createElement("div");
+            const title = document.createElement("strong");
             title.textContent = label;
 
-            const location =
-                document.createElement("div");
+            const location = document.createElement("div");
+            location.textContent = airportLabel(city);
 
-            location.textContent =
-                airportLabel(city);
-
-            popup.append(
-                title,
-                location
-            );
+            popup.append(title, location);
 
             marker.bindPopup(popup);
-
             marker.addTo(flightLayer);
         }
 
         if (points.length > 1) {
-            L.polyline(
-                points,
-                {
-                    color: "#e42ca2",
-                    weight: 4,
-                    opacity: 0.9,
-                    dashArray: "10 7",
-                    lineCap: "round",
-                    lineJoin: "round"
-                }
-            ).addTo(flightLayer);
+            L.polyline(points, {
+                color: "#e42ca2",
+                weight: 4,
+                opacity: 0.9,
+                dashArray: "10 7",
+                lineCap: "round",
+                lineJoin: "round"
+            }).addTo(flightLayer);
 
             refreshFlightMap();
 
@@ -2269,19 +1605,13 @@ async function showRouteOnMap(cities) {
             );
 
         } else {
-            flightMap.setView(
-                points[0],
-                8,
-                {
-                    animate: false
-                }
-            );
+            flightMap.setView(points[0], 8, {
+                animate: false
+            });
         }
 
         status.textContent =
-            cities.map(
-                airportLabel
-            ).join(" → ");
+            cities.map(airportLabel).join(" → ");
 
         refreshFlightMap();
 
@@ -2291,12 +1621,9 @@ async function showRouteOnMap(cities) {
         });
 
     } catch (error) {
-        if (
-            requestId === activeMapRequest
-        ) {
+        if (requestId === activeMapRequest) {
             status.textContent =
-                "Unable to display map: " +
-                error.message;
+                "Unable to display map: " + error.message;
         }
     }
 }
@@ -2305,25 +1632,18 @@ async function showRouteOnMap(cities) {
    SAVED ROUTES
 ===================================================== */
 
-const FAVORITES_KEY =
-    "flyhopgo_favorites_v1";
+const FAVORITES_KEY = "flyhopgo_favorites_v1";
 
 function readFavorites() {
     try {
         const data = JSON.parse(
-            localStorage.getItem(
-                FAVORITES_KEY
-            ) || "[]"
+            localStorage.getItem(FAVORITES_KEY) || "[]"
         );
 
         return Array.isArray(data)
-            ? data.filter(
-                route =>
-                    Array.isArray(route) &&
-                    route.every(
-                        city =>
-                            typeof city === "string"
-                    )
+            ? data.filter(route =>
+                Array.isArray(route) &&
+                route.every(city => typeof city === "string")
             ).slice(0, 100)
             : [];
 
@@ -2333,35 +1653,21 @@ function readFavorites() {
 }
 
 function saveRoute(cities) {
-    if (
-        !Array.isArray(cities) ||
-        cities.length < 2
-    ) {
-        return;
-    }
+    if (!Array.isArray(cities) || cities.length < 2) return;
 
-    const routes =
-        readFavorites();
+    const routes = readFavorites();
+    const signature = JSON.stringify(cities);
 
-    const signature =
-        JSON.stringify(cities);
-
-    if (
-        !routes.some(
-            route =>
-                JSON.stringify(route) ===
-                signature
-        )
-    ) {
+    if (!routes.some(route =>
+        JSON.stringify(route) === signature
+    )) {
         routes.unshift(cities);
     }
 
     try {
         localStorage.setItem(
             FAVORITES_KEY,
-            JSON.stringify(
-                routes.slice(0, 100)
-            )
+            JSON.stringify(routes.slice(0, 100))
         );
 
         renderFavorites();
@@ -2371,99 +1677,63 @@ function saveRoute(cities) {
         });
 
     } catch {
-        alert(
-            "Could not save this route."
-        );
+        alert("Could not save this route.");
     }
 }
 
 function renderFavorites() {
-    const area =
-        $("savedRoutes");
-
+    const area = $("savedRoutes");
     area.replaceChildren();
 
-    const routes =
-        readFavorites();
+    const routes = readFavorites();
 
     if (!routes.length) {
         area.textContent =
-            "No saved routes yet. " +
-            "Search and click ♡ Save Route.";
-
+            "No saved routes yet. Search and click ♡ Save Route.";
         return;
     }
 
-    routes.forEach(
-        (cities, index) => {
-            const line =
-                document.createElement("div");
+    routes.forEach((cities, index) => {
+        const line = document.createElement("div");
+        line.className = "saved-route";
 
-            line.className =
-                "saved-route";
+        const title = document.createElement("span");
+        title.textContent = cities.map(airportLabel).join(" → ");
 
-            const title =
-                document.createElement("span");
+        const map = document.createElement("button");
+        map.textContent = "🗺️ Map";
+        map.onclick = () => showRouteOnMap(cities);
 
-            title.textContent =
-                cities.map(
-                    airportLabel
-                ).join(" → ");
+        const remove = document.createElement("button");
+        remove.textContent = "Delete";
 
-            const map =
-                document.createElement("button");
+        remove.onclick = () => {
+            const next = readFavorites();
+            next.splice(index, 1);
 
-            map.textContent =
-                "🗺️ Map";
-
-            map.onclick = () =>
-                showRouteOnMap(cities);
-
-            const remove =
-                document.createElement("button");
-
-            remove.textContent =
-                "Delete";
-
-            remove.onclick = () => {
-                const next =
-                    readFavorites();
-
-                next.splice(index, 1);
-
-                localStorage.setItem(
-                    FAVORITES_KEY,
-                    JSON.stringify(next)
-                );
-
-                renderFavorites();
-            };
-
-            line.append(
-                title,
-                map,
-                remove
+            localStorage.setItem(
+                FAVORITES_KEY,
+                JSON.stringify(next)
             );
 
-            area.append(line);
-        }
-    );
+            renderFavorites();
+        };
+
+        line.append(title, map, remove);
+        area.append(line);
+    });
 }
 
 /* =====================================================
    START
 ===================================================== */
 
-$("year").textContent =
-    new Date().getFullYear();
+$("year").textContent = new Date().getFullYear();
 
 renderFavorites();
-
 loadRoutes();
-
 loadRadar();
 
 </script>
-
 </body>
 </html>
