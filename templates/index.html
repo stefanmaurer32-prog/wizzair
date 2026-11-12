@@ -160,6 +160,7 @@ button:disabled, select:disabled {
     color: #ffb3e4;
 }
 [hidden] { display: none !important; }
+
 .map-panel {
     width: 100%;
     max-width: 100%;
@@ -218,6 +219,45 @@ button:disabled, select:disabled {
     border-radius: 0 8px 8px 0;
     line-height: 1.8;
 }
+
+/* CONNECTION TIME WARNINGS */
+
+.connection-warning {
+    background: #4b2630;
+    border: 1px solid #ff7474;
+    border-radius: 10px;
+    padding: 14px;
+    margin: 14px 0;
+    color: #ffd5d5;
+    line-height: 1.7;
+}
+.connection-warning strong {
+    color: #ffaaaa;
+}
+.connection-warning p {
+    margin: 7px 0;
+}
+.connection-ok {
+    background: #173b32;
+    border: 1px solid #4dc7a0;
+    border-radius: 10px;
+    padding: 12px;
+    margin: 12px 0;
+    color: #b9ffe6;
+}
+.connection-unknown {
+    background: #3c3047;
+    border: 1px solid #927ca4;
+    border-radius: 10px;
+    padding: 12px;
+    margin: 12px 0;
+    color: #e8d8f1;
+}
+.connection-summary {
+    font-size: 14px;
+    margin: 12px 0;
+}
+
 footer {
     border-top: 1px solid #51335f;
     margin-top: 40px;
@@ -342,6 +382,12 @@ footer {
         </button>
 
         <p class="hint">
+            Connections with less than 3 hours between flights
+            will be marked with a warning when the times
+            can be calculated reliably.
+        </p>
+
+        <p class="hint">
             For 3–5 stops, use Route Explorer.
             Those routes have no verified schedules.
         </p>
@@ -425,7 +471,6 @@ function sleep(milliseconds) {
 
 /* =====================================================
    AIRPORT COUNTRIES
-   Backend metadata has priority.
 ===================================================== */
 
 const AIRPORT_COUNTRIES = {
@@ -1216,8 +1261,155 @@ function radarParams(extra = {}) {
 }
 
 /* =====================================================
+   CONNECTION TIME CHECK
+   Minimum requested layover: 180 minutes.
+
+   Only calculate when reliable timestamps exist.
+===================================================== */
+
+const MIN_CONNECTION_MINUTES = 180;
+
+function parseFlightTimestamp(leg, field) {
+    if (!leg || typeof leg !== "object") return NaN;
+
+    const value = leg[field];
+
+    if (value === undefined || value === null || value === "") {
+        return NaN;
+    }
+
+    /*
+       Unix timestamps are accepted when clearly identified
+       as numeric seconds or milliseconds.
+    */
+    if (typeof value === "number" && Number.isFinite(value)) {
+        if (value > 100000000000) return value;
+        if (value > 1000000000) return value * 1000;
+        return NaN;
+    }
+
+    const text = String(value).trim();
+
+    /*
+       Full ISO timestamps with explicit timezone:
+       2026-11-12T14:30:00Z
+       2026-11-12T14:30:00+01:00
+    */
+    const fullIsoWithZone =
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:?\d{2})$/i;
+
+    if (fullIsoWithZone.test(text)) {
+        const parsed = Date.parse(text);
+        return Number.isFinite(parsed) ? parsed : NaN;
+    }
+
+    /*
+       Local clock times such as "14:30" cannot safely
+       be converted into absolute timestamps without
+       the airport's timezone.
+    */
+    return NaN;
+}
+
+function getLayoverMinutes(previousLeg, nextLeg) {
+    /*
+       Prefer explicit absolute timestamps.
+       Do not guess timezone offsets.
+    */
+    const arrival = parseFlightTimestamp(previousLeg, "arr");
+    const departure = parseFlightTimestamp(nextLeg, "dep");
+
+    if (!Number.isFinite(arrival) ||
+        !Number.isFinite(departure)) {
+        return null;
+    }
+
+    return Math.round((departure - arrival) / 60000);
+}
+
+function connectionTimeHtml(connection) {
+    const legs = Array.isArray(connection.legs)
+        ? connection.legs
+        : [];
+
+    if (legs.length < 2) return "";
+
+    let html = "";
+
+    for (let i = 0; i < legs.length - 1; i++) {
+        const previous = legs[i];
+        const next = legs[i + 1];
+
+        const minutes = getLayoverMinutes(previous, next);
+
+        const airport = airportLabel(
+            previous.to || next.from || "Transfer airport"
+        );
+
+        if (minutes === null) {
+            html += `
+                <div class="connection-unknown">
+                    ℹ️ <strong>Connection time not verified</strong>
+                    <div>
+                        Transfer at ${escapeHtml(airport)}.
+                        Exact layover time cannot be calculated
+                        from the available timestamp information.
+                    </div>
+                </div>
+            `;
+            continue;
+        }
+
+        if (minutes < 0) {
+            html += `
+                <div class="connection-warning">
+                    ⚠️ <strong>Invalid connection timing</strong>
+                    <p>
+                        The next flight appears to depart before
+                        the previous flight arrives at
+                        ${escapeHtml(airport)}.
+                    </p>
+                    <p>Please verify both flight schedules.</p>
+                </div>
+            `;
+            continue;
+        }
+
+        if (minutes < MIN_CONNECTION_MINUTES) {
+            html += `
+                <div class="connection-warning">
+                    ⚠️ <strong>Warning: Short connection time!</strong>
+                    <p>
+                        Transfer at <strong>${escapeHtml(airport)}</strong>
+                    </p>
+                    <p>
+                        Only <strong>${escapeHtml(formatDuration(minutes))}</strong>
+                        between arrival and the next departure.
+                    </p>
+                    <p>
+                        Your preferred minimum is
+                        <strong>3 hours</strong>.
+                        You may miss your connecting flight.
+                    </p>
+                </div>
+            `;
+        } else {
+            html += `
+                <div class="connection-ok">
+                    ✓ <strong>Connection time:</strong>
+                    ${escapeHtml(formatDuration(minutes))}
+                    at ${escapeHtml(airport)}.
+                    Meets your 3-hour threshold.
+                </div>
+            `;
+        }
+    }
+
+    return html;
+}
+
+/* =====================================================
    TIMED CONNECTIONS
-   Includes fromCountry, toCountry, viaCountries.
 ===================================================== */
 
 function registerConnectionCountries(connection) {
@@ -1257,11 +1449,6 @@ function renderConnections(data) {
         ? data.connections
         : [];
 
-    /*
-       Register ALL country metadata before rendering.
-       This ensures that the countries also appear
-       in the connection headings.
-    */
     for (const connection of connections) {
         registerConnectionCountries(connection);
     }
@@ -1301,6 +1488,8 @@ function renderConnections(data) {
                     </span>
                 </p>
         `;
+
+        html += connectionTimeHtml(connection);
 
         for (const leg of connection.legs || []) {
             html += `
