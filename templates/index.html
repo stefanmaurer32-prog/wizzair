@@ -6,14 +6,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>FlyHopGo | Wizz Air All You Can Fly Route Explorer</title>
-<meta name="description" content="Explore Wizz Air All You Can Fly routes, schedules and connections for free. No login required.">
+<meta name="description" content="Explore Wizz Air All You Can Fly routes and connections for free. No login required.">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://flyhopgo.com/">
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://flyhopgo.com/">
 <meta property="og:title" content="FlyHopGo – Free Route Explorer">
-<meta property="og:description" content="Explore Wizz Air All You Can Fly routes and scheduled flights.">
+<meta property="og:description" content="Explore Wizz Air All You Can Fly routes and connections.">
 <meta property="og:image" content="https://flyhopgo.com/static/icon-512.png">
 
 <link rel="icon" href="/static/favicon.png">
@@ -43,7 +43,6 @@
 }
 
 * { box-sizing: border-box; }
-
 body { margin: 0; }
 
 main {
@@ -59,7 +58,6 @@ h1 {
 }
 
 h2 { font-size: 23px; }
-
 .sub, .muted, small { color: #cbb9d8; }
 .sub { font-size: 19px; }
 
@@ -158,7 +156,6 @@ button:disabled, select:disabled {
 }
 
 .pagination button { flex: 1; }
-
 .error { color: #ffb8b8; }
 
 .tabbar {
@@ -189,9 +186,7 @@ button:disabled, select:disabled {
   color: #ffb3e4;
 }
 
-[hidden] {
-  display: none !important;
-}
+[hidden] { display: none !important; }
 
 /* LEAFLET MAP */
 
@@ -378,7 +373,7 @@ footer {
 
 <section id="radarView" hidden>
   <div class="panel">
-    <h2>📅 Scheduled AYCF Flights</h2>
+    <h2>📅 Flight Times & Connections</h2>
 
     <p class="muted">
       AYCF seat availability must be checked on Wizz Air.
@@ -407,14 +402,6 @@ footer {
     <label for="flightDate">Departure Date (optional)</label>
     <input id="flightDate" type="date">
 
-    <p class="hint">
-      Leave the date empty to see all published dates.
-    </p>
-
-    <button id="findFlights" disabled>
-      🔎 Show Scheduled Flights
-    </button>
-
     <label for="radarStops">Timed Connections</label>
     <select id="radarStops">
       <option value="1">Up to 1 Stop</option>
@@ -440,8 +427,6 @@ footer {
 
   <section id="radarResults" aria-live="polite"></section>
 </section>
-
-<!-- FLIGHT ROUTE MAP -->
 
 <section class="panel map-panel" id="mapPanel" hidden>
   <h2>🗺️ Flight Route Map</h2>
@@ -940,7 +925,6 @@ function updateRadarDestinations() {
   );
 
   $("radarTo").disabled = !origin;
-  $("findFlights").disabled = true;
   $("findConnections").disabled = true;
   $("radarResults").replaceChildren();
 }
@@ -949,7 +933,6 @@ $("radarFrom").onchange = updateRadarDestinations;
 
 $("radarTo").onchange = () => {
   const valid = Boolean($("radarTo").value);
-  $("findFlights").disabled = !valid;
   $("findConnections").disabled = !valid;
   $("radarResults").replaceChildren();
 };
@@ -962,61 +945,7 @@ function radarParams(extra = {}) {
   });
 }
 
-function renderFlights(data) {
-  const flights = Array.isArray(data.flights)
-    ? data.flights : [];
-
-  const selected = $("flightDate").value;
-
-  const filtered = flights.filter(
-    f => !selected || String(f.date) === selected
-  );
-
-  if (!filtered.length) {
-    $("radarResults").innerHTML =
-      '<div class="panel">No published flights found. ' +
-      "This does not confirm AYCF seat availability.</div>";
-    return;
-  }
-
-  let html = `<h2>Published Flights (${filtered.length})</h2>`;
-
-  for (const flight of filtered) {
-    html += `
-      <article class="result">
-        <strong>${escapeHtml(flight.date || "Unknown date")}</strong>
-        <p>Departure:
-          <span class="time">${escapeHtml(
-            flight.time || "Unknown"
-          )}</span>
-        </p>
-        <p class="hint">
-          Schedule only. AYCF seat not confirmed.
-        </p>
-      </article>
-    `;
-  }
-
-  $("radarResults").innerHTML = html;
-}
-
-$("findFlights").onclick = async () => {
-  const button = $("findFlights");
-  button.disabled = true;
-
-  $("radarResults").textContent = "Loading flight schedules...";
-
-  try {
-    const data = await getJSON(
-      "/api/radar/flights?" + radarParams()
-    );
-    renderFlights(data);
-  } catch (error) {
-    $("radarResults").textContent = error.message;
-  } finally {
-    button.disabled = false;
-  }
-};
+/* TIMED CONNECTIONS */
 
 function renderConnections(data) {
   const connections = Array.isArray(data.connections)
