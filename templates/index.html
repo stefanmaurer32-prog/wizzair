@@ -5,269 +5,259 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>FlyHopGo – Wizz Air All You Can Fly Routenfinder</title>
-
-<meta name="description"
-content="Kostenloser Wizz Air All You Can Fly Routenfinder. Entdecke Flugrouten, Zwischenstopps und mögliche Anschlussverbindungen – ohne Anmeldung.">
-
+<title>FlyHopGo – Wizz Air All You Can Fly</title>
+<meta name="description" content="Kostenloser Wizz Air All You Can Fly Routenfinder mit Flugzeiten und Zwischenstopps.">
 <link rel="canonical" href="https://flyhopgo.com/">
 
-<link rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
-<script defer
-src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <style>
 :root {
-  --bg: #110720;
-  --panel: #241332;
-  --panel2: #321c42;
-  --border: #59406a;
-  --pink: #e42ca2;
-  --text: #faf5ff;
-  --muted: #d0bddc;
-  --green: #68d6a1;
+  --bg:#110720;
+  --panel:#241332;
+  --panel2:#321c42;
+  --border:#59406a;
+  --pink:#e42ca2;
+  --text:#faf5ff;
+  --muted:#d0bddc;
+  --green:#68d6a1;
 }
 
-* { box-sizing: border-box; }
+* { box-sizing:border-box; }
 
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: Arial, Helvetica, sans-serif;
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
 }
 
 main {
-  max-width: 1050px;
-  margin: auto;
-  padding: 20px;
+  max-width:1050px;
+  margin:auto;
+  padding:20px;
 }
 
 h1 {
-  font-size: clamp(29px, 5vw, 44px);
-  color: #f278d0;
+  font-size:clamp(29px,5vw,44px);
+  color:#f278d0;
 }
 
-h2 { font-size: 23px; }
-h3 { font-size: 18px; }
+h2 { font-size:23px; }
+h3 { font-size:18px; }
+p { line-height:1.55; }
+a { color:#f278d0; }
 
-p { line-height: 1.6; }
-
-a { color: #f278d0; }
-
-.muted, .hint { color: var(--muted); }
-.hint { font-size: 13px; }
+.muted,.hint { color:var(--muted); }
+.hint { font-size:13px; }
 
 .free-badge {
-  display: inline-block;
-  padding: 9px 17px;
-  background: var(--pink);
-  border-radius: 30px;
-  font-weight: bold;
+  display:inline-block;
+  padding:9px 17px;
+  background:var(--pink);
+  border-radius:30px;
+  font-weight:bold;
 }
 
-.panel, .result {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 22px;
-  margin: 18px 0;
+.panel,.result {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:22px;
+  margin:18px 0;
 }
 
-.result { background: var(--panel2); }
+.result { background:var(--panel2); }
 
 label {
-  display: block;
-  margin: 16px 0 8px;
-  font-weight: bold;
+  display:block;
+  margin:16px 0 8px;
+  font-weight:bold;
 }
 
-select, input {
-  width: 100%;
-  padding: 13px;
-  border-radius: 10px;
-  border: 1px solid #805e90;
-  background: #180d24;
-  color: white;
-  font-size: 16px;
+select,input {
+  width:100%;
+  padding:13px;
+  border-radius:10px;
+  border:1px solid #805e90;
+  background:#180d24;
+  color:white;
+  font-size:16px;
 }
 
-button, .booking {
-  display: block;
-  width: 100%;
-  padding: 13px;
-  margin-top: 14px;
-  border: 0;
-  border-radius: 10px;
-  background: var(--pink);
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
+button,.booking {
+  display:block;
+  width:100%;
+  padding:13px;
+  margin-top:14px;
+  border:0;
+  border-radius:10px;
+  background:var(--pink);
+  color:white;
+  font-size:16px;
+  font-weight:bold;
+  text-align:center;
+  text-decoration:none;
+  cursor:pointer;
 }
 
-button:hover, .booking:hover {
-  filter: brightness(1.12);
+button:hover,.booking:hover {
+  filter:brightness(1.12);
 }
 
 button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  opacity:.5;
+  cursor:not-allowed;
 }
 
 .tabs {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
+  display:flex;
+  gap:10px;
+  margin-top:20px;
 }
 
 .tabs button {
-  flex: 1;
-  background: #3c254c;
+  flex:1;
+  background:#3c254c;
 }
 
-.tabs button.active { background: var(--pink); }
+.tabs button.active { background:var(--pink); }
 
 .grid2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
 }
 
 .status {
-  background: #382348;
-  border-radius: 10px;
-  padding: 13px;
-  margin: 12px 0;
+  background:#382348;
+  border-radius:10px;
+  padding:13px;
+  margin:12px 0;
 }
 
 .route-line {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 15px 0;
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:15px 0;
 }
 
 .city {
-  display: inline-block;
-  padding: 8px 12px;
-  background: #543565;
-  border-radius: 8px;
+  display:inline-block;
+  padding:8px 12px;
+  background:#543565;
+  border-radius:8px;
 }
 
 .arrow {
-  color: #f278d0;
-  font-weight: bold;
+  color:#f278d0;
+  font-weight:bold;
 }
 
 .flight-leg {
-  padding: 14px;
-  margin: 10px 0;
-  background: #1c102a;
-  border-radius: 10px;
+  padding:16px;
+  margin:10px 0;
+  background:#1c102a;
+  border-radius:10px;
+}
+
+.flight-times {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+.flight-times > div { min-width:0; }
+
+.time {
+  font-size:25px;
+  font-weight:bold;
+  margin:6px 0;
 }
 
 .layover {
-  background: #3a2850;
-  border-left: 4px solid var(--green);
-  border-radius: 8px;
-  padding: 13px;
-  margin: 12px 0;
+  background:#3a2850;
+  border-left:4px solid var(--green);
+  border-radius:8px;
+  padding:13px;
+  margin:12px 0;
 }
 
-.layover strong { color: var(--green); }
-
-.flight-times {
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-.flight-times > div {
-  flex: 1;
-  min-width: 110px;
-}
-
-.time {
-  font-size: 22px;
-  font-weight: bold;
-}
+.layover strong { color:var(--green); }
 
 .total {
-  margin: 15px 0;
-  padding: 12px;
-  background: #442950;
-  border-radius: 8px;
+  margin:15px 0;
+  padding:12px;
+  background:#442950;
+  border-radius:8px;
 }
 
 .warning {
-  background: #49351d;
-  border-left: 4px solid #ffbb62;
-  border-radius: 8px;
-  padding: 13px;
-  margin: 14px 0;
-  font-size: 14px;
+  background:#49351d;
+  border-left:4px solid #ffbb62;
+  border-radius:8px;
+  padding:13px;
+  margin:14px 0;
+  font-size:14px;
 }
 
 .small-button {
-  display: inline-block;
-  width: auto;
-  padding: 10px 14px;
-  margin-right: 8px;
-  font-size: 14px;
+  display:inline-block;
+  width:auto;
+  padding:10px 14px;
+  margin-right:8px;
+  font-size:14px;
 }
 
-.save-button { background: #68457b; }
+.save-button { background:#68457b; }
 
 .pagination {
-  display: flex;
-  gap: 12px;
+  display:flex;
+  gap:12px;
 }
 
-.pagination button { flex: 1; }
+.pagination button { flex:1; }
 
 .saved-item {
-  border-bottom: 1px solid var(--border);
-  padding: 12px 0;
+  border-bottom:1px solid var(--border);
+  padding:12px 0;
 }
 
 .saved-item button {
-  display: inline-block;
-  width: auto;
-  font-size: 14px;
-  margin-right: 8px;
+  display:inline-block;
+  width:auto;
+  font-size:14px;
+  margin-right:8px;
 }
 
 #flightMap {
-  height: 430px;
-  min-height: 300px;
-  border-radius: 12px;
+  height:430px;
+  min-height:300px;
+  border-radius:12px;
 }
 
 footer {
-  border-top: 1px solid var(--border);
-  margin-top: 40px;
-  padding: 20px 0;
-  font-size: 14px;
-  color: var(--muted);
+  border-top:1px solid var(--border);
+  margin-top:40px;
+  padding:20px 0;
+  font-size:14px;
+  color:var(--muted);
 }
 
-[hidden] { display: none !important; }
+[hidden] { display:none!important; }
 
-@media(max-width: 600px) {
-  main { padding: 12px; }
-
-  .grid2 { grid-template-columns: 1fr; }
-
-  .panel, .result { padding: 15px; }
-
-  .time { font-size: 19px; }
+@media(max-width:600px) {
+  main { padding:12px; }
+  .grid2 { grid-template-columns:1fr; }
+  .panel,.result { padding:15px; }
+  .time { font-size:22px; }
+  .tabs button {
+    font-size:14px;
+    padding:11px 7px;
+  }
 }
 </style>
 </head>
@@ -282,17 +272,16 @@ footer {
 <h1>FlyHopGo ✈️</h1>
 
 <p class="muted">
-  Dein kostenloser Wizz Air All You Can Fly Routenfinder.
-  Entdecke Flugstrecken, Zwischenstopps und mögliche
-  Anschlussverbindungen.
+  Dein kostenloser Wizz Air All You Can Fly
+  Routenfinder. Entdecke Strecken, Zwischenstopps
+  und mögliche Anschlussverbindungen.
 </p>
 
 <div class="tabs">
-  <button id="tabRoutes" class="active">
+  <button type="button" id="tabRoutes" class="active">
     Routenfinder
   </button>
-
-  <button id="tabRadar">
+  <button type="button" id="tabRadar">
     Flugzeiten & Verbindungen
   </button>
 </div>
@@ -302,7 +291,6 @@ footer {
 <section id="routesView">
 
   <div class="panel">
-
     <h2>✈️ Flugroute suchen</h2>
 
     <p id="routeStatus">
@@ -314,13 +302,11 @@ footer {
     </div>
 
     <label for="routeFrom">Abflughafen</label>
-
     <select id="routeFrom" disabled>
       <option>Wird geladen ...</option>
     </select>
 
     <label for="routeTo">Zielflughafen</label>
-
     <select id="routeTo" disabled>
       <option>Bitte zuerst Abflug wählen</option>
     </select>
@@ -340,40 +326,33 @@ footer {
 
     <p id="destinationHint" class="hint"></p>
 
-    <button id="searchRoutes" disabled>
+    <button type="button" id="searchRoutes" disabled>
       🔎 Flugrouten suchen
     </button>
-
   </div>
 
   <div id="routeResults"></div>
 
   <div class="panel" id="favoritesPanel">
-
     <h2>♡ Meine gespeicherten Routen</h2>
-
     <p class="hint">
-      Du kannst deine Lieblingsrouten ohne Anmeldung
-      speichern. Sie bleiben in diesem Browser gespeichert.
+      Ohne Anmeldung – nur in diesem Browser gespeichert.
     </p>
-
     <div id="favoritesList"></div>
-
   </div>
 
 </section>
 
-<!-- AYCF RADAR – NUR ANSCHLUSSVERBINDUNGEN -->
+<!-- FLUGVERBINDUNGEN -->
 
 <section id="radarView" hidden>
 
   <div class="panel">
-
     <h2>📅 Flugzeiten & Anschlussverbindungen</h2>
 
     <p class="muted">
-      Suche nach möglichen Flugverbindungen mit
-      Zwischenstopps und den dazugehörigen Umsteigezeiten.
+      Suche nach möglichen Verbindungen mit
+      Zwischenstopps, Abflug- und Ankunftszeiten.
     </p>
 
     <div id="radarStatus" class="status">
@@ -381,10 +360,8 @@ footer {
     </div>
 
     <div class="grid2">
-
       <div>
         <label for="radarFrom">Abflug</label>
-
         <select id="radarFrom" disabled>
           <option>Wird geladen ...</option>
         </select>
@@ -392,12 +369,10 @@ footer {
 
       <div>
         <label for="radarTo">Ziel</label>
-
         <select id="radarTo" disabled>
           <option>Bitte Abflug wählen</option>
         </select>
       </div>
-
     </div>
 
     <label for="flightDate">
@@ -407,7 +382,7 @@ footer {
     <input type="date" id="flightDate">
 
     <p class="hint">
-      Ohne Datum werden alle vom Anbieter gelieferten
+      Ohne Datum werden alle gelieferten
       Verbindungen angezeigt.
     </p>
 
@@ -420,15 +395,14 @@ footer {
       <option value="2">Bis zu 2 Zwischenstopps</option>
     </select>
 
-    <button id="findConnections" disabled>
+    <button type="button" id="findConnections" disabled>
       🔎 Flugverbindungen suchen
     </button>
 
     <p class="hint">
-      Für theoretische Routen mit bis zu 5 Zwischenstopps
-      verwende den Routenfinder.
+      Für theoretische Strecken mit bis zu
+      5 Zwischenstopps verwende den Routenfinder.
     </p>
-
   </div>
 
   <div id="radarResults"></div>
@@ -438,32 +412,26 @@ footer {
 <!-- KARTE -->
 
 <section class="panel" id="mapPanel" hidden>
-
   <h2>🗺️ Flugroute auf der Karte</h2>
-
   <p id="mapStatus" class="hint"></p>
-
   <div id="flightMap"></div>
-
   <p class="hint">
-    Die Linien zeigen ungefähre Verbindungen zwischen
-    Städten und keine tatsächlichen Flugbahnen.
+    Die Linien zeigen ungefähre Verbindungen
+    zwischen Städten, keine tatsächlichen Flugbahnen.
   </p>
-
 </section>
 
 <footer>
-
   <p>
-    FlyHopGo ist ein unabhängiges Routenplanungstool
-    und steht in keiner offiziellen Verbindung zu Wizz Air.
+    FlyHopGo ist unabhängig und steht in keiner
+    offiziellen Verbindung zu Wizz Air.
   </p>
 
   <p>
     <strong>Wichtig:</strong>
-    Die offizielle Streckenliste enthält mögliche
-    Flugstrecken, jedoch keine garantierten Flugzeiten,
-    Anschlussmöglichkeiten oder freien Sitzplätze.
+    Flugzeiten, Anschlüsse und freie AYCF-Sitzplätze
+    sind nicht garantiert. Jede Teilstrecke muss
+    bei Wizz Air geprüft und separat gebucht werden.
   </p>
 
   <p>
@@ -473,20 +441,13 @@ footer {
   </p>
 
   <p>
-    Jede Teilstrecke muss separat im offiziellen
-    Wizz-Air-Portal geprüft und gebucht werden.
-  </p>
-
-  <p>
     <a href="https://multipass.wizzair.com/"
-       target="_blank"
-       rel="noopener noreferrer">
-      Zur offiziellen Wizz-Air-Buchung
+       target="_blank" rel="noopener noreferrer">
+      Offizielles Wizz-Air-Portal
     </a>
   </p>
 
   <p>© <span id="year"></span> FlyHopGo.com</p>
-
 </footer>
 
 </main>
@@ -494,73 +455,73 @@ footer {
 <script>
 "use strict";
 
-/* GRUNDFUNKTIONEN */
+/* HILFSFUNKTIONEN */
 
 const $ = id => document.getElementById(id);
 
-const escapeHtml = value =>
-  String(value ?? "").replace(
-    /[&<>"']/g,
-    character => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    }[character])
-  );
+const esc = value => String(value ?? "").replace(
+  /[&<>"']/g,
+  char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  }[char])
+);
 
-const normalize = value =>
-  String(value ?? "")
-    .trim()
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
+const norm = value => String(value ?? "")
+  .trim()
+  .toLowerCase()
+  .normalize("NFD")
+  .replace(/[\u0300-\u036f]/g, "");
 
-function formatMinutes(value) {
-  if (value === null || value === undefined || value === "") {
+function minutesText(value) {
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) return "Nicht verfügbar";
+
+  const number = Number(value);
+
+  if (!Number.isFinite(number) || number < 0) {
     return "Nicht verfügbar";
   }
 
-  const minutes = Number(value);
-
-  if (!Number.isFinite(minutes) || minutes < 0) {
-    return "Nicht verfügbar";
-  }
-
-  const total = Math.round(minutes);
+  const total = Math.round(number);
   const hours = Math.floor(total / 60);
-  const rest = total % 60;
+  const mins = total % 60;
 
-  if (!hours) return rest + " Min.";
-  if (!rest) return hours + " Std.";
+  if (!hours) return mins + " Min.";
 
-  return hours + " Std. " + rest + " Min.";
+  return hours + " Std." +
+    (mins ? " " + mins + " Min." : "");
 }
 
-function formatDate(value) {
-  if (!value) return "Datum unbekannt";
-
-  const match = String(value).match(
+function dateText(value) {
+  const match = String(value || "").match(
     /^(\d{4})-(\d{2})-(\d{2})$/
   );
 
-  if (!match) return String(value);
+  if (!match) {
+    return value || "Datum unbekannt";
+  }
 
-  return match[3] + "." + match[2] + "." + match[1];
+  return `${match[3]}.${match[2]}.${match[1]}`;
 }
 
-function displayCity(city, country) {
-  const name = String(city || "Unbekannt");
-  const location = String(country || "").trim();
-
-  return location ? name + " – " + location : name;
+function cityText(city, country) {
+  return String(city || "Unbekannt") +
+    (country ? " – " + country : "");
 }
 
-function fillSelect(select, keys, placeholder, names) {
-  const oldValue = select.value;
+function fillSelect(element, keys, placeholder, names) {
+  const previous = element.value;
 
-  select.replaceChildren(new Option(placeholder, ""));
+  element.replaceChildren(
+    new Option(placeholder, "")
+  );
 
   const sorted = [...keys].sort((a, b) =>
     (names.get(a) || a).localeCompare(
@@ -568,24 +529,33 @@ function fillSelect(select, keys, placeholder, names) {
     )
   );
 
-  for (const item of sorted) {
-    select.add(
-      new Option(names.get(item) || item, item)
+  for (const key of sorted) {
+    element.add(
+      new Option(names.get(key) || key, key)
     );
   }
 
-  if (keys.includes(oldValue)) {
-    select.value = oldValue;
+  if (keys.includes(previous)) {
+    element.value = previous;
   }
 }
 
 async function getJSON(url) {
   const response = await fetch(url);
-  const data = await response.json();
+
+  let data;
+
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error(
+      "Serverantwort ist kein gültiges JSON."
+    );
+  }
 
   if (!response.ok) {
     throw new Error(
-      data.error || "Daten konnten nicht geladen werden."
+      data.error || `HTTP ${response.status}`
     );
   }
 
@@ -602,8 +572,13 @@ function showTab(name) {
   $("routesView").hidden = radar;
   $("radarView").hidden = !radar;
 
-  $("tabRoutes").classList.toggle("active", !radar);
-  $("tabRadar").classList.toggle("active", radar);
+  $("tabRoutes").classList.toggle(
+    "active", !radar
+  );
+
+  $("tabRadar").classList.toggle(
+    "active", radar
+  );
 }
 
 $("tabRoutes").onclick = () => showTab("routes");
@@ -611,12 +586,12 @@ $("tabRadar").onclick = () => showTab("radar");
 
 /* ROUTENFINDER */
 
-const routeGraph = new Map();
+const graph = new Map();
 const routeNames = new Map();
 
 let foundRoutes = [];
-let currentPage = 0;
-let routesTruncated = false;
+let page = 0;
+let truncated = false;
 
 const PAGE_SIZE = 40;
 const ROUTE_LIMIT = 300;
@@ -629,7 +604,7 @@ async function loadRoutes() {
       throw new Error("Ungültige Streckenliste.");
     }
 
-    routeGraph.clear();
+    graph.clear();
     routeNames.clear();
 
     for (const pair of data.routes) {
@@ -637,24 +612,24 @@ async function loadRoutes() {
         continue;
       }
 
-      const from = normalize(pair[0]);
-      const to = normalize(pair[1]);
+      const from = norm(pair[0]);
+      const to = norm(pair[1]);
 
       if (!from || !to) continue;
 
       routeNames.set(from, String(pair[0]));
       routeNames.set(to, String(pair[1]));
 
-      if (!routeGraph.has(from)) {
-        routeGraph.set(from, new Set());
+      if (!graph.has(from)) {
+        graph.set(from, new Set());
       }
 
-      routeGraph.get(from).add(to);
+      graph.get(from).add(to);
     }
 
     fillSelect(
       $("routeFrom"),
-      [...routeGraph.keys()],
+      [...graph.keys()],
       "Abflughafen wählen ...",
       routeNames
     );
@@ -662,8 +637,7 @@ async function loadRoutes() {
     $("routeFrom").disabled = false;
 
     $("routeStatus").textContent =
-      "✓ " + data.routes.length +
-      " offizielle Flugstrecken geladen";
+      `✓ ${data.routes.length} Strecken geladen`;
 
     $("routeUpdated").textContent =
       "Letzte Aktualisierung: " +
@@ -681,26 +655,27 @@ function reachable(start, maxEdges) {
   const visited = new Set([start]);
   const destinations = new Set();
 
-  let current = [start];
+  let frontier = [start];
 
   for (let depth = 0; depth < maxEdges; depth++) {
     const next = [];
 
-    for (const city of current) {
-      for (const destination of routeGraph.get(city) || []) {
-        if (destination !== start) {
-          destinations.add(destination);
+    for (const city of frontier) {
+      for (const to of graph.get(city) || []) {
+        if (to !== start) {
+          destinations.add(to);
         }
 
-        if (!visited.has(destination)) {
-          visited.add(destination);
-          next.push(destination);
+        if (!visited.has(to)) {
+          visited.add(to);
+          next.push(to);
         }
       }
     }
 
-    current = next;
-    if (!current.length) break;
+    frontier = next;
+
+    if (!frontier.length) break;
   }
 
   return [...destinations];
@@ -708,7 +683,9 @@ function reachable(start, maxEdges) {
 
 function updateRouteDestinations() {
   const from = $("routeFrom").value;
-  const maxEdges = Number($("maxStops").value) + 1;
+  const maxEdges = Number(
+    $("maxStops").value
+  ) + 1;
 
   const destinations = from
     ? reachable(from, maxEdges)
@@ -722,7 +699,9 @@ function updateRouteDestinations() {
   );
 
   $("routeTo").disabled = !destinations.length;
-  $("searchRoutes").disabled = !$("routeTo").value;
+
+  $("searchRoutes").disabled =
+    !$("routeTo").value;
 
   $("destinationHint").textContent =
     destinations.length + " mögliche Zielorte.";
@@ -731,11 +710,16 @@ function updateRouteDestinations() {
   hideMap();
 }
 
-$("routeFrom").onchange = updateRouteDestinations;
-$("maxStops").onchange = updateRouteDestinations;
+$("routeFrom").onchange =
+  updateRouteDestinations;
+
+$("maxStops").onchange =
+  updateRouteDestinations;
 
 $("routeTo").onchange = () => {
-  $("searchRoutes").disabled = !$("routeTo").value;
+  $("searchRoutes").disabled =
+    !$("routeTo").value;
+
   $("routeResults").replaceChildren();
   hideMap();
 };
@@ -745,17 +729,19 @@ function searchRoutes() {
 
   const start = $("routeFrom").value;
   const end = $("routeTo").value;
-  const maxEdges = Number($("maxStops").value) + 1;
+  const maxEdges = Number(
+    $("maxStops").value
+  ) + 1;
 
   foundRoutes = [];
-  currentPage = 0;
-  routesTruncated = false;
+  page = 0;
+  truncated = false;
 
   if (!start || !end) return;
 
   function search(path, targetDepth) {
     if (foundRoutes.length >= ROUTE_LIMIT) {
-      routesTruncated = true;
+      truncated = true;
       return;
     }
 
@@ -768,22 +754,25 @@ function searchRoutes() {
       return;
     }
 
-    if (path.length - 1 >= targetDepth) return;
+    if (path.length - 1 >= targetDepth) {
+      return;
+    }
 
-    for (const next of routeGraph.get(current) || []) {
+    for (const next of graph.get(current) || []) {
       if (path.includes(next)) continue;
 
       path.push(next);
       search(path, targetDepth);
       path.pop();
 
-      if (routesTruncated) return;
+      if (truncated) return;
     }
   }
 
   for (let depth = 1; depth <= maxEdges; depth++) {
     search([start], depth);
-    if (routesTruncated) break;
+
+    if (truncated) break;
   }
 
   renderRoutePage(0);
@@ -791,8 +780,8 @@ function searchRoutes() {
 
 $("searchRoutes").onclick = searchRoutes;
 
-function renderRoutePage(page) {
-  currentPage = page;
+function renderRoutePage(currentPage) {
+  page = currentPage;
 
   if (!foundRoutes.length) {
     $("routeResults").innerHTML =
@@ -808,9 +797,10 @@ function renderRoutePage(page) {
 
   let html = `
     <h2>
-      ${foundRoutes.length}${routesTruncated ? "+" : ""}
+      ${foundRoutes.length}${truncated ? "+" : ""}
       mögliche Flugrouten
     </h2>
+
     <p class="hint">
       Theoretische Streckenverbindungen.
       Flugzeiten und Sitzplätze sind nicht bestätigt.
@@ -819,10 +809,17 @@ function renderRoutePage(page) {
 
   for (
     let i = start;
-    i < Math.min(start + PAGE_SIZE, foundRoutes.length);
+    i < Math.min(
+      start + PAGE_SIZE,
+      foundRoutes.length
+    );
     i++
   ) {
     const route = foundRoutes[i];
+
+    const cities = route.map(city =>
+      routeNames.get(city) || city
+    );
 
     html += `
       <article class="result">
@@ -832,19 +829,23 @@ function renderRoutePage(page) {
         </h3>
 
         <div class="route-line">
-          ${route.map(city =>
+          ${cities.map(city =>
             '<span class="city">' +
-            escapeHtml(routeNames.get(city) || city) +
+            esc(city) +
             '</span>'
-          ).join('<span class="arrow">→</span>')}
+          ).join(
+            '<span class="arrow">→</span>'
+          )}
         </div>
 
-        <button class="small-button"
+        <button type="button"
+          class="small-button"
           data-route-map="${i}">
           🗺️ Karte
         </button>
 
-        <button class="small-button save-button"
+        <button type="button"
+          class="small-button save-button"
           data-route-save="${i}">
           ♡ Speichern
         </button>
@@ -854,12 +855,12 @@ function renderRoutePage(page) {
 
   html += `
     <div class="pagination">
-      <button id="previousPage"
+      <button type="button" id="previousPage"
         ${page === 0 ? "disabled" : ""}>
         Zurück
       </button>
 
-      <button id="nextPage"
+      <button type="button" id="nextPage"
         ${page >= pages - 1 ? "disabled" : ""}>
         Weiter
       </button>
@@ -881,7 +882,9 @@ function renderRoutePage(page) {
         ];
 
         showMap(
-          route.map(city => routeNames.get(city) || city)
+          route.map(city =>
+            routeNames.get(city) || city
+          )
         );
       };
     });
@@ -895,40 +898,47 @@ function renderRoutePage(page) {
         ];
 
         saveFavorite(
-          route.map(city => routeNames.get(city) || city)
+          route.map(city =>
+            routeNames.get(city) || city
+          )
         );
       };
     });
 
   $("previousPage").onclick = () =>
-    renderRoutePage(currentPage - 1);
+    renderRoutePage(page - 1);
 
   $("nextPage").onclick = () =>
-    renderRoutePage(currentPage + 1);
+    renderRoutePage(page + 1);
 }
 
-/* AYCF RADAR – NUR VERBINDUNGEN */
+/* AYCF RADAR */
 
 const radarNames = new Map();
 
 async function loadRadar() {
   try {
-    const [status, graph] = await Promise.all([
-      getJSON("/api/radar/status"),
-      getJSON("/api/radar/graph")
-    ]);
+    const [status, radarGraph] =
+      await Promise.all([
+        getJSON("/api/radar/status"),
+        getJSON("/api/radar/graph")
+      ]);
 
-    if (!Array.isArray(graph.nodes)) {
-      throw new Error("Keine gültige Flughafenliste.");
+    if (!Array.isArray(radarGraph.nodes)) {
+      throw new Error(
+        "Keine gültige Flughafenliste."
+      );
     }
 
     radarNames.clear();
 
-    for (const node of graph.nodes) {
-      if (typeof node.city !== "string") continue;
+    for (const node of radarGraph.nodes) {
+      if (typeof node.city !== "string") {
+        continue;
+      }
 
       radarNames.set(
-        normalize(node.city),
+        norm(node.city),
         node.city
       );
     }
@@ -952,19 +962,19 @@ async function loadRadar() {
 
   } catch (error) {
     $("radarStatus").textContent =
-      "AYCF Radar nicht verfügbar: " + error.message;
+      "AYCF Radar nicht verfügbar: " +
+      error.message;
   }
 }
 
 function updateRadarDestinations() {
   const from = $("radarFrom").value;
 
-  const destinations = [...radarNames.keys()]
-    .filter(city => city !== from);
-
   fillSelect(
     $("radarTo"),
-    destinations,
+    [...radarNames.keys()].filter(
+      city => city !== from
+    ),
     "Ziel wählen ...",
     radarNames
   );
@@ -975,66 +985,164 @@ function updateRadarDestinations() {
 }
 
 function updateRadarButtons() {
-  const valid =
-    Boolean($("radarFrom").value) &&
-    Boolean($("radarTo").value);
-
-  $("findConnections").disabled = !valid;
+  $("findConnections").disabled = !(
+    $("radarFrom").value &&
+    $("radarTo").value
+  );
 
   $("radarResults").replaceChildren();
 }
 
-$("radarFrom").onchange = updateRadarDestinations;
-$("radarTo").onchange = updateRadarButtons;
+$("radarFrom").onchange =
+  updateRadarDestinations;
 
-function radarParams(extra = {}) {
+$("radarTo").onchange =
+  updateRadarButtons;
+
+function radarParams() {
   return new URLSearchParams({
-    from: radarNames.get($("radarFrom").value) || "",
-    to: radarNames.get($("radarTo").value) || "",
-    ...extra
+    from: radarNames.get(
+      $("radarFrom").value
+    ) || "",
+
+    to: radarNames.get(
+      $("radarTo").value
+    ) || "",
+
+    stops: $("radarStops").value
   });
 }
 
-/* UMSTEIGEZEIT AUS LAYOVERS */
+/* UMSTEIGEZEITEN */
 
-function getLayoverMinutes(connection, index) {
+function layoverMinutes(connection, index) {
+  const value = Array.isArray(
+    connection.layovers
+  )
+    ? connection.layovers[index]
+    : null;
+
   if (
-    Array.isArray(connection.layovers) &&
-    connection.layovers[index] !== undefined &&
-    connection.layovers[index] !== null &&
-    connection.layovers[index] !== ""
-  ) {
-    const minutes = Number(connection.layovers[index]);
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) return null;
 
-    if (Number.isFinite(minutes) && minutes >= 0) {
-      return minutes;
-    }
-  }
+  const number = Number(value);
 
-  return null;
+  return Number.isFinite(number) &&
+    number >= 0
+      ? number
+      : null;
 }
 
-/* ANSCHLUSSVERBINDUNGEN ANZEIGEN */
+/* ANKUNFTSDATUM */
+/*
+  Bevorzugt ein ausdrücklich geliefertes Datum.
+  Falls keines vorhanden ist, wird geprüft,
+  ob die lokale Uhrzeit und Flugdauer eine
+  eindeutige Ableitung erlauben.
+
+  Bei Zeitzonenwechseln kann das Datum
+  nicht immer zuverlässig berechnet werden.
+*/
+
+function arrivalDate(leg) {
+  if (leg.arrDate) {
+    return {
+      date:leg.arrDate,
+      estimated:false
+    };
+  }
+
+  if (leg.arrivalDate) {
+    return {
+      date:leg.arrivalDate,
+      estimated:false
+    };
+  }
+
+  const departure = String(leg.date || "");
+  const dep = String(leg.dep || "");
+  const arr = String(leg.arr || "");
+
+  if (
+    !/^\d{4}-\d{2}-\d{2}$/.test(departure) ||
+    !/^\d{1,2}:\d{2}$/.test(dep) ||
+    !/^\d{1,2}:\d{2}$/.test(arr)
+  ) {
+    return {date:null,estimated:false};
+  }
+
+  const [dh, dm] = dep.split(":").map(Number);
+  const [ah, am] = arr.split(":").map(Number);
+
+  const duration = Number(leg.durMin);
+
+  if (
+    !Number.isFinite(duration) ||
+    duration < 0
+  ) {
+    return {date:null,estimated:false};
+  }
+
+  const clockDelta =
+    (ah * 60 + am) - (dh * 60 + dm);
+
+  const possibleOffsets = [-1,0,1,2].filter(
+    days =>
+      Math.abs(
+        clockDelta +
+        days * 1440 -
+        duration
+      ) <= 90
+  );
+
+  if (possibleOffsets.length !== 1) {
+    return {date:null,estimated:false};
+  }
+
+  const date = new Date(
+    departure + "T12:00:00Z"
+  );
+
+  if (Number.isNaN(date.getTime())) {
+    return {date:null,estimated:false};
+  }
+
+  date.setUTCDate(
+    date.getUTCDate() + possibleOffsets[0]
+  );
+
+  return {
+    date:date.toISOString().slice(0,10),
+    estimated:true
+  };
+}
+
+/* FLUGVERBINDUNGEN ANZEIGEN */
 
 function renderConnections(data) {
-  const connections = Array.isArray(data.connections)
-    ? data.connections
-    : [];
+  const connections = Array.isArray(
+    data.connections
+  ) ? data.connections : [];
 
   const selectedDate = $("flightDate").value;
 
-  const filtered = connections.filter(connection => {
-    if (!selectedDate) return true;
+  const filtered = connections.filter(
+    connection => {
+      if (!selectedDate) return true;
 
-    const legs = Array.isArray(connection.legs)
-      ? connection.legs
-      : [];
+      const legs = Array.isArray(
+        connection.legs
+      ) ? connection.legs : [];
 
-    return (
-      legs.length > 0 &&
-      String(legs[0].date) === selectedDate
-    );
-  });
+      return (
+        legs.length > 0 &&
+        String(legs[0].date) === selectedDate
+      );
+    }
+  );
 
   if (!filtered.length) {
     $("radarResults").innerHTML = `
@@ -1049,12 +1157,13 @@ function renderConnections(data) {
 
   let html = `
     <h2>
-      ${filtered.length} mögliche Anschlussverbindungen
+      ${filtered.length}
+      mögliche Anschlussverbindungen
     </h2>
 
     <div class="status">
       Datenzeitraum:
-      ${escapeHtml(data.period || "Nicht angegeben")}
+      ${esc(data.period || "Nicht angegeben")}
     </div>
   `;
 
@@ -1063,46 +1172,42 @@ function renderConnections(data) {
       <div class="warning">
         <strong>Geschätzte Flugzeiten</strong>
         <p>
-          Der Datenanbieter kennzeichnet diese
-          Verbindungen als geschätzt. Die angezeigten
-          Umsteigezeiten stammen aus den gelieferten
-          Verbindungsdaten.
+          Der Datenanbieter kennzeichnet
+          diese Verbindungen als geschätzt.
+          Anschlüsse und AYCF-Sitzplätze
+          sind nicht garantiert.
         </p>
       </div>
     `;
   }
 
-  filtered.forEach((connection, connectionIndex) => {
-    const legs = Array.isArray(connection.legs)
-      ? connection.legs
-      : [];
+  filtered.forEach((connection, index) => {
+    const legs = Array.isArray(
+      connection.legs
+    ) ? connection.legs : [];
 
     if (!legs.length) return;
 
-    const via = Array.isArray(connection.via)
-      ? connection.via
-      : [];
+    const via = Array.isArray(
+      connection.via
+    ) ? connection.via : [];
 
-    const viaCountries = Array.isArray(
+    const countries = Array.isArray(
       connection.viaCountries
     ) ? connection.viaCountries : [];
-
-    const totalTime = formatMinutes(
-      connection.totalMin
-    );
 
     html += `
       <article class="result">
 
         <h3>
-          ✈️ Verbindung ${connectionIndex + 1}
+          ✈️ Verbindung ${index + 1}
         </h3>
 
         <p>
           <strong>
-            ${escapeHtml(legs[0].from || "Abflug")}
+            ${esc(legs[0].from || "Abflug")}
             →
-            ${escapeHtml(
+            ${esc(
               legs[legs.length - 1].to || "Ziel"
             )}
           </strong>
@@ -1114,60 +1219,95 @@ function renderConnections(data) {
         </p>
     `;
 
+    /* JEDEN EINZELNEN FLUG ANZEIGEN */
+
     legs.forEach((leg, legIndex) => {
+      const arrival = arrivalDate(leg);
+
+      const departureDate = dateText(
+        leg.date
+      );
+
+      const arrivalDateLabel = arrival.date
+        ? dateText(arrival.date)
+        : "Ankunftsdatum nicht bestätigt";
+
       html += `
         <div class="flight-leg">
 
-          <strong>
-            Flug ${legIndex + 1}
-          </strong>
-
-          <p>
-            ${escapeHtml(
-              displayCity(leg.from, leg.fromCountry)
-            )}
-            →
-            ${escapeHtml(
-              displayCity(leg.to, leg.toCountry)
-            )}
-          </p>
+          <h3>
+            ✈️ Flug ${legIndex + 1}
+          </h3>
 
           <div class="flight-times">
 
             <div>
-              <span class="hint">Abflug</span>
-              <div class="time">
-                ${escapeHtml(leg.dep || "–")}
+              <div class="hint">
+                Abflug
               </div>
-              <span class="hint">
-                ${escapeHtml(formatDate(leg.date))}
-              </span>
+
+              <p>
+                <strong>
+                  ${esc(
+                    cityText(
+                      leg.from,
+                      leg.fromCountry
+                    )
+                  )}
+                </strong>
+              </p>
+
+              <div class="time">
+                ${esc(leg.dep || "–")}
+              </div>
+
+              <div class="hint">
+                ${esc(departureDate)}
+              </div>
             </div>
 
             <div>
-              <span class="hint">Ankunft</span>
-              <div class="time">
-                ${escapeHtml(leg.arr || "–")}
+              <div class="hint">
+                Ankunft
               </div>
-              <span class="hint">
-                ${escapeHtml(
-                  formatDate(leg.arrDate || leg.date)
-                )}
-              </span>
+
+              <p>
+                <strong>
+                  ${esc(
+                    cityText(
+                      leg.to,
+                      leg.toCountry
+                    )
+                  )}
+                </strong>
+              </p>
+
+              <div class="time">
+                ${esc(leg.arr || "–")}
+              </div>
+
+              <div class="hint">
+                ${esc(arrivalDateLabel)}
+                ${arrival.estimated
+                  ? " (abgeleitet)"
+                  : ""}
+              </div>
             </div>
 
           </div>
 
           <p class="hint">
             Flugdauer:
-            ${escapeHtml(formatMinutes(leg.durMin))}
+            ${esc(minutesText(leg.durMin))}
           </p>
 
         </div>
       `;
 
+      /* UMSTEIGEZEIT ZWISCHEN DEN FLÜGEN */
+
       if (legIndex < legs.length - 1) {
-        const minutes = getLayoverMinutes(
+        const layover = layoverMinutes(
           connection,
           legIndex
         );
@@ -1175,97 +1315,78 @@ function renderConnections(data) {
         const city =
           via[legIndex] ||
           leg.to ||
-          "Unbekannter Flughafen";
+          "Unbekannt";
 
         const country =
-          viaCountries[legIndex] ||
+          countries[legIndex] ||
           leg.toCountry ||
           "";
 
-        const location = displayCity(city, country);
+        const location = cityText(
+          city,
+          country
+        );
 
-        if (minutes !== null) {
-          html += `
-            <div class="layover">
+        html += `
+          <div class="layover">
 
-              <strong>
-                ⏱️ Umsteigezeit:
-                ${escapeHtml(formatMinutes(minutes))}
-              </strong>
+            <strong>
+              ⏱️ Umsteigezeit:
+              ${esc(
+                layover === null
+                  ? "Nicht verfügbar"
+                  : minutesText(layover)
+              )}
+            </strong>
 
-              <p>
-                Umstieg in
-                ${escapeHtml(location)}
-              </p>
+            <p>
+              Umstieg in
+              ${esc(location)}
+            </p>
 
-              <p class="hint">
-                Die Zeit stammt aus den
-                Verbindungsdaten des Anbieters.
-                Der Anschluss ist nicht garantiert.
-              </p>
+            <p class="hint">
+              Umsteigezeit gemäss
+              Anbieterdaten.
+              Anschluss nicht garantiert.
+            </p>
 
-            </div>
-          `;
-        } else {
-          html += `
-            <div class="layover">
-
-              <strong>
-                Umstieg in ${escapeHtml(location)}
-              </strong>
-
-              <p class="hint">
-                Keine Umsteigezeit vom
-                Datenanbieter angegeben.
-              </p>
-
-            </div>
-          `;
-        }
+          </div>
+        `;
       }
     });
 
+    /* GESAMTREISEZEIT */
+
     html += `
       <div class="total">
-
         <strong>
           Gesamtreisezeit:
-          ${escapeHtml(totalTime)}
+          ${esc(
+            minutesText(connection.totalMin)
+          )}
         </strong>
-
       </div>
 
       <div class="warning">
-
-        <strong>
-          ${estimated
-            ? "Geschätzte Verbindung"
-            : "Verbindung prüfen"}
-        </strong>
-
-        <p>
-          Flugzeiten, Umsteigemöglichkeiten
-          und AYCF-Sitzplätze sind nicht garantiert.
-          Prüfe jede Teilstrecke im offiziellen
-          Wizz-Air-Portal.
-        </p>
-
+        ${estimated
+          ? "Geschätzte Verbindung. "
+          : ""}
+        Bitte jede Teilstrecke und die
+        AYCF-Sitzplatzverfügbarkeit
+        bei Wizz Air prüfen.
       </div>
 
-      <button class="small-button"
-        data-connection-map="${connectionIndex}">
+      <button
+        type="button"
+        class="small-button"
+        data-connection-map="${index}">
         🗺️ Route auf Karte anzeigen
       </button>
 
       <a class="booking"
-        href="${escapeHtml(
-          typeof data.book === "string" &&
-          /^https:\/\/multipass\.wizzair\.com\//.test(data.book)
-            ? data.book
-            : "https://multipass.wizzair.com/"
-        )}"
-        target="_blank"
-        rel="noopener noreferrer">
+         href="https://multipass.wizzair.com/"
+         target="_blank"
+         rel="noopener noreferrer">
         Bei Wizz Air prüfen
       </a>
 
@@ -1279,11 +1400,12 @@ function renderConnections(data) {
     .querySelectorAll("[data-connection-map]")
     .forEach(button => {
       button.onclick = () => {
-        const connection = filtered[
-          Number(button.dataset.connectionMap)
-        ];
+        const index = Number(
+          button.dataset.connectionMap
+        );
 
-        const legs = connection.legs || [];
+        const legs =
+          filtered[index].legs || [];
 
         if (legs.length) {
           showMap([
@@ -1294,6 +1416,8 @@ function renderConnections(data) {
       };
     });
 }
+
+/* EINZIGER RADAR-SUCHBUTTON */
 
 $("findConnections").onclick = async () => {
   const button = $("findConnections");
@@ -1306,15 +1430,14 @@ $("findConnections").onclick = async () => {
   try {
     const data = await getJSON(
       "/api/radar/connections?" +
-      radarParams({
-        stops: $("radarStops").value
-      })
+      radarParams()
     );
 
     renderConnections(data);
 
   } catch (error) {
-    $("radarResults").textContent = error.message;
+    $("radarResults").textContent =
+      "Fehler: " + error.message;
 
   } finally {
     button.disabled = false;
@@ -1323,15 +1446,17 @@ $("findConnections").onclick = async () => {
 
 /* KARTE */
 
-let flightMap = null;
-let flightLayer = null;
+let map = null;
+let mapLayer = null;
 let mapRequest = 0;
 let lastGeocode = 0;
 
 const geoCache = new Map();
 
 const sleep = ms =>
-  new Promise(resolve => setTimeout(resolve, ms));
+  new Promise(resolve =>
+    setTimeout(resolve, ms)
+  );
 
 function hideMap() {
   mapRequest++;
@@ -1344,13 +1469,13 @@ async function geocodeCity(city) {
     .trim();
 
   if (!name) {
-    throw new Error("Kein Ort angegeben.");
+    throw new Error("Ort fehlt.");
   }
 
-  const cacheKey = normalize(name);
+  const key = norm(name);
 
-  if (geoCache.has(cacheKey)) {
-    return geoCache.get(cacheKey);
+  if (geoCache.has(key)) {
+    return geoCache.get(key);
   }
 
   const wait = Math.max(
@@ -1370,13 +1495,17 @@ async function geocodeCity(city) {
   const response = await fetch(url);
 
   if (!response.ok) {
-    throw new Error("Kartendienst nicht verfügbar.");
+    throw new Error(
+      "Kartendienst nicht verfügbar."
+    );
   }
 
   const rows = await response.json();
 
   if (!Array.isArray(rows) || !rows.length) {
-    throw new Error("Ort nicht gefunden: " + name);
+    throw new Error(
+      "Ort nicht gefunden: " + name
+    );
   }
 
   const point = [
@@ -1384,7 +1513,7 @@ async function geocodeCity(city) {
     Number(rows[0].lon)
   ];
 
-  geoCache.set(cacheKey, point);
+  geoCache.set(key, point);
 
   return point;
 }
@@ -1398,38 +1527,38 @@ async function showMap(cities) {
     "Karte wird geladen ...";
 
   $("mapPanel").scrollIntoView({
-    behavior: "smooth"
+    behavior:"smooth"
   });
 
   if (typeof L === "undefined") {
     $("mapStatus").textContent =
-      "Leaflet konnte nicht geladen werden.";
+      "Kartenbibliothek konnte nicht geladen werden.";
     return;
   }
 
-  if (!flightMap) {
-    flightMap = L.map("flightMap", {
-      scrollWheelZoom: false
+  if (!map) {
+    map = L.map("flightMap", {
+      scrollWheelZoom:false
     });
 
     L.tileLayer(
       "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       {
-        maxZoom: 18,
-        attribution: "© OpenStreetMap contributors"
+        maxZoom:18,
+        attribution:"© OpenStreetMap contributors"
       }
-    ).addTo(flightMap);
+    ).addTo(map);
 
-    flightMap.setView([48, 12], 4);
+    map.setView([48,12],4);
   }
 
-  flightMap.invalidateSize();
+  map.invalidateSize();
 
-  if (flightLayer) {
-    flightLayer.remove();
+  if (mapLayer) {
+    mapLayer.remove();
   }
 
-  flightLayer = L.layerGroup().addTo(flightMap);
+  mapLayer = L.layerGroup().addTo(map);
 
   try {
     const points = [];
@@ -1442,34 +1571,35 @@ async function showMap(cities) {
       points.push(point);
 
       L.circleMarker(point, {
-        radius: 7,
-        color: "#e42ca2",
-        fillColor: "#f278d0",
-        fillOpacity: 1
+        radius:7,
+        color:"#e42ca2",
+        fillColor:"#f278d0",
+        fillOpacity:1
       })
-      .bindPopup(escapeHtml(city))
-      .addTo(flightLayer);
+      .bindPopup(esc(city))
+      .addTo(mapLayer);
     }
 
     if (points.length > 1) {
       L.polyline(points, {
-        color: "#e42ca2",
-        weight: 4,
-        dashArray: "8 6"
-      }).addTo(flightLayer);
+        color:"#e42ca2",
+        weight:4,
+        dashArray:"8 6"
+      }).addTo(mapLayer);
 
-      flightMap.fitBounds(
-        L.latLngBounds(points).pad(0.25),
-        {maxZoom: 8}
+      map.fitBounds(
+        L.latLngBounds(points).pad(.25),
+        {maxZoom:8}
       );
+
     } else if (points.length) {
-      flightMap.setView(points[0], 7);
+      map.setView(points[0],7);
     }
 
     $("mapStatus").textContent =
       cities.join(" → ");
 
-    flightMap.invalidateSize();
+    map.invalidateSize();
 
   } catch (error) {
     if (requestId === mapRequest) {
@@ -1481,19 +1611,23 @@ async function showMap(cities) {
 
 /* FAVORITEN OHNE LOGIN */
 
-const FAVORITES_KEY = "flyhopgo_favorites_v1";
+const FAVORITES_KEY =
+  "flyhopgo_favorites_v1";
 
 function readFavorites() {
   try {
-    const saved = JSON.parse(
-      localStorage.getItem(FAVORITES_KEY) || "[]"
+    const items = JSON.parse(
+      localStorage.getItem(FAVORITES_KEY) ||
+      "[]"
     );
 
-    return Array.isArray(saved)
-      ? saved.filter(item =>
+    return Array.isArray(items)
+      ? items.filter(item =>
           Array.isArray(item) &&
-          item.every(city => typeof city === "string")
-        ).slice(0, 100)
+          item.every(
+            city => typeof city === "string"
+          )
+        ).slice(0,100)
       : [];
 
   } catch {
@@ -1502,34 +1636,38 @@ function readFavorites() {
 }
 
 function saveFavorite(cities) {
-  if (!Array.isArray(cities) || cities.length < 2) {
-    return;
-  }
+  if (
+    !Array.isArray(cities) ||
+    cities.length < 2
+  ) return;
 
-  const saved = readFavorites();
-
+  const items = readFavorites();
   const signature = JSON.stringify(cities);
 
-  if (!saved.some(
-    item => JSON.stringify(item) === signature
+  if (!items.some(item =>
+    JSON.stringify(item) === signature
   )) {
-    saved.unshift(cities);
+    items.unshift(cities);
   }
 
   try {
     localStorage.setItem(
       FAVORITES_KEY,
-      JSON.stringify(saved.slice(0, 100))
+      JSON.stringify(
+        items.slice(0,100)
+      )
     );
 
     renderFavorites();
 
     $("favoritesPanel").scrollIntoView({
-      behavior: "smooth"
+      behavior:"smooth"
     });
 
   } catch {
-    alert("Route konnte nicht gespeichert werden.");
+    alert(
+      "Route konnte nicht gespeichert werden."
+    );
   }
 }
 
@@ -1538,31 +1676,37 @@ function renderFavorites() {
 
   container.replaceChildren();
 
-  const saved = readFavorites();
+  const items = readFavorites();
 
-  if (!saved.length) {
+  if (!items.length) {
     container.textContent =
       "Noch keine Routen gespeichert.";
     return;
   }
 
-  saved.forEach((cities, index) => {
+  items.forEach((cities,index) => {
     const item = document.createElement("div");
     item.className = "saved-item";
 
     const title = document.createElement("p");
     title.textContent = cities.join(" → ");
 
-    const mapButton = document.createElement("button");
+    const mapButton =
+      document.createElement("button");
+
+    mapButton.type = "button";
     mapButton.textContent = "🗺️ Karte";
     mapButton.onclick = () => showMap(cities);
 
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "Löschen";
+    const remove =
+      document.createElement("button");
 
-    deleteButton.onclick = () => {
+    remove.type = "button";
+    remove.textContent = "Löschen";
+
+    remove.onclick = () => {
       const next = readFavorites();
-      next.splice(index, 1);
+      next.splice(index,1);
 
       localStorage.setItem(
         FAVORITES_KEY,
@@ -1575,7 +1719,7 @@ function renderFavorites() {
     item.append(
       title,
       mapButton,
-      deleteButton
+      remove
     );
 
     container.append(item);
@@ -1592,6 +1736,5 @@ loadRoutes();
 loadRadar();
 
 </script>
-
 </body>
 </html>
