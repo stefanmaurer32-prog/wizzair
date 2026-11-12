@@ -1,1117 +1,1737 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FlyHopGo | Wizz Air All You Can Fly Route Explorer</title>
-<meta name="description" content="Explore Wizz Air All You Can Fly routes and timed connections for free. Find direct flights and routes with stopovers.">
-<meta name="robots" content="index,follow">
-<meta name="theme-color" content="#110720">
+
+<title>FlyHopGo – Wizz Air All You Can Fly Routenfinder</title>
+
+<meta name="description"
+content="Entdecke kostenlos Wizz Air All You Can Fly Flugrouten, Zwischenstopps und geschätzte Flugverbindungen. Ohne Anmeldung.">
+
 <link rel="canonical" href="https://flyhopgo.com/">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://flyhopgo.com/">
-<meta property="og:title" content="FlyHopGo – Free Wizz Air Route Explorer">
-<meta property="og:description" content="Explore Wizz Air All You Can Fly routes and connections for free.">
-<meta property="og:image" content="https://flyhopgo.com/static/icon-512.png">
-<link rel="icon" href="/static/favicon.png">
-<link rel="apple-touch-icon" href="/static/icon-192.png">
-<link rel="manifest" href="/static/manifest.json">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1802246293259496" crossorigin="anonymous"></script>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<script defer
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <style>
-:root{font-family:system-ui,Arial,sans-serif;color:#f9f5ff;background:#110720}
-*{box-sizing:border-box}
-body{margin:0}
-main{max-width:900px;margin:20px auto;padding:18px}
-h1{font-size:clamp(28px,5vw,42px);color:#ef67c5;margin:0 0 10px}
-h2{font-size:23px}
-h3{margin-top:0}
-.sub,.muted,small{color:#cbb9d8}
-.sub{font-size:19px}
-.free{display:inline-block;background:#e42ca2;border-radius:30px;padding:8px 15px;font-weight:750;margin-bottom:16px}
-.panel,.result{background:#241332;border:1px solid #51335f;border-radius:16px;padding:20px;margin:18px 0;min-width:0}
-label{display:block;font-weight:650;margin:16px 0 8px}
-select,input{width:100%;padding:13px;border-radius:10px;background:#180d24;color:white;border:1px solid #805e90;font-size:16px}
-button{width:100%;margin-top:15px;padding:14px;border:0;border-radius:10px;background:#e42ca2;color:white;font-weight:750;font-size:16px;cursor:pointer}
-button:hover:not(:disabled){filter:brightness(1.1)}
-button:disabled,select:disabled{opacity:.5;cursor:not-allowed}
-.hint{font-size:13px;color:#c9b8d7;line-height:1.6}
-.updated{background:#352044;border-radius:9px;padding:11px;margin-top:12px;color:#e9c5df;line-height:1.7}
-.booking{display:block;text-align:center;background:#c60083;color:white;text-decoration:none;font-weight:750;border-radius:10px;padding:14px;margin-top:14px}
-.tag{display:inline-block;background:#463052;border-radius:6px;padding:5px 8px;margin:4px 3px}
-.route{line-height:2.2;overflow-wrap:anywhere}
-.pagination{display:flex;gap:12px}
-.pagination button{flex:1}
-.error{color:#ffb8b8}
-.tabbar{display:flex;gap:8px;flex-wrap:wrap}
-.tabbar button{width:auto;flex:1;margin:0;background:#3a254a}
-.tabbar button.active{background:#e42ca2}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.grid2>*{min-width:0}
-.time{font-weight:700;color:#ffb3e4}
-[hidden]{display:none!important}
-.map-panel{width:100%;max-width:100%;min-width:0;overflow:hidden;position:relative}
-#flightMap{width:100%;height:420px;min-height:300px;max-width:100%;border-radius:12px;background:#20152b}
-.map-note{font-size:13px;color:#cbb9d8;margin:12px 0;line-height:1.6}
-.map-button{width:auto;margin:8px 6px 0 0;padding:9px 14px;font-size:14px}
-.save-button{width:auto;background:#49305d;padding:9px 14px;font-size:14px}
-.saved-route{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-bottom:1px solid #51335f;padding:12px 0}
-.saved-route span{flex:1;min-width:160px}
-.saved-route button{width:auto;margin:0;padding:8px 12px}
-.connection-leg{border-left:3px solid #e42ca2;padding:8px 12px;margin:12px 0;background:#301d40;border-radius:0 8px 8px 0;line-height:1.8}
-.connection-warning{background:#4b2630;border:1px solid #ff7474;border-radius:10px;padding:14px;margin:14px 0;color:#ffd5d5;line-height:1.7}
-.connection-warning strong{color:#ffaaaa}
-.connection-warning p{margin:7px 0}
-.connection-ok{background:#173b32;border:1px solid #4dc7a0;border-radius:10px;padding:12px;margin:12px 0;color:#b9ffe6;line-height:1.6}
-.connection-unknown{background:#3c3047;border:1px solid #927ca4;border-radius:10px;padding:12px;margin:12px 0;color:#e8d8f1;line-height:1.6}
-footer{border-top:1px solid #51335f;margin-top:40px;padding-top:20px;color:#cbb9d8;font-size:14px;line-height:1.7}
-@media(max-width:580px){.grid2{grid-template-columns:1fr}main{padding:13px}.panel,.result{padding:15px}#flightMap{height:350px}}
+:root {
+  --bg: #110720;
+  --panel: #241332;
+  --panel2: #321c42;
+  --border: #59406a;
+  --pink: #e42ca2;
+  --text: #faf5ff;
+  --muted: #d0bddc;
+  --green: #68d6a1;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+main {
+  max-width: 1050px;
+  margin: auto;
+  padding: 20px;
+}
+
+h1 {
+  font-size: clamp(29px, 5vw, 44px);
+  color: #f278d0;
+}
+
+h2 {
+  font-size: 23px;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+p {
+  line-height: 1.6;
+}
+
+a {
+  color: #f278d0;
+}
+
+.muted,
+.hint {
+  color: var(--muted);
+}
+
+.hint {
+  font-size: 13px;
+}
+
+.free-badge {
+  display: inline-block;
+  padding: 9px 17px;
+  background: var(--pink);
+  border-radius: 30px;
+  font-weight: bold;
+}
+
+.panel,
+.result {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  margin: 18px 0;
+}
+
+.result {
+  background: var(--panel2);
+}
+
+label {
+  display: block;
+  margin: 16px 0 8px;
+  font-weight: bold;
+}
+
+select,
+input {
+  width: 100%;
+  padding: 13px;
+  border-radius: 10px;
+  border: 1px solid #805e90;
+  background: #180d24;
+  color: white;
+  font-size: 16px;
+}
+
+button,
+.booking {
+  display: block;
+  width: 100%;
+  padding: 13px;
+  margin-top: 14px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--pink);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+button:hover,
+.booking:hover {
+  filter: brightness(1.12);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.tabs button {
+  flex: 1;
+  background: #3c254c;
+}
+
+.tabs button.active {
+  background: var(--pink);
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.status {
+  background: #382348;
+  border-radius: 10px;
+  padding: 13px;
+  margin: 12px 0;
+}
+
+.route-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 15px 0;
+}
+
+.city {
+  display: inline-block;
+  padding: 8px 12px;
+  background: #543565;
+  border-radius: 8px;
+}
+
+.arrow {
+  color: #f278d0;
+  font-weight: bold;
+}
+
+.flight-leg {
+  padding: 14px;
+  margin: 10px 0;
+  background: #1c102a;
+  border-radius: 10px;
+}
+
+.layover {
+  background: #3a2850;
+  border-left: 4px solid var(--green);
+  border-radius: 8px;
+  padding: 13px;
+  margin: 12px 0;
+}
+
+.layover strong {
+  color: var(--green);
+}
+
+.flight-times {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.flight-times > div {
+  flex: 1;
+  min-width: 110px;
+}
+
+.time {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.total {
+  margin: 15px 0;
+  padding: 12px;
+  background: #442950;
+  border-radius: 8px;
+}
+
+.warning {
+  background: #49351d;
+  border-left: 4px solid #ffbb62;
+  border-radius: 8px;
+  padding: 13px;
+  margin: 14px 0;
+  font-size: 14px;
+}
+
+.small-button {
+  display: inline-block;
+  width: auto;
+  padding: 10px 14px;
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+.save-button {
+  background: #68457b;
+}
+
+.pagination {
+  display: flex;
+  gap: 12px;
+}
+
+.pagination button {
+  flex: 1;
+}
+
+.saved-item {
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+}
+
+.saved-item button {
+  display: inline-block;
+  width: auto;
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+#flightMap {
+  height: 430px;
+  min-height: 300px;
+  border-radius: 12px;
+}
+
+footer {
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+  padding: 20px 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+@media(max-width: 600px) {
+  main {
+    padding: 12px;
+  }
+
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+
+  .panel,
+  .result {
+    padding: 15px;
+  }
+
+  .time {
+    font-size: 19px;
+  }
+}
 </style>
 </head>
+
 <body>
+
 <main>
 
-<div class="free">100% FREE · NO LOGIN REQUIRED</div>
-<h1>Find Your Next Flight Route ✈️</h1>
-<p class="sub">Wizz Air All You Can Fly · Free Route Explorer</p>
-
-<div class="tabbar">
-<button id="tabRoutes" class="active" type="button">Route Explorer</button>
-<button id="tabRadar" type="button">Flight Times &amp; Connections</button>
+<div class="free-badge">
+  100 % KOSTENLOS · OHNE LOGIN
 </div>
+
+<h1>FlyHopGo ✈️</h1>
+
+<p class="muted">
+  Dein kostenloser Wizz Air All You Can Fly Routenfinder.
+  Entdecke Flugstrecken, Zwischenstopps und
+  mögliche Anschlussverbindungen.
+</p>
+
+<div class="tabs">
+  <button id="tabRoutes" class="active">
+    Routenfinder
+  </button>
+
+  <button id="tabRadar">
+    Flugzeiten & Verbindungen
+  </button>
+</div>
+
+<!-- ROUTENFINDER -->
 
 <section id="routesView">
+
 <div class="panel">
-<h2>✈️ Explore Routes</h2>
-<div id="status">Loading official Wizz Air routes...</div>
-<div class="updated" id="updated">Loading update information...</div>
-<p id="period" class="muted"></p>
 
-<label for="from">Departure Airport</label>
-<select id="from" disabled><option>Loading...</option></select>
+<h2>✈️ Flugroute suchen</h2>
 
-<label for="to">Destination Airport</label>
-<select id="to" disabled><option>Select departure first</option></select>
+<p id="routeStatus">
+  Flugstrecken werden geladen ...
+</p>
 
-<label for="max">Maximum Number of Stops</label>
-<select id="max">
-<option value="0">Direct Flight</option>
-<option value="1">1 Stop</option>
-<option value="2" selected>2 Stops</option>
-<option value="3">3 Stops</option>
-<option value="4">4 Stops</option>
-<option value="5">5 Stops</option>
-</select>
-
-<p class="hint" id="destinationHint"></p>
-<button id="go" disabled>🔎 Search Flight Routes</button>
-<a class="booking" href="https://multipass.wizzair.com/" target="_blank" rel="noopener noreferrer">✈️ Check &amp; Book on Wizz Air</a>
+<div class="status" id="routeUpdated">
+  Bitte warten ...
 </div>
 
-<section id="results" aria-live="polite"></section>
+<label for="routeFrom">
+  Abflughafen
+</label>
 
-<section class="panel" id="favoritesPanel">
-<h2>♡ Saved Routes</h2>
-<p class="hint">Save your favourite routes without an account. They are stored in this browser only.</p>
-<div id="savedRoutes"></div>
+<select id="routeFrom" disabled>
+  <option>Wird geladen ...</option>
+</select>
+
+<label for="routeTo">
+  Zielflughafen
+</label>
+
+<select id="routeTo" disabled>
+  <option>Bitte zuerst Abflug wählen</option>
+</select>
+
+<label for="maxStops">
+  Maximale Zwischenstopps
+</label>
+
+<select id="maxStops">
+  <option value="0">Direktflug</option>
+  <option value="1">1 Zwischenstopp</option>
+  <option value="2" selected>2 Zwischenstopps</option>
+  <option value="3">3 Zwischenstopps</option>
+  <option value="4">4 Zwischenstopps</option>
+  <option value="5">5 Zwischenstopps</option>
+</select>
+
+<p id="destinationHint" class="hint"></p>
+
+<button id="searchRoutes" disabled>
+  🔎 Flugrouten suchen
+</button>
+
+</div>
+
+<div id="routeResults"></div>
+
+<div class="panel" id="favoritesPanel">
+
+<h2>♡ Meine gespeicherten Routen</h2>
+
+<p class="hint">
+  Du kannst deine Lieblingsrouten ohne Anmeldung
+  speichern. Sie bleiben in diesem Browser gespeichert.
+</p>
+
+<div id="favoritesList"></div>
+
+</div>
+
 </section>
-</section>
+
+<!-- AYCF RADAR -->
 
 <section id="radarView" hidden>
+
 <div class="panel">
-<h2>📅 Flight Times &amp; Connections</h2>
-<p class="muted">Flight schedules and connections are informational. AYCF seat availability must be checked on Wizz Air.</p>
-<div class="updated" id="radarStatus">Loading flight information...</div>
+
+<h2>📅 Flugzeiten & Anschlussverbindungen</h2>
+
+<p class="muted">
+  Suche nach veröffentlichten oder geschätzten
+  Flugzeiten und möglichen Verbindungen.
+</p>
+
+<div id="radarStatus" class="status">
+  AYCF Radar wird geladen ...
+</div>
 
 <div class="grid2">
+
 <div>
-<label for="radarFrom">Departure Airport</label>
-<select id="radarFrom" disabled><option>Loading...</option></select>
-</div>
-<div>
-<label for="radarTo">Destination Airport</label>
-<select id="radarTo" disabled><option>Select departure first</option></select>
-</div>
+<label for="radarFrom">
+  Abflug
+</label>
+
+<select id="radarFrom" disabled>
+  <option>Wird geladen ...</option>
+</select>
 </div>
 
-<label for="flightDate">Departure Date (optional)</label>
-<input id="flightDate" type="date">
+<div>
+<label for="radarTo">
+  Ziel
+</label>
 
-<label for="radarStops">Timed Connections</label>
+<select id="radarTo" disabled>
+  <option>Bitte Abflug wählen</option>
+</select>
+</div>
+
+</div>
+
+<label for="flightDate">
+  Abflugdatum (optional)
+</label>
+
+<input type="date" id="flightDate">
+
+<p class="hint">
+  Ohne Datum werden alle vom Anbieter gelieferten
+  Verbindungen angezeigt.
+</p>
+
+<button id="findFlights" disabled>
+  🔎 Direktflüge anzeigen
+</button>
+
+<label for="radarStops">
+  Anzahl Zwischenstopps
+</label>
+
 <select id="radarStops">
-<option value="1">Up to 1 Stop</option>
-<option value="2">Up to 2 Stops</option>
+  <option value="1">1 Zwischenstopp</option>
+  <option value="2">Bis zu 2 Zwischenstopps</option>
 </select>
 
-<button id="findConnections" disabled>🔄 Find Timed Connections</button>
-<p class="hint">Connections with less than 3 hours between flights will be marked with a warning when the times can be calculated reliably.</p>
-<p class="hint">For 3–5 stops, use Route Explorer. Those routes have no verified schedules.</p>
-<a class="booking" href="https://multipass.wizzair.com/" target="_blank" rel="noopener noreferrer">Check Availability &amp; Book on Wizz Air</a>
+<button id="findConnections" disabled>
+  🔄 Anschlussverbindungen suchen
+</button>
+
+<p class="hint">
+  Für theoretische Routen mit bis zu 5 Zwischenstopps
+  verwende den Routenfinder.
+</p>
+
 </div>
-<section id="radarResults" aria-live="polite"></section>
+
+<div id="radarResults"></div>
+
 </section>
 
-<section class="panel map-panel" id="mapPanel" hidden>
-<h2>🗺️ Flight Route Map</h2>
-<p id="mapStatus" class="map-note">Select a route to display it.</p>
+<!-- KARTE -->
+
+<section class="panel" id="mapPanel" hidden>
+
+<h2>🗺️ Flugroute auf der Karte</h2>
+
+<p id="mapStatus" class="hint"></p>
+
 <div id="flightMap"></div>
-<p class="map-note">Approximate city-centre positions, not exact airport locations or actual flight paths. Map © OpenStreetMap contributors.</p>
+
+<p class="hint">
+  Die Linien zeigen ungefähre Verbindungen zwischen
+  Städten und keine tatsächlichen Flugbahnen.
+</p>
+
 </section>
 
 <footer>
-<p><strong>FlyHopGo.com</strong> is an independent route-planning tool and is not affiliated with Wizz Air.</p>
-<p><strong>Important:</strong> Routes, schedules, connections and free AYCF seats are not guaranteed. Check every flight segment on the official Wizz Air website.</p>
-<p><strong>Booking window:</strong> 72 to 3 hours before departure, subject to Wizz Air rules.</p>
-<p>© <span id="year"></span> FlyHopGo.com</p>
+
+<p>
+  FlyHopGo ist ein unabhängiges Routenplanungstool
+  und steht in keiner offiziellen Verbindung zu Wizz Air.
+</p>
+
+<p>
+  <strong>Wichtig:</strong>
+  Die offizielle Streckenliste enthält mögliche
+  Flugstrecken, jedoch keine garantierten Flugzeiten,
+  Anschlussmöglichkeiten oder freien Sitzplätze.
+</p>
+
+<p>
+  <strong>Buchungsfenster:</strong>
+  Frühestens 72 Stunden und spätestens
+  3 Stunden vor Abflug.
+</p>
+
+<p>
+  Jede Teilstrecke muss separat im offiziellen
+  Wizz-Air-Portal geprüft und gebucht werden.
+</p>
+
+<p>
+  <a href="https://multipass.wizzair.com/"
+  target="_blank" rel="noopener noreferrer">
+    Zur offiziellen Wizz-Air-Buchung
+  </a>
+</p>
+
+<p>
+  © <span id="year"></span> FlyHopGo.com
+</p>
+
 </footer>
+
 </main>
 
 <script>
 "use strict";
 
-const $=id=>document.getElementById(id);
+/* GRUNDFUNKTIONEN */
 
-function escapeHtml(value){
-return String(value??"").replace(/[&<>"']/g,c=>({
-"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-})[c]);
-}
+const $ = id => document.getElementById(id);
 
-function key(value){
-return String(value??"").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-}
+const escapeHtml = value =>
+  String(value ?? "").replace(
+    /[&<>"']/g,
+    character => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[character])
+  );
 
-function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
+const normalize = value =>
+  String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 
-/* COUNTRY INFORMATION */
+function formatMinutes(value) {
+  const minutes = Number(value);
 
-const AIRPORT_COUNTRIES={
-AAL:"Denmark",AAR:"Denmark",ADB:"Turkey",AGA:"Morocco",
-AGP:"Spain",AHO:"Italy",ALC:"Spain",AMM:"Jordan",
-AMS:"Netherlands",ARN:"Sweden",ATH:"Greece",
-AUH:"United Arab Emirates",AYT:"Turkey",
-BCN:"Spain",BEG:"Serbia",BGY:"Italy",
-BHX:"United Kingdom",BLL:"Denmark",BLQ:"Italy",
-BOD:"France",BRI:"Italy",BRQ:"Czech Republic",
-BRS:"United Kingdom",BSL:"Switzerland",
-BTS:"Slovakia",BUD:"Hungary",BVA:"France",
-BZG:"Poland",CAI:"Egypt",CAG:"Italy",
-CDG:"France",CFU:"Greece",CIA:"Italy",
-CLJ:"Romania",CPH:"Denmark",CRL:"Belgium",
-CTA:"Italy",DLM:"Turkey",DMM:"Saudi Arabia",
-DTM:"Germany",DXB:"United Arab Emirates",
-EDI:"United Kingdom",EIN:"Netherlands",
-EVN:"Armenia",FAO:"Portugal",FCO:"Italy",
-FMM:"Germany",FNC:"Portugal",GDN:"Poland",
-GLA:"United Kingdom",GOT:"Sweden",
-GRZ:"Austria",GVA:"Switzerland",
-GYD:"Azerbaijan",HAM:"Germany",
-HEL:"Finland",HER:"Greece",HHN:"Germany",
-IAS:"Romania",IBZ:"Spain",INI:"Serbia",
-IST:"Turkey",JED:"Saudi Arabia",
-KLU:"Austria",KTW:"Poland",KUT:"Georgia",
-KUN:"Lithuania",LCA:"Cyprus",
-LGW:"United Kingdom",LIS:"Portugal",
-LJU:"Slovenia",LPA:"Spain",
-LPL:"United Kingdom",LTN:"United Kingdom",
-LUX:"Luxembourg",MAD:"Spain",
-MAN:"United Kingdom",MLA:"Malta",
-MMX:"Sweden",MPL:"France",MRS:"France",
-MXP:"Italy",NAP:"Italy",NCE:"France",
-NUE:"Germany",OHD:"North Macedonia",
-OPO:"Portugal",ORY:"France",OSL:"Norway",
-OTP:"Romania",OVD:"Spain",PFO:"Cyprus",
-PMI:"Spain",PMO:"Italy",PRG:"Czech Republic",
-PRN:"Kosovo",PSA:"Italy",PSR:"Italy",
-PUY:"Croatia",RAK:"Morocco",RHO:"Greece",
-RIX:"Latvia",RMI:"Italy",RMO:"Moldova",
-RZE:"Poland",SAW:"Turkey",SBZ:"Romania",
-SKG:"Greece",SKP:"North Macedonia",
-SOF:"Bulgaria",SPU:"Croatia",
-STN:"United Kingdom",STR:"Germany",
-SUF:"Italy",SVQ:"Spain",TBS:"Georgia",
-TFS:"Spain",TGD:"Montenegro",TIA:"Albania",
-TLL:"Estonia",TLV:"Israel",TRF:"Norway",
-TRN:"Italy",TSR:"Romania",TUN:"Tunisia",
-VAR:"Bulgaria",VCE:"Italy",VIE:"Austria",
-VNO:"Lithuania",VRN:"Italy",WAW:"Poland",
-WMI:"Poland",WRO:"Poland",XRY:"Spain",
-ZAD:"Croatia",ZAG:"Croatia",ZRH:"Switzerland"
-};
+  if (!Number.isFinite(minutes) || minutes < 0) {
+    return "Nicht verfügbar";
+  }
 
-const CITY_COUNTRIES={
-"bordeaux":"France",
-"bordeaux-merignac":"France",
-"bordeaux mérignac":"France",
-"bordeaux merignac":"France",
-"asturias":"Spain",
-"asturien":"Spain",
-"oviedo":"Spain",
-"zurich":"Switzerland",
-"zürich":"Switzerland",
-"geneva":"Switzerland",
-"basel":"Switzerland",
-"budapest":"Hungary",
-"tirana":"Albania",
-"vienna":"Austria",
-"bratislava":"Slovakia",
-"warsaw":"Poland",
-"krakow":"Poland",
-"gdansk":"Poland",
-"wroclaw":"Poland",
-"katowice":"Poland",
-"prague":"Czech Republic",
-"berlin":"Germany",
-"dortmund":"Germany",
-"memmingen":"Germany",
-"hamburg":"Germany",
-"rome":"Italy",
-"milan":"Italy",
-"venice":"Italy",
-"naples":"Italy",
-"bologna":"Italy",
-"palermo":"Italy",
-"catania":"Italy",
-"london":"United Kingdom",
-"manchester":"United Kingdom",
-"liverpool":"United Kingdom",
-"edinburgh":"United Kingdom",
-"birmingham":"United Kingdom",
-"paris":"France",
-"nice":"France",
-"marseille":"France",
-"barcelona":"Spain",
-"madrid":"Spain",
-"malaga":"Spain",
-"valencia":"Spain",
-"alicante":"Spain",
-"palma de mallorca":"Spain",
-"lisbon":"Portugal",
-"porto":"Portugal",
-"athens":"Greece",
-"thessaloniki":"Greece",
-"bucharest":"Romania",
-"cluj napoca":"Romania",
-"cluj-napoca":"Romania",
-"iasi":"Romania",
-"timisoara":"Romania",
-"sofia":"Bulgaria",
-"varna":"Bulgaria",
-"belgrade":"Serbia",
-"nis":"Serbia",
-"skopje":"North Macedonia",
-"ohrid":"North Macedonia",
-"pristina":"Kosovo",
-"prishtina":"Kosovo",
-"podgorica":"Montenegro",
-"zagreb":"Croatia",
-"split":"Croatia",
-"zadar":"Croatia",
-"ljubljana":"Slovenia",
-"riga":"Latvia",
-"tallinn":"Estonia",
-"vilnius":"Lithuania",
-"kaunas":"Lithuania",
-"oslo":"Norway",
-"stockholm":"Sweden",
-"gothenburg":"Sweden",
-"copenhagen":"Denmark",
-"helsinki":"Finland",
-"amsterdam":"Netherlands",
-"eindhoven":"Netherlands",
-"brussels":"Belgium",
-"luxembourg":"Luxembourg",
-"istanbul":"Turkey",
-"antalya":"Turkey",
-"ankara":"Turkey",
-"izmir":"Turkey",
-"tbilisi":"Georgia",
-"kutaisi":"Georgia",
-"yerevan":"Armenia",
-"baku":"Azerbaijan",
-"chisinau":"Moldova",
-"larnaca":"Cyprus",
-"paphos":"Cyprus",
-"tel aviv":"Israel",
-"amman":"Jordan",
-"abu dhabi":"United Arab Emirates",
-"dubai":"United Arab Emirates",
-"jeddah":"Saudi Arabia",
-"cairo":"Egypt",
-"marrakech":"Morocco",
-"agadir":"Morocco",
-"tunis":"Tunisia"
-};
+  const total = Math.round(minutes);
+  const hours = Math.floor(total / 60);
+  const rest = total % 60;
 
-const airportMetadata=new Map();
+  if (!hours) return rest + " Min.";
+  if (!rest) return hours + " Std.";
 
-function airportCode(value){
-const text=String(value||"");
-const bracket=text.match(/\(([A-Z]{3})\)/i);
-if(bracket)return bracket[1].toUpperCase();
-return /^[A-Z]{3}$/i.test(text.trim())?text.trim().toUpperCase():"";
+  return hours + " Std. " + rest + " Min.";
 }
 
-function registerAirportRecord(record){
-if(!record||typeof record!=="object")return;
-const country=record.country||record.countryName||record.country_name||"";
-if(!country)return;
-for(const identifier of [record.city,record.name,record.airport,record.iata,record.code]){
-if(typeof identifier==="string"&&identifier.trim()){
-airportMetadata.set(key(identifier),String(country));
-}
-}
+function formatDate(value) {
+  if (!value) return "Datum unbekannt";
+
+  const match = String(value).match(
+    /^(\d{4})-(\d{2})-(\d{2})$/
+  );
+
+  if (!match) return String(value);
+
+  return match[3] + "." + match[2] + "." + match[1];
 }
 
-function countryForAirport(value){
-const text=String(value||"").trim();
-if(!text)return "";
-const exact=airportMetadata.get(key(text));
-if(exact)return exact;
-const city=text.replace(/\s*\([A-Z]{3}\)\s*/gi," ").trim();
-const fromMetadata=airportMetadata.get(key(city));
-if(fromMetadata)return fromMetadata;
-const code=airportCode(text);
-if(code&&AIRPORT_COUNTRIES[code])return AIRPORT_COUNTRIES[code];
-return CITY_COUNTRIES[key(city)]||"";
+function displayCity(city, country) {
+  const name = String(city || "Unbekannt");
+  const location = String(country || "").trim();
+
+  return location ? name + " – " + location : name;
 }
 
-function airportLabel(value){
-const text=String(value??"").trim();
-if(!text)return "";
-const country=countryForAirport(text);
-if(!country)return text;
-if(text.toLowerCase().endsWith(" - "+country.toLowerCase())||
-text.toLowerCase().endsWith(" – "+country.toLowerCase()))return text;
-return text+" – "+country;
+function fillSelect(select, keys, placeholder, names) {
+  const oldValue = select.value;
+
+  select.replaceChildren(new Option(placeholder, ""));
+
+  const sorted = [...keys].sort((a, b) =>
+    (names.get(a) || a).localeCompare(
+      names.get(b) || b
+    )
+  );
+
+  for (const item of sorted) {
+    select.add(
+      new Option(names.get(item) || item, item)
+    );
+  }
+
+  if (keys.includes(oldValue)) {
+    select.value = oldValue;
+  }
 }
 
-/* SELECT HELPERS */
+async function getJSON(url) {
+  const response = await fetch(url);
+  const data = await response.json();
 
-function fill(select,keys,placeholder,nameMap){
-const previous=select.value;
-select.replaceChildren(new Option(placeholder,""));
-const sorted=[...keys].sort((a,b)=>
-airportLabel(nameMap.get(a)||a).localeCompare(airportLabel(nameMap.get(b)||b)));
-for(const item of sorted){
-const name=nameMap.get(item)||item;
-select.add(new Option(airportLabel(name),item));
-}
-if(keys.includes(previous))select.value=previous;
-}
+  if (!response.ok) {
+    throw new Error(
+      data.error || "Daten konnten nicht geladen werden."
+    );
+  }
 
-function refreshAirportSelects(){
-if(names.size&&!$("from").disabled){
-fill($("from"),[...graph.keys()],"Select departure...",names);
-updateDestinations(false);
+  return data;
 }
-if(radarNames.size&&!$("radarFrom").disabled){
-fill($("radarFrom"),[...radarNames.keys()],"Select departure...",radarNames);
-updateRadarDestinations(false);
-}
-renderFavorites();
-}
-
-/* DATE AND DURATION */
-
-function formatSwissTime(timestamp){
-if(!timestamp)return "Unknown";
-const date=new Date(timestamp);
-if(Number.isNaN(date.getTime()))return String(timestamp);
-return new Intl.DateTimeFormat("de-CH",{
-timeZone:"Europe/Zurich",
-day:"2-digit",month:"2-digit",year:"numeric",
-hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"
-}).format(date);
-}
-
-function swissTimeZoneLabel(timestamp){
-const date=timestamp?new Date(timestamp):new Date();
-if(Number.isNaN(date.getTime()))return "Swiss time";
-const parts=new Intl.DateTimeFormat("en-GB",{
-timeZone:"Europe/Zurich",timeZoneName:"shortOffset"
-}).formatToParts(date);
-const offset=parts.find(part=>part.type==="timeZoneName")?.value;
-if(offset==="GMT+2")return "CEST";
-if(offset==="GMT+1")return "CET";
-return "Swiss time";
-}
-
-function formatDuration(minutes){
-if(minutes===null||minutes===undefined||minutes==="")return "Unknown";
-const total=Number(minutes);
-if(!Number.isFinite(total)||total<0)return "Unknown";
-const rounded=Math.round(total);
-const hours=Math.floor(rounded/60);
-const mins=rounded%60;
-if(hours===0)return mins+" min";
-if(mins===0)return hours+" h";
-return hours+" h "+mins+" min";
-}
-
-/* ROUTE EXPLORER */
-
-const graph=new Map();
-const names=new Map();
-let foundRoutes=[];
-let page=0;
-let truncated=false;
-const PAGE_SIZE=40;
-const ROUTE_LIMIT=300;
-
-function reachable(start,maxEdges){
-const seen=new Set([start]);
-const result=new Set();
-let front=[start];
-for(let depth=0;depth<maxEdges;depth++){
-const next=[];
-for(const airport of front){
-for(const destination of graph.get(airport)||[]){
-if(destination!==start)result.add(destination);
-if(!seen.has(destination)){
-seen.add(destination);
-next.push(destination);
-}
-}
-}
-front=next;
-if(!front.length)break;
-}
-return [...result];
-}
-
-function updateDestinations(clearResults=true){
-const start=$("from").value;
-const destinations=start?reachable(start,Number($("max").value)+1):[];
-fill($("to"),destinations,"Select destination...",names);
-$("to").disabled=!destinations.length;
-$("go").disabled=!$("to").value;
-$("destinationHint").textContent=destinations.length+" possible destinations.";
-if(clearResults){
-$("results").replaceChildren();
-hideRouteMap();
-}
-}
-
-async function loadRoutes(){
-try{
-const response=await fetch("/api/routes");
-if(!response.ok)throw Error("Route list unavailable");
-const data=await response.json();
-if(!Array.isArray(data.routes))throw Error("Invalid route list");
-if(Array.isArray(data.airports)){
-for(const airport of data.airports)registerAirportRecord(airport);
-}
-graph.clear();
-names.clear();
-for(const pair of data.routes){
-if(!Array.isArray(pair)||pair.length<2)continue;
-const departure=key(pair[0]);
-const destination=key(pair[1]);
-if(!departure||!destination)continue;
-names.set(departure,String(pair[0]));
-names.set(destination,String(pair[1]));
-if(!graph.has(departure))graph.set(departure,new Set());
-graph.get(departure).add(destination);
-}
-fill($("from"),[...graph.keys()],"Select departure...",names);
-$("from").disabled=false;
-$("status").textContent="✓ "+(data.count??data.routes.length)+" routes loaded";
-$("updated").textContent="Last updated: "+(data.updated||"Unknown");
-$("period").textContent=data.period?"Validity period: "+data.period:"";
-updateDestinations();
-refreshAirportSelects();
-}catch(error){
-$("status").textContent="Unable to load routes: "+error.message;
-$("status").className="error";
-}
-}
-
-function searchRoutes(){
-hideRouteMap();
-const start=$("from").value;
-const end=$("to").value;
-const maxEdges=Number($("max").value)+1;
-foundRoutes=[];
-truncated=false;
-page=0;
-if(!start||!end)return;
-
-function dfs(path,targetDepth){
-if(foundRoutes.length>=ROUTE_LIMIT){truncated=true;return;}
-const current=path[path.length-1];
-if(current===end){
-if(path.length-1===targetDepth)foundRoutes.push([...path]);
-return;
-}
-if(path.length-1>=targetDepth)return;
-for(const next of graph.get(current)||[]){
-if(path.includes(next))continue;
-path.push(next);
-dfs(path,targetDepth);
-path.pop();
-if(truncated)return;
-}
-}
-for(let depth=1;depth<=maxEdges;depth++){
-dfs([start],depth);
-if(truncated)break;
-}
-showPage(0);
-}
-
-function showPage(p){
-page=p;
-const count=foundRoutes.length;
-if(!count){
-$("results").innerHTML='<div class="panel">No possible routes found.</div>';
-return;
-}
-const pages=Math.ceil(count/PAGE_SIZE);
-const start=p*PAGE_SIZE;
-let html="<h2>"+count+(truncated?"+":"")+" Possible Routes</h2>"+
-'<p class="hint">Theoretical routes only. Schedules and seats are not verified.</p>';
-
-for(let i=start;i<Math.min(start+PAGE_SIZE,count);i++){
-const path=foundRoutes[i];
-const routeHtml=path.map(airport=>{
-const name=names.get(airport)||airport;
-return '<span class="tag">'+escapeHtml(airportLabel(name))+"</span>";
-}).join(" → ");
-html+=`
-<article class="result">
-<h3>Route ${i+1} · ${path.length-2} stops</h3>
-<div class="route">${routeHtml}</div>
-<button class="map-button" data-map="${i}">🗺️ Show on Map</button>
-<button class="save-button" data-save="${i}">♡ Save Route</button>
-</article>`;
-}
-html+=`
-<div class="pagination">
-<button id="prev" ${p===0?"disabled":""}>Previous</button>
-<button id="next" ${p===pages-1?"disabled":""}>Next</button>
-</div>
-<p class="hint">Page ${p+1} of ${pages}</p>`;
-$("results").innerHTML=html;
-
-$("results").querySelectorAll("[data-map]").forEach(button=>{
-button.onclick=()=>{
-const route=foundRoutes[Number(button.dataset.map)];
-showRouteOnMap(route.map(airport=>names.get(airport)||airport));
-};
-});
-$("results").querySelectorAll("[data-save]").forEach(button=>{
-button.onclick=()=>{
-const route=foundRoutes[Number(button.dataset.save)];
-saveRoute(route.map(airport=>names.get(airport)||airport));
-};
-});
-$("prev").onclick=()=>showPage(page-1);
-$("next").onclick=()=>showPage(page+1);
-}
-
-$("from").onchange=()=>updateDestinations();
-$("max").onchange=()=>updateDestinations();
-$("to").onchange=()=>{
-$("go").disabled=!$("to").value;
-$("results").replaceChildren();
-hideRouteMap();
-};
-$("go").onclick=searchRoutes;
 
 /* TABS */
 
-function tab(which){
-hideRouteMap();
-const radar=which==="radar";
-$("routesView").hidden=radar;
-$("radarView").hidden=!radar;
-$("tabRoutes").classList.toggle("active",!radar);
-$("tabRadar").classList.toggle("active",radar);
-}
-$("tabRoutes").onclick=()=>tab("routes");
-$("tabRadar").onclick=()=>tab("radar");
+function showTab(name) {
+  hideMap();
 
-/* RADAR */
+  const radar = name === "radar";
 
-const radarNames=new Map();
+  $("routesView").hidden = radar;
+  $("radarView").hidden = !radar;
 
-async function getJSON(url){
-const response=await fetch(url);
-const data=await response.json();
-if(!response.ok)throw Error(data.error||"Provider unavailable");
-return data;
+  $("tabRoutes").classList.toggle("active", !radar);
+  $("tabRadar").classList.toggle("active", radar);
 }
 
-async function loadRadar(){
-try{
-const [status,data]=await Promise.all([
-getJSON("/api/radar/status"),
-getJSON("/api/radar/graph")
-]);
-if(!Array.isArray(data.nodes))throw Error("Invalid city list");
-radarNames.clear();
-for(const node of data.nodes){
-if(typeof node.city!=="string")continue;
-registerAirportRecord(node);
-radarNames.set(key(node.city),node.city);
-}
-fill($("radarFrom"),[...radarNames.keys()],"Select departure...",radarNames);
-$("radarFrom").disabled=false;
-updateRadarDestinations();
-const updated=formatSwissTime(status.updatedAt);
-const zone=swissTimeZoneLabel(status.updatedAt);
-$("radarStatus").textContent="AYCF Flight Period: "+
-(status.period||"Unknown")+" · Updated: "+updated+" ("+zone+")";
-refreshAirportSelects();
-}catch(error){
-$("radarStatus").textContent="Flight data unavailable: "+error.message;
-}
+$("tabRoutes").onclick = () => showTab("routes");
+$("tabRadar").onclick = () => showTab("radar");
+
+/* ROUTENFINDER */
+
+const routeGraph = new Map();
+const routeNames = new Map();
+
+let foundRoutes = [];
+let currentPage = 0;
+let routesTruncated = false;
+
+const PAGE_SIZE = 40;
+const ROUTE_LIMIT = 300;
+
+async function loadRoutes() {
+  try {
+    const data = await getJSON("/api/routes");
+
+    if (!Array.isArray(data.routes)) {
+      throw new Error("Ungültige Streckenliste.");
+    }
+
+    routeGraph.clear();
+    routeNames.clear();
+
+    for (const pair of data.routes) {
+      if (!Array.isArray(pair) || pair.length < 2) {
+        continue;
+      }
+
+      const from = normalize(pair[0]);
+      const to = normalize(pair[1]);
+
+      if (!from || !to) continue;
+
+      routeNames.set(from, String(pair[0]));
+      routeNames.set(to, String(pair[1]));
+
+      if (!routeGraph.has(from)) {
+        routeGraph.set(from, new Set());
+      }
+
+      routeGraph.get(from).add(to);
+    }
+
+    fillSelect(
+      $("routeFrom"),
+      [...routeGraph.keys()],
+      "Abflughafen wählen ...",
+      routeNames
+    );
+
+    $("routeFrom").disabled = false;
+
+    $("routeStatus").textContent =
+      "✓ " + data.routes.length +
+      " offizielle Flugstrecken geladen";
+
+    $("routeUpdated").textContent =
+      "Letzte Aktualisierung: " +
+      (data.updated || "Unbekannt");
+
+    updateRouteDestinations();
+
+  } catch (error) {
+    $("routeStatus").textContent =
+      "Fehler: " + error.message;
+  }
 }
 
-function updateRadarDestinations(clearResults=true){
-const origin=$("radarFrom").value;
-const cities=[...radarNames.keys()].filter(city=>city!==origin);
-fill($("radarTo"),cities,"Select destination...",radarNames);
-$("radarTo").disabled=!origin;
-$("findConnections").disabled=!origin||!$("radarTo").value;
-if(clearResults)$("radarResults").replaceChildren();
+function reachable(start, maxEdges) {
+  const visited = new Set([start]);
+  const destinations = new Set();
+
+  let current = [start];
+
+  for (let depth = 0; depth < maxEdges; depth++) {
+    const next = [];
+
+    for (const city of current) {
+      for (const destination of routeGraph.get(city) || []) {
+        if (destination !== start) {
+          destinations.add(destination);
+        }
+
+        if (!visited.has(destination)) {
+          visited.add(destination);
+          next.push(destination);
+        }
+      }
+    }
+
+    current = next;
+    if (!current.length) break;
+  }
+
+  return [...destinations];
 }
 
-$("radarFrom").onchange=()=>updateRadarDestinations();
-$("radarTo").onchange=()=>{
-$("findConnections").disabled=!$("radarTo").value;
-$("radarResults").replaceChildren();
+function updateRouteDestinations() {
+  const from = $("routeFrom").value;
+  const maxEdges = Number($("maxStops").value) + 1;
+
+  const destinations = from
+    ? reachable(from, maxEdges)
+    : [];
+
+  fillSelect(
+    $("routeTo"),
+    destinations,
+    "Zielflughafen wählen ...",
+    routeNames
+  );
+
+  $("routeTo").disabled = !destinations.length;
+  $("searchRoutes").disabled = !$("routeTo").value;
+
+  $("destinationHint").textContent =
+    destinations.length + " mögliche Zielorte.";
+
+  $("routeResults").replaceChildren();
+  hideMap();
+}
+
+$("routeFrom").onchange = updateRouteDestinations;
+$("maxStops").onchange = updateRouteDestinations;
+
+$("routeTo").onchange = () => {
+  $("searchRoutes").disabled = !$("routeTo").value;
+  $("routeResults").replaceChildren();
+  hideMap();
 };
 
-function radarParams(extra={}){
-return new URLSearchParams({
-from:radarNames.get($("radarFrom").value)||"",
-to:radarNames.get($("radarTo").value)||"",
-...extra
-});
+function searchRoutes() {
+  hideMap();
+
+  const start = $("routeFrom").value;
+  const end = $("routeTo").value;
+  const maxEdges = Number($("maxStops").value) + 1;
+
+  foundRoutes = [];
+  currentPage = 0;
+  routesTruncated = false;
+
+  if (!start || !end) return;
+
+  function search(path, targetDepth) {
+    if (foundRoutes.length >= ROUTE_LIMIT) {
+      routesTruncated = true;
+      return;
+    }
+
+    const current = path[path.length - 1];
+
+    if (current === end) {
+      if (path.length - 1 === targetDepth) {
+        foundRoutes.push([...path]);
+      }
+      return;
+    }
+
+    if (path.length - 1 >= targetDepth) return;
+
+    for (const next of routeGraph.get(current) || []) {
+      if (path.includes(next)) continue;
+
+      path.push(next);
+      search(path, targetDepth);
+      path.pop();
+
+      if (routesTruncated) return;
+    }
+  }
+
+  for (let depth = 1; depth <= maxEdges; depth++) {
+    search([start], depth);
+    if (routesTruncated) break;
+  }
+
+  renderRoutePage(0);
 }
 
-/* 3-HOUR CONNECTION WARNING */
+$("searchRoutes").onclick = searchRoutes;
 
-const MIN_CONNECTION_MINUTES=180;
+function renderRoutePage(page) {
+  currentPage = page;
 
-function parseFlightTimestamp(leg,field){
-if(!leg||typeof leg!=="object")return NaN;
-const value=leg[field];
-if(value===undefined||value===null||value==="")return NaN;
+  if (!foundRoutes.length) {
+    $("routeResults").innerHTML =
+      '<div class="panel">Keine Routen gefunden.</div>';
+    return;
+  }
 
-if(typeof value==="number"&&Number.isFinite(value)){
-if(value>100000000000)return value;
-if(value>1000000000)return value*1000;
-return NaN;
+  const pages = Math.ceil(
+    foundRoutes.length / PAGE_SIZE
+  );
+
+  const start = page * PAGE_SIZE;
+
+  let html = `
+    <h2>
+      ${foundRoutes.length}${routesTruncated ? "+" : ""}
+      mögliche Flugrouten
+    </h2>
+    <p class="hint">
+      Theoretische Streckenverbindungen.
+      Flugzeiten und Sitzplätze sind nicht bestätigt.
+    </p>
+  `;
+
+  for (
+    let i = start;
+    i < Math.min(start + PAGE_SIZE, foundRoutes.length);
+    i++
+  ) {
+    const route = foundRoutes[i];
+
+    html += `
+      <article class="result">
+        <h3>
+          Route ${i + 1} –
+          ${route.length - 2} Zwischenstopps
+        </h3>
+
+        <div class="route-line">
+          ${route.map(city =>
+            '<span class="city">' +
+            escapeHtml(routeNames.get(city) || city) +
+            '</span>'
+          ).join('<span class="arrow">→</span>')}
+        </div>
+
+        <button class="small-button"
+          data-route-map="${i}">
+          🗺️ Karte
+        </button>
+
+        <button class="small-button save-button"
+          data-route-save="${i}">
+          ♡ Speichern
+        </button>
+      </article>
+    `;
+  }
+
+  html += `
+    <div class="pagination">
+      <button id="previousPage"
+        ${page === 0 ? "disabled" : ""}>
+        Zurück
+      </button>
+
+      <button id="nextPage"
+        ${page >= pages - 1 ? "disabled" : ""}>
+        Weiter
+      </button>
+    </div>
+
+    <p class="hint">
+      Seite ${page + 1} von ${pages}
+    </p>
+  `;
+
+  $("routeResults").innerHTML = html;
+
+  $("routeResults")
+    .querySelectorAll("[data-route-map]")
+    .forEach(button => {
+      button.onclick = () => {
+        const route = foundRoutes[
+          Number(button.dataset.routeMap)
+        ];
+
+        showMap(
+          route.map(city => routeNames.get(city) || city)
+        );
+      };
+    });
+
+  $("routeResults")
+    .querySelectorAll("[data-route-save]")
+    .forEach(button => {
+      button.onclick = () => {
+        const route = foundRoutes[
+          Number(button.dataset.routeSave)
+        ];
+
+        saveFavorite(
+          route.map(city => routeNames.get(city) || city)
+        );
+      };
+    });
+
+  $("previousPage").onclick = () =>
+    renderRoutePage(currentPage - 1);
+
+  $("nextPage").onclick = () =>
+    renderRoutePage(currentPage + 1);
 }
 
-const text=String(value).trim();
-const iso=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:?\d{2})$/i;
-if(iso.test(text)){
-const parsed=Date.parse(text);
-return Number.isFinite(parsed)?parsed:NaN;
-}
-return NaN;
-}
+/* AYCF RADAR */
 
-function getLayoverMinutes(previousLeg,nextLeg){
-const arrival=parseFlightTimestamp(previousLeg,"arr");
-const departure=parseFlightTimestamp(nextLeg,"dep");
-if(!Number.isFinite(arrival)||!Number.isFinite(departure))return null;
-return Math.round((departure-arrival)/60000);
-}
+const radarNames = new Map();
 
-function connectionTimeHtml(connection){
-const legs=Array.isArray(connection.legs)?connection.legs:[];
-if(legs.length<2)return "";
-let html="";
+async function loadRadar() {
+  try {
+    const [status, graph] = await Promise.all([
+      getJSON("/api/radar/status"),
+      getJSON("/api/radar/graph")
+    ]);
 
-for(let i=0;i<legs.length-1;i++){
-const previous=legs[i];
-const next=legs[i+1];
-const minutes=getLayoverMinutes(previous,next);
-const airport=airportLabel(previous.to||next.from||"Transfer airport");
+    if (!Array.isArray(graph.nodes)) {
+      throw new Error("Keine gültige Flughafenliste.");
+    }
 
-if(minutes===null){
-html+=`
-<div class="connection-unknown">
-ℹ️ <strong>Connection time not verified</strong>
-<div>Transfer at ${escapeHtml(airport)}.
-Exact layover time cannot be calculated from the available timestamp information.</div>
-</div>`;
-continue;
-}
+    radarNames.clear();
 
-if(minutes<0){
-html+=`
-<div class="connection-warning">
-⚠️ <strong>Invalid connection timing</strong>
-<p>The next flight appears to depart before the previous flight arrives at ${escapeHtml(airport)}.</p>
-<p>Please verify both flight schedules.</p>
-</div>`;
-continue;
-}
+    for (const node of graph.nodes) {
+      if (typeof node.city !== "string") continue;
 
-if(minutes<MIN_CONNECTION_MINUTES){
-html+=`
-<div class="connection-warning">
-⚠️ <strong>Warning: Short connection time!</strong>
-<p>Transfer at <strong>${escapeHtml(airport)}</strong></p>
-<p>Only <strong>${escapeHtml(formatDuration(minutes))}</strong> between arrival and the next departure.</p>
-<p>Your preferred minimum is <strong>3 hours</strong>. You may miss your connecting flight.</p>
-</div>`;
-}else{
-html+=`
-<div class="connection-ok">
-✓ <strong>Connection time:</strong> ${escapeHtml(formatDuration(minutes))}
-at ${escapeHtml(airport)}. Meets your 3-hour threshold.
-</div>`;
-}
-}
-return html;
+      radarNames.set(
+        normalize(node.city),
+        node.city
+      );
+    }
+
+    fillSelect(
+      $("radarFrom"),
+      [...radarNames.keys()],
+      "Abflug wählen ...",
+      radarNames
+    );
+
+    $("radarFrom").disabled = false;
+
+    updateRadarDestinations();
+
+    $("radarStatus").textContent =
+      "Zeitraum: " +
+      (status.period || "Aktueller Zeitraum") +
+      " | Aktualisiert: " +
+      (status.updatedAt || "Unbekannt");
+
+  } catch (error) {
+    $("radarStatus").textContent =
+      "AYCF Radar nicht verfügbar: " + error.message;
+  }
 }
 
-/* CONNECTION COUNTRY METADATA */
+function updateRadarDestinations() {
+  const from = $("radarFrom").value;
 
-function registerConnectionCountries(connection){
-if(!connection||typeof connection!=="object")return;
-if(Array.isArray(connection.via)&&Array.isArray(connection.viaCountries)){
-connection.via.forEach((city,index)=>{
-registerAirportRecord({city,country:connection.viaCountries[index]});
-});
-}
-if(Array.isArray(connection.legs)){
-for(const leg of connection.legs){
-if(!leg||typeof leg!=="object")continue;
-registerAirportRecord({city:leg.from,country:leg.fromCountry});
-registerAirportRecord({city:leg.to,country:leg.toCountry});
-}
-}
-}
+  const destinations = [...radarNames.keys()]
+    .filter(city => city !== from);
 
-/* COMPLETE CONNECTION RENDERING */
+  fillSelect(
+    $("radarTo"),
+    destinations,
+    "Ziel wählen ...",
+    radarNames
+  );
 
-function renderConnections(data){
-const connections=Array.isArray(data.connections)?data.connections:[];
+  $("radarTo").disabled = !from;
 
-for(const connection of connections){
-registerConnectionCountries(connection);
+  updateRadarButtons();
 }
 
-const selectedDate=$("flightDate").value;
-const filtered=connections.filter(connection=>{
-if(!selectedDate)return true;
-if(!Array.isArray(connection.legs)||!connection.legs.length)return false;
-return String(connection.legs[0].date)===selectedDate;
-});
+function updateRadarButtons() {
+  const valid =
+    Boolean($("radarFrom").value) &&
+    Boolean($("radarTo").value);
 
-if(!filtered.length){
-$("radarResults").innerHTML='<div class="panel">No timed connections found.</div>';
-return;
+  $("findFlights").disabled = !valid;
+  $("findConnections").disabled = !valid;
+
+  $("radarResults").replaceChildren();
 }
 
-let html=`
-<h2>Timed Connections (${filtered.length})</h2>
-<p class="hint">Connections with less than 3 hours between flights are marked with a warning when reliable timestamps are available.</p>`;
+$("radarFrom").onchange = updateRadarDestinations;
+$("radarTo").onchange = updateRadarButtons;
 
-filtered.slice(0,40).forEach((connection,index)=>{
-const legs=Array.isArray(connection.legs)?connection.legs:[];
-const via=Array.isArray(connection.via)?
-connection.via.map(airportLabel).join(" → "):"";
-
-html+=`
-<article class="result">
-<h3>Via ${escapeHtml(via||"Connection")}</h3>
-<p><strong>Total travel time:</strong>
-<span class="time">${escapeHtml(formatDuration(connection.totalMin))}</span></p>`;
-
-legs.forEach((leg,legIndex)=>{
-html+=`
-<div class="connection-leg">
-<strong>${escapeHtml(airportLabel(leg.from))} → ${escapeHtml(airportLabel(leg.to))}</strong>
-<div>Date: ${escapeHtml(leg.date||"Unknown")}</div>
-<div class="time">${escapeHtml(leg.dep||"Unknown")} – ${escapeHtml(leg.arr||"Unknown")}</div>
-</div>`;
-
-if(legIndex<legs.length-1){
-const nextLeg=legs[legIndex+1];
-const minutes=getLayoverMinutes(leg,nextLeg);
-const airport=airportLabel(leg.to||nextLeg.from||"Transfer airport");
-
-if(minutes===null){
-html+=`
-<div class="connection-unknown">
-ℹ️ <strong>Connection time not verified</strong>
-<p>Transfer at ${escapeHtml(airport)}. Exact layover time cannot be calculated from the available timestamp information.</p>
-</div>`;
-}else if(minutes<0){
-html+=`
-<div class="connection-warning">
-⚠️ <strong>Invalid connection timing!</strong>
-<p>The connecting flight appears to depart before arrival at ${escapeHtml(airport)}.</p>
-</div>`;
-}else if(minutes<MIN_CONNECTION_MINUTES){
-html+=`
-<div class="connection-warning">
-⚠️ <strong>Warning: Short connection time!</strong>
-<p>Transfer airport: <strong>${escapeHtml(airport)}</strong></p>
-<p>Available connection time: <strong>${escapeHtml(formatDuration(minutes))}</strong></p>
-<p>Recommended minimum: <strong>3 hours</strong>. You may miss your connecting flight.</p>
-</div>`;
-}else{
-html+=`
-<div class="connection-ok">
-✓ <strong>Connection time:</strong> ${escapeHtml(formatDuration(minutes))}
-at ${escapeHtml(airport)}. Meets your 3-hour threshold.
-</div>`;
+function radarParams(extra = {}) {
+  return new URLSearchParams({
+    from: radarNames.get($("radarFrom").value) || "",
+    to: radarNames.get($("radarTo").value) || "",
+    ...extra
+  });
 }
+
+/* DIREKTFLÜGE */
+
+function renderFlights(data) {
+  const flights = Array.isArray(data.flights)
+    ? data.flights
+    : [];
+
+  const selectedDate = $("flightDate").value;
+
+  const filtered = flights.filter(flight =>
+    !selectedDate ||
+    String(flight.date) === selectedDate
+  );
+
+  if (!filtered.length) {
+    $("radarResults").innerHTML = `
+      <div class="panel">
+        Keine Direktflüge gefunden.
+      </div>
+    `;
+    return;
+  }
+
+  let html = `
+    <h2>${filtered.length} mögliche Direktflüge</h2>
+  `;
+
+  filtered.forEach(flight => {
+    html += `
+      <article class="result">
+
+        <h3>${escapeHtml(formatDate(flight.date))}</h3>
+
+        <div class="flight-times">
+
+          <div>
+            <span class="hint">Abflug</span>
+            <div class="time">
+              ${escapeHtml(flight.dep || flight.time || "–")}
+            </div>
+          </div>
+
+          <div>
+            <span class="hint">Ankunft</span>
+            <div class="time">
+              ${escapeHtml(flight.arr || "–")}
+            </div>
+          </div>
+
+        </div>
+
+        <div class="warning">
+          Flugzeiten und AYCF-Sitzplätze müssen
+          bei Wizz Air überprüft werden.
+        </div>
+
+      </article>
+    `;
+  });
+
+  $("radarResults").innerHTML = html;
 }
-});
 
-html+=`
-<button class="map-button" data-connection-map="${index}">🗺️ Show on Map</button>
-<p class="hint">Check every flight and AYCF seat on the official Wizz Air website.</p>
-</article>`;
-});
+$("findFlights").onclick = async () => {
+  const button = $("findFlights");
 
-$("radarResults").innerHTML=html;
+  button.disabled = true;
 
-$("radarResults").querySelectorAll("[data-connection-map]").forEach(button=>{
-button.onclick=()=>{
-const connection=filtered[Number(button.dataset.connectionMap)];
-const legs=connection.legs||[];
-if(legs.length){
-showRouteOnMap([legs[0].from,...legs.map(leg=>leg.to)]);
-}
+  $("radarResults").textContent =
+    "Direktflüge werden gesucht ...";
+
+  try {
+    const data = await getJSON(
+      "/api/radar/flights?" + radarParams()
+    );
+
+    renderFlights(data);
+
+  } catch (error) {
+    $("radarResults").textContent = error.message;
+
+  } finally {
+    button.disabled = false;
+  }
 };
-});
+
+/* ANSCHLUSSVERBINDUNGEN */
+/* KORREKTUR: UMSTEIGEZEIT AUS LAYOVERS */
+
+function getLayoverMinutes(connection, index) {
+  if (
+    Array.isArray(connection.layovers) &&
+    connection.layovers[index] !== undefined &&
+    connection.layovers[index] !== null
+  ) {
+    const minutes = Number(connection.layovers[index]);
+
+    if (Number.isFinite(minutes) && minutes >= 0) {
+      return minutes;
+    }
+  }
+
+  return null;
 }
 
-$("findConnections").onclick=async()=>{
-const button=$("findConnections");
-button.disabled=true;
-$("radarResults").textContent="Searching timed connections...";
-try{
-const data=await getJSON("/api/radar/connections?"+
-radarParams({stops:$("radarStops").value}));
-renderConnections(data);
-}catch(error){
-$("radarResults").textContent=error.message;
-}finally{
-button.disabled=!$("radarTo").value;
+function renderConnections(data) {
+  const connections = Array.isArray(data.connections)
+    ? data.connections
+    : [];
+
+  const selectedDate = $("flightDate").value;
+
+  const filtered = connections.filter(connection => {
+    if (!selectedDate) return true;
+
+    const legs = Array.isArray(connection.legs)
+      ? connection.legs
+      : [];
+
+    return (
+      legs.length > 0 &&
+      String(legs[0].date) === selectedDate
+    );
+  });
+
+  if (!filtered.length) {
+    $("radarResults").innerHTML = `
+      <div class="panel">
+        Keine Anschlussverbindungen gefunden.
+      </div>
+    `;
+    return;
+  }
+
+  const estimated = data.estimated === true;
+
+  let html = `
+    <h2>
+      ${filtered.length} mögliche Anschlussverbindungen
+    </h2>
+
+    <div class="status">
+      Datenzeitraum:
+      ${escapeHtml(data.period || "Nicht angegeben")}
+    </div>
+  `;
+
+  if (estimated) {
+    html += `
+      <div class="warning">
+        <strong>Geschätzte Flugzeiten</strong>
+        <p>
+          Der Datenanbieter kennzeichnet diese
+          Verbindungen als geschätzt. Die angezeigten
+          Umsteigezeiten stammen aus den gelieferten
+          Verbindungsdaten.
+        </p>
+      </div>
+    `;
+  }
+
+  filtered.forEach((connection, connectionIndex) => {
+    const legs = Array.isArray(connection.legs)
+      ? connection.legs
+      : [];
+
+    if (!legs.length) return;
+
+    const via = Array.isArray(connection.via)
+      ? connection.via
+      : [];
+
+    const viaCountries = Array.isArray(
+      connection.viaCountries
+    ) ? connection.viaCountries : [];
+
+    const totalTime = formatMinutes(
+      connection.totalMin
+    );
+
+    html += `
+      <article class="result">
+
+        <h3>
+          ✈️ Verbindung ${connectionIndex + 1}
+        </h3>
+
+        <p>
+          <strong>
+            ${escapeHtml(legs[0].from || "Abflug")}
+            →
+            ${escapeHtml(
+              legs[legs.length - 1].to || "Ziel"
+            )}
+          </strong>
+        </p>
+
+        <p class="hint">
+          ${legs.length - 1}
+          Zwischenstopp${legs.length === 2 ? "" : "s"}
+        </p>
+    `;
+
+    legs.forEach((leg, legIndex) => {
+      html += `
+        <div class="flight-leg">
+
+          <strong>
+            Flug ${legIndex + 1}
+          </strong>
+
+          <p>
+            ${escapeHtml(
+              displayCity(leg.from, leg.fromCountry)
+            )}
+            →
+            ${escapeHtml(
+              displayCity(leg.to, leg.toCountry)
+            )}
+          </p>
+
+          <div class="flight-times">
+
+            <div>
+              <span class="hint">Abflug</span>
+              <div class="time">
+                ${escapeHtml(leg.dep || "–")}
+              </div>
+              <span class="hint">
+                ${escapeHtml(formatDate(leg.date))}
+              </span>
+            </div>
+
+            <div>
+              <span class="hint">Ankunft</span>
+              <div class="time">
+                ${escapeHtml(leg.arr || "–")}
+              </div>
+              <span class="hint">
+                ${escapeHtml(
+                  formatDate(leg.arrDate || leg.date)
+                )}
+              </span>
+            </div>
+
+          </div>
+
+          <p class="hint">
+            Flugdauer:
+            ${escapeHtml(formatMinutes(leg.durMin))}
+          </p>
+
+        </div>
+      `;
+
+      /* UMSTEIGEZEIT NACH JEDEM FLUG,
+         AUSSER NACH DEM LETZTEN */
+
+      if (legIndex < legs.length - 1) {
+        const minutes = getLayoverMinutes(
+          connection,
+          legIndex
+        );
+
+        const city =
+          via[legIndex] ||
+          leg.to ||
+          "Unbekannter Flughafen";
+
+        const country =
+          viaCountries[legIndex] ||
+          leg.toCountry ||
+          "";
+
+        const location = displayCity(city, country);
+
+        if (minutes !== null) {
+          html += `
+            <div class="layover">
+
+              <strong>
+                ⏱️ Umsteigezeit:
+                ${escapeHtml(formatMinutes(minutes))}
+              </strong>
+
+              <p>
+                Umstieg in
+                ${escapeHtml(location)}
+              </p>
+
+              <p class="hint">
+                Die Zeit stammt aus den
+                Verbindungsdaten des Anbieters.
+                Der Anschluss ist nicht garantiert.
+              </p>
+
+            </div>
+          `;
+        } else {
+          html += `
+            <div class="layover">
+
+              <strong>
+                Umstieg in ${escapeHtml(location)}
+              </strong>
+
+              <p class="hint">
+                Keine Umsteigezeit vom
+                Datenanbieter angegeben.
+              </p>
+
+            </div>
+          `;
+        }
+      }
+    });
+
+    html += `
+      <div class="total">
+
+        <strong>
+          Gesamtreisezeit:
+          ${escapeHtml(totalTime)}
+        </strong>
+
+      </div>
+
+      <div class="warning">
+
+        <strong>
+          ${estimated
+            ? "Geschätzte Verbindung"
+            : "Verbindung prüfen"}
+        </strong>
+
+        <p>
+          Flugzeiten, Umsteigemöglichkeiten
+          und AYCF-Sitzplätze sind nicht garantiert.
+          Prüfe jede Teilstrecke im offiziellen
+          Wizz-Air-Portal.
+        </p>
+
+      </div>
+
+      <button class="small-button"
+        data-connection-map="${connectionIndex}">
+        🗺️ Route auf Karte anzeigen
+      </button>
+
+      <a class="booking"
+        href="${escapeHtml(
+          typeof data.book === "string" &&
+          /^https:\/\/multipass\.wizzair\.com\//.test(data.book)
+            ? data.book
+            : "https://multipass.wizzair.com/"
+        )}"
+        target="_blank"
+        rel="noopener noreferrer">
+        Bei Wizz Air prüfen
+      </a>
+
+      </article>
+    `;
+  });
+
+  $("radarResults").innerHTML = html;
+
+  $("radarResults")
+    .querySelectorAll("[data-connection-map]")
+    .forEach(button => {
+      button.onclick = () => {
+        const connection = filtered[
+          Number(button.dataset.connectionMap)
+        ];
+
+        const legs = connection.legs || [];
+
+        if (legs.length) {
+          showMap([
+            legs[0].from,
+            ...legs.map(leg => leg.to)
+          ]);
+        }
+      };
+    });
 }
+
+$("findConnections").onclick = async () => {
+  const button = $("findConnections");
+
+  button.disabled = true;
+
+  $("radarResults").textContent =
+    "Anschlussverbindungen werden gesucht ...";
+
+  try {
+    const data = await getJSON(
+      "/api/radar/connections?" +
+      radarParams({
+        stops: $("radarStops").value
+      })
+    );
+
+    renderConnections(data);
+
+  } catch (error) {
+    $("radarResults").textContent = error.message;
+
+  } finally {
+    button.disabled = false;
+  }
 };
 
-/* LEAFLET MAP */
+/* KARTE */
 
-let flightMap=null;
-let flightLayer=null;
-let activeMapRequest=0;
-let mapResizeObserver=null;
-const geoCache=new Map();
-let lastGeocode=0;
+let flightMap = null;
+let flightLayer = null;
+let mapRequest = 0;
+let lastGeocode = 0;
 
-function hideRouteMap(){
-activeMapRequest++;
-$("mapPanel").hidden=true;
+const geoCache = new Map();
+
+const sleep = ms =>
+  new Promise(resolve => setTimeout(resolve, ms));
+
+function hideMap() {
+  mapRequest++;
+  $("mapPanel").hidden = true;
 }
 
-function cityQuery(city){
-return String(city||"")
-.replace(/\s*\([^)]*\)\s*/g," ")
-.replace(/\s+[–-]\s+[^–-]+$/,"")
-.trim();
+async function geocodeCity(city) {
+  const name = String(city || "")
+    .replace(/\s*\([^)]*\)/g, "")
+    .trim();
+
+  if (!name) {
+    throw new Error("Kein Ort angegeben.");
+  }
+
+  const cacheKey = normalize(name);
+
+  if (geoCache.has(cacheKey)) {
+    return geoCache.get(cacheKey);
+  }
+
+  const wait = Math.max(
+    0,
+    1100 - (Date.now() - lastGeocode)
+  );
+
+  if (wait) await sleep(wait);
+
+  lastGeocode = Date.now();
+
+  const url =
+    "https://nominatim.openstreetmap.org/search" +
+    "?format=json&limit=1&q=" +
+    encodeURIComponent(name);
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error("Kartendienst nicht verfügbar.");
+  }
+
+  const rows = await response.json();
+
+  if (!Array.isArray(rows) || !rows.length) {
+    throw new Error("Ort nicht gefunden: " + name);
+  }
+
+  const point = [
+    Number(rows[0].lat),
+    Number(rows[0].lon)
+  ];
+
+  geoCache.set(cacheKey, point);
+
+  return point;
 }
 
-async function geocodeCity(city){
-const query=cityQuery(city);
-if(!query)throw Error("Missing city");
-const cacheKey=key(query);
-if(geoCache.has(cacheKey))return geoCache.get(cacheKey);
-const wait=Math.max(0,1100-(Date.now()-lastGeocode));
-if(wait)await sleep(wait);
-lastGeocode=Date.now();
-const country=countryForAirport(city);
-const search=country?query+", "+country:query;
-const url="https://nominatim.openstreetmap.org/search?format=json&limit=1&q="+encodeURIComponent(search);
-const response=await fetch(url,{headers:{"Accept":"application/json"}});
-if(!response.ok)throw Error("Location service unavailable");
-const rows=await response.json();
-if(!Array.isArray(rows)||!rows.length)throw Error("City not found: "+search);
-const point=[Number(rows[0].lat),Number(rows[0].lon)];
-if(!point.every(Number.isFinite))throw Error("Invalid coordinates");
-geoCache.set(cacheKey,point);
-return point;
+async function showMap(cities) {
+  const requestId = ++mapRequest;
+
+  $("mapPanel").hidden = false;
+
+  $("mapStatus").textContent =
+    "Karte wird geladen ...";
+
+  $("mapPanel").scrollIntoView({
+    behavior: "smooth"
+  });
+
+  if (typeof L === "undefined") {
+    $("mapStatus").textContent =
+      "Leaflet konnte nicht geladen werden.";
+    return;
+  }
+
+  if (!flightMap) {
+    flightMap = L.map("flightMap", {
+      scrollWheelZoom: false
+    });
+
+    L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        maxZoom: 18,
+        attribution: "© OpenStreetMap contributors"
+      }
+    ).addTo(flightMap);
+
+    flightMap.setView([48, 12], 4);
+  }
+
+  flightMap.invalidateSize();
+
+  if (flightLayer) {
+    flightLayer.remove();
+  }
+
+  flightLayer = L.layerGroup().addTo(flightMap);
+
+  try {
+    const points = [];
+
+    for (const city of cities) {
+      const point = await geocodeCity(city);
+
+      if (requestId !== mapRequest) return;
+
+      points.push(point);
+
+      L.circleMarker(point, {
+        radius: 7,
+        color: "#e42ca2",
+        fillColor: "#f278d0",
+        fillOpacity: 1
+      })
+      .bindPopup(escapeHtml(city))
+      .addTo(flightLayer);
+    }
+
+    if (points.length > 1) {
+      L.polyline(points, {
+        color: "#e42ca2",
+        weight: 4,
+        dashArray: "8 6"
+      }).addTo(flightLayer);
+
+      flightMap.fitBounds(
+        L.latLngBounds(points).pad(0.25),
+        {maxZoom: 8}
+      );
+    } else if (points.length) {
+      flightMap.setView(points[0], 7);
+    }
+
+    $("mapStatus").textContent =
+      cities.join(" → ");
+
+    flightMap.invalidateSize();
+
+  } catch (error) {
+    if (requestId === mapRequest) {
+      $("mapStatus").textContent =
+        "Kartenfehler: " + error.message;
+    }
+  }
 }
 
-function refreshFlightMap(){
-if(!flightMap)return;
-requestAnimationFrame(()=>{
-requestAnimationFrame(()=>{
-if(!$("mapPanel").hidden){
-flightMap.invalidateSize({pan:false,animate:false});
-}
-});
-});
+/* FAVORITEN OHNE LOGIN */
+
+const FAVORITES_KEY = "flyhopgo_favorites_v1";
+
+function readFavorites() {
+  try {
+    const saved = JSON.parse(
+      localStorage.getItem(FAVORITES_KEY) || "[]"
+    );
+
+    return Array.isArray(saved)
+      ? saved.filter(item =>
+          Array.isArray(item) &&
+          item.every(city => typeof city === "string")
+        ).slice(0, 100)
+      : [];
+
+  } catch {
+    return [];
+  }
 }
 
-function initializeFlightMap(){
-if(flightMap)return flightMap;
-if(typeof L==="undefined")throw Error("Leaflet library is not loaded");
-flightMap=L.map("flightMap",{
-scrollWheelZoom:false,zoomControl:true,
-attributionControl:true,preferCanvas:true
-});
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
-maxZoom:18,
-attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(flightMap);
-flightMap.setView([48.5,12],4);
-flightLayer=L.layerGroup().addTo(flightMap);
-if(typeof ResizeObserver!=="undefined"){
-mapResizeObserver=new ResizeObserver(()=>{
-if(!$("mapPanel").hidden)refreshFlightMap();
-});
-mapResizeObserver.observe($("flightMap"));
-}
-return flightMap;
-}
+function saveFavorite(cities) {
+  if (!Array.isArray(cities) || cities.length < 2) {
+    return;
+  }
 
-async function showRouteOnMap(cities){
-const requestId=++activeMapRequest;
-const panel=$("mapPanel");
-const status=$("mapStatus");
-if(!Array.isArray(cities)||!cities.length)return;
-panel.hidden=false;
-status.textContent="Loading flight route map...";
-await new Promise(resolve=>{
-requestAnimationFrame(()=>requestAnimationFrame(resolve));
-});
-if(requestId!==activeMapRequest)return;
+  const saved = readFavorites();
 
-try{
-initializeFlightMap();
-refreshFlightMap();
-flightLayer.clearLayers();
-const points=[];
+  const signature = JSON.stringify(cities);
 
-for(let i=0;i<cities.length;i++){
-const city=cities[i];
-const coordinates=await geocodeCity(city);
-if(requestId!==activeMapRequest)return;
-points.push(coordinates);
+  if (!saved.some(
+    item => JSON.stringify(item) === signature
+  )) {
+    saved.unshift(cities);
+  }
 
-let label="Stop "+i;
-let markerColor="#e42ca2";
-if(i===0){label="Departure";markerColor="#22c55e";}
-else if(i===cities.length-1){label="Destination";markerColor="#ef4444";}
+  try {
+    localStorage.setItem(
+      FAVORITES_KEY,
+      JSON.stringify(saved.slice(0, 100))
+    );
 
-const marker=L.circleMarker(coordinates,{
-radius:9,color:"#ffffff",weight:2,
-fillColor:markerColor,fillOpacity:1
-});
-const popup=document.createElement("div");
-const title=document.createElement("strong");
-title.textContent=label;
-const location=document.createElement("div");
-location.textContent=airportLabel(city);
-popup.append(title,location);
-marker.bindPopup(popup);
-marker.addTo(flightLayer);
+    renderFavorites();
+
+    $("favoritesPanel").scrollIntoView({
+      behavior: "smooth"
+    });
+
+  } catch {
+    alert("Route konnte nicht gespeichert werden.");
+  }
 }
 
-if(points.length>1){
-L.polyline(points,{
-color:"#e42ca2",weight:4,opacity:.9,
-dashArray:"10 7",lineCap:"round",lineJoin:"round"
-}).addTo(flightLayer);
-refreshFlightMap();
-flightMap.fitBounds(L.latLngBounds(points),{
-padding:[35,35],maxZoom:8,animate:false
-});
-}else{
-flightMap.setView(points[0],8,{animate:false});
-}
+function renderFavorites() {
+  const container = $("favoritesList");
 
-status.textContent=cities.map(airportLabel).join(" → ");
-refreshFlightMap();
-panel.scrollIntoView({behavior:"smooth",block:"start"});
-}catch(error){
-if(requestId===activeMapRequest){
-status.textContent="Unable to display map: "+error.message;
-}
-}
-}
+  container.replaceChildren();
 
-/* SAVED ROUTES */
+  const saved = readFavorites();
 
-const FAVORITES_KEY="flyhopgo_favorites_v1";
+  if (!saved.length) {
+    container.textContent =
+      "Noch keine Routen gespeichert.";
+    return;
+  }
 
-function readFavorites(){
-try{
-const data=JSON.parse(localStorage.getItem(FAVORITES_KEY)||"[]");
-return Array.isArray(data)?
-data.filter(route=>Array.isArray(route)&&
-route.every(city=>typeof city==="string")).slice(0,100):[];
-}catch{return [];}
-}
+  saved.forEach((cities, index) => {
+    const item = document.createElement("div");
+    item.className = "saved-item";
 
-function saveRoute(cities){
-if(!Array.isArray(cities)||cities.length<2)return;
-const routes=readFavorites();
-const signature=JSON.stringify(cities);
-if(!routes.some(route=>JSON.stringify(route)===signature)){
-routes.unshift(cities);
-}
-try{
-localStorage.setItem(FAVORITES_KEY,JSON.stringify(routes.slice(0,100)));
-renderFavorites();
-$("favoritesPanel").scrollIntoView({behavior:"smooth"});
-}catch{
-alert("Could not save this route.");
-}
-}
+    const title = document.createElement("p");
+    title.textContent = cities.join(" → ");
 
-function renderFavorites(){
-const area=$("savedRoutes");
-area.replaceChildren();
-const routes=readFavorites();
-if(!routes.length){
-area.textContent="No saved routes yet. Search and click ♡ Save Route.";
-return;
-}
-routes.forEach((cities,index)=>{
-const line=document.createElement("div");
-line.className="saved-route";
-const title=document.createElement("span");
-title.textContent=cities.map(airportLabel).join(" → ");
-const map=document.createElement("button");
-map.textContent="🗺️ Map";
-map.onclick=()=>showRouteOnMap(cities);
-const remove=document.createElement("button");
-remove.textContent="Delete";
-remove.onclick=()=>{
-const next=readFavorites();
-next.splice(index,1);
-localStorage.setItem(FAVORITES_KEY,JSON.stringify(next));
-renderFavorites();
-};
-line.append(title,map,remove);
-area.append(line);
-});
+    const mapButton = document.createElement("button");
+    mapButton.textContent = "🗺️ Karte";
+    mapButton.onclick = () => showMap(cities);
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Löschen";
+
+    deleteButton.onclick = () => {
+      const next = readFavorites();
+      next.splice(index, 1);
+
+      localStorage.setItem(
+        FAVORITES_KEY,
+        JSON.stringify(next)
+      );
+
+      renderFavorites();
+    };
+
+    item.append(
+      title,
+      mapButton,
+      deleteButton
+    );
+
+    container.append(item);
+  });
 }
 
 /* START */
 
-$("year").textContent=new Date().getFullYear();
+$("year").textContent =
+  new Date().getFullYear();
+
 renderFavorites();
 loadRoutes();
 loadRadar();
 
 </script>
+
 </body>
 </html>
