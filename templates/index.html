@@ -8,7 +8,7 @@
 <title>FlyHopGo – Wizz Air All You Can Fly Routenfinder</title>
 
 <meta name="description"
-content="Entdecke kostenlos Wizz Air All You Can Fly Flugrouten, Zwischenstopps und geschätzte Flugverbindungen. Ohne Anmeldung.">
+content="Kostenloser Wizz Air All You Can Fly Routenfinder. Entdecke Flugrouten, Zwischenstopps und mögliche Anschlussverbindungen – ohne Anmeldung.">
 
 <link rel="canonical" href="https://flyhopgo.com/">
 
@@ -30,9 +30,7 @@ src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   --green: #68d6a1;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -52,30 +50,15 @@ h1 {
   color: #f278d0;
 }
 
-h2 {
-  font-size: 23px;
-}
+h2 { font-size: 23px; }
+h3 { font-size: 18px; }
 
-h3 {
-  font-size: 18px;
-}
+p { line-height: 1.6; }
 
-p {
-  line-height: 1.6;
-}
+a { color: #f278d0; }
 
-a {
-  color: #f278d0;
-}
-
-.muted,
-.hint {
-  color: var(--muted);
-}
-
-.hint {
-  font-size: 13px;
-}
+.muted, .hint { color: var(--muted); }
+.hint { font-size: 13px; }
 
 .free-badge {
   display: inline-block;
@@ -85,8 +68,7 @@ a {
   font-weight: bold;
 }
 
-.panel,
-.result {
+.panel, .result {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 16px;
@@ -94,9 +76,7 @@ a {
   margin: 18px 0;
 }
 
-.result {
-  background: var(--panel2);
-}
+.result { background: var(--panel2); }
 
 label {
   display: block;
@@ -104,8 +84,7 @@ label {
   font-weight: bold;
 }
 
-select,
-input {
+select, input {
   width: 100%;
   padding: 13px;
   border-radius: 10px;
@@ -115,8 +94,7 @@ input {
   font-size: 16px;
 }
 
-button,
-.booking {
+button, .booking {
   display: block;
   width: 100%;
   padding: 13px;
@@ -132,8 +110,7 @@ button,
   cursor: pointer;
 }
 
-button:hover,
-.booking:hover {
+button:hover, .booking:hover {
   filter: brightness(1.12);
 }
 
@@ -153,9 +130,7 @@ button:disabled {
   background: #3c254c;
 }
 
-.tabs button.active {
-  background: var(--pink);
-}
+.tabs button.active { background: var(--pink); }
 
 .grid2 {
   display: grid;
@@ -205,9 +180,7 @@ button:disabled {
   margin: 12px 0;
 }
 
-.layover strong {
-  color: var(--green);
-}
+.layover strong { color: var(--green); }
 
 .flight-times {
   display: flex;
@@ -250,18 +223,14 @@ button:disabled {
   font-size: 14px;
 }
 
-.save-button {
-  background: #68457b;
-}
+.save-button { background: #68457b; }
 
 .pagination {
   display: flex;
   gap: 12px;
 }
 
-.pagination button {
-  flex: 1;
-}
+.pagination button { flex: 1; }
 
 .saved-item {
   border-bottom: 1px solid var(--border);
@@ -289,33 +258,21 @@ footer {
   color: var(--muted);
 }
 
-[hidden] {
-  display: none !important;
-}
+[hidden] { display: none !important; }
 
 @media(max-width: 600px) {
-  main {
-    padding: 12px;
-  }
+  main { padding: 12px; }
 
-  .grid2 {
-    grid-template-columns: 1fr;
-  }
+  .grid2 { grid-template-columns: 1fr; }
 
-  .panel,
-  .result {
-    padding: 15px;
-  }
+  .panel, .result { padding: 15px; }
 
-  .time {
-    font-size: 19px;
-  }
+  .time { font-size: 19px; }
 }
 </style>
 </head>
 
 <body>
-
 <main>
 
 <div class="free-badge">
@@ -326,8 +283,8 @@ footer {
 
 <p class="muted">
   Dein kostenloser Wizz Air All You Can Fly Routenfinder.
-  Entdecke Flugstrecken, Zwischenstopps und
-  mögliche Anschlussverbindungen.
+  Entdecke Flugstrecken, Zwischenstopps und mögliche
+  Anschlussverbindungen.
 </p>
 
 <div class="tabs">
@@ -344,149 +301,137 @@ footer {
 
 <section id="routesView">
 
-<div class="panel">
+  <div class="panel">
 
-<h2>✈️ Flugroute suchen</h2>
+    <h2>✈️ Flugroute suchen</h2>
 
-<p id="routeStatus">
-  Flugstrecken werden geladen ...
-</p>
+    <p id="routeStatus">
+      Flugstrecken werden geladen ...
+    </p>
 
-<div class="status" id="routeUpdated">
-  Bitte warten ...
-</div>
+    <div class="status" id="routeUpdated">
+      Bitte warten ...
+    </div>
 
-<label for="routeFrom">
-  Abflughafen
-</label>
+    <label for="routeFrom">Abflughafen</label>
 
-<select id="routeFrom" disabled>
-  <option>Wird geladen ...</option>
-</select>
+    <select id="routeFrom" disabled>
+      <option>Wird geladen ...</option>
+    </select>
 
-<label for="routeTo">
-  Zielflughafen
-</label>
+    <label for="routeTo">Zielflughafen</label>
 
-<select id="routeTo" disabled>
-  <option>Bitte zuerst Abflug wählen</option>
-</select>
+    <select id="routeTo" disabled>
+      <option>Bitte zuerst Abflug wählen</option>
+    </select>
 
-<label for="maxStops">
-  Maximale Zwischenstopps
-</label>
+    <label for="maxStops">
+      Maximale Zwischenstopps
+    </label>
 
-<select id="maxStops">
-  <option value="0">Direktflug</option>
-  <option value="1">1 Zwischenstopp</option>
-  <option value="2" selected>2 Zwischenstopps</option>
-  <option value="3">3 Zwischenstopps</option>
-  <option value="4">4 Zwischenstopps</option>
-  <option value="5">5 Zwischenstopps</option>
-</select>
+    <select id="maxStops">
+      <option value="0">Direktflug</option>
+      <option value="1">1 Zwischenstopp</option>
+      <option value="2" selected>2 Zwischenstopps</option>
+      <option value="3">3 Zwischenstopps</option>
+      <option value="4">4 Zwischenstopps</option>
+      <option value="5">5 Zwischenstopps</option>
+    </select>
 
-<p id="destinationHint" class="hint"></p>
+    <p id="destinationHint" class="hint"></p>
 
-<button id="searchRoutes" disabled>
-  🔎 Flugrouten suchen
-</button>
+    <button id="searchRoutes" disabled>
+      🔎 Flugrouten suchen
+    </button>
 
-</div>
+  </div>
 
-<div id="routeResults"></div>
+  <div id="routeResults"></div>
 
-<div class="panel" id="favoritesPanel">
+  <div class="panel" id="favoritesPanel">
 
-<h2>♡ Meine gespeicherten Routen</h2>
+    <h2>♡ Meine gespeicherten Routen</h2>
 
-<p class="hint">
-  Du kannst deine Lieblingsrouten ohne Anmeldung
-  speichern. Sie bleiben in diesem Browser gespeichert.
-</p>
+    <p class="hint">
+      Du kannst deine Lieblingsrouten ohne Anmeldung
+      speichern. Sie bleiben in diesem Browser gespeichert.
+    </p>
 
-<div id="favoritesList"></div>
+    <div id="favoritesList"></div>
 
-</div>
+  </div>
 
 </section>
 
-<!-- AYCF RADAR -->
+<!-- AYCF RADAR – NUR ANSCHLUSSVERBINDUNGEN -->
 
 <section id="radarView" hidden>
 
-<div class="panel">
+  <div class="panel">
 
-<h2>📅 Flugzeiten & Anschlussverbindungen</h2>
+    <h2>📅 Flugzeiten & Anschlussverbindungen</h2>
 
-<p class="muted">
-  Suche nach veröffentlichten oder geschätzten
-  Flugzeiten und möglichen Verbindungen.
-</p>
+    <p class="muted">
+      Suche nach möglichen Flugverbindungen mit
+      Zwischenstopps und den dazugehörigen Umsteigezeiten.
+    </p>
 
-<div id="radarStatus" class="status">
-  AYCF Radar wird geladen ...
-</div>
+    <div id="radarStatus" class="status">
+      AYCF Radar wird geladen ...
+    </div>
 
-<div class="grid2">
+    <div class="grid2">
 
-<div>
-<label for="radarFrom">
-  Abflug
-</label>
+      <div>
+        <label for="radarFrom">Abflug</label>
 
-<select id="radarFrom" disabled>
-  <option>Wird geladen ...</option>
-</select>
-</div>
+        <select id="radarFrom" disabled>
+          <option>Wird geladen ...</option>
+        </select>
+      </div>
 
-<div>
-<label for="radarTo">
-  Ziel
-</label>
+      <div>
+        <label for="radarTo">Ziel</label>
 
-<select id="radarTo" disabled>
-  <option>Bitte Abflug wählen</option>
-</select>
-</div>
+        <select id="radarTo" disabled>
+          <option>Bitte Abflug wählen</option>
+        </select>
+      </div>
 
-</div>
+    </div>
 
-<label for="flightDate">
-  Abflugdatum (optional)
-</label>
+    <label for="flightDate">
+      Abflugdatum (optional)
+    </label>
 
-<input type="date" id="flightDate">
+    <input type="date" id="flightDate">
 
-<p class="hint">
-  Ohne Datum werden alle vom Anbieter gelieferten
-  Verbindungen angezeigt.
-</p>
+    <p class="hint">
+      Ohne Datum werden alle vom Anbieter gelieferten
+      Verbindungen angezeigt.
+    </p>
 
-<button id="findFlights" disabled>
-  🔎 Direktflüge anzeigen
-</button>
+    <label for="radarStops">
+      Anzahl Zwischenstopps
+    </label>
 
-<label for="radarStops">
-  Anzahl Zwischenstopps
-</label>
+    <select id="radarStops">
+      <option value="1">1 Zwischenstopp</option>
+      <option value="2">Bis zu 2 Zwischenstopps</option>
+    </select>
 
-<select id="radarStops">
-  <option value="1">1 Zwischenstopp</option>
-  <option value="2">Bis zu 2 Zwischenstopps</option>
-</select>
+    <button id="findConnections" disabled>
+      🔎 Flugverbindungen suchen
+    </button>
 
-<button id="findConnections" disabled>
-  🔄 Anschlussverbindungen suchen
-</button>
+    <p class="hint">
+      Für theoretische Routen mit bis zu 5 Zwischenstopps
+      verwende den Routenfinder.
+    </p>
 
-<p class="hint">
-  Für theoretische Routen mit bis zu 5 Zwischenstopps
-  verwende den Routenfinder.
-</p>
+  </div>
 
-</div>
-
-<div id="radarResults"></div>
+  <div id="radarResults"></div>
 
 </section>
 
@@ -494,54 +439,53 @@ footer {
 
 <section class="panel" id="mapPanel" hidden>
 
-<h2>🗺️ Flugroute auf der Karte</h2>
+  <h2>🗺️ Flugroute auf der Karte</h2>
 
-<p id="mapStatus" class="hint"></p>
+  <p id="mapStatus" class="hint"></p>
 
-<div id="flightMap"></div>
+  <div id="flightMap"></div>
 
-<p class="hint">
-  Die Linien zeigen ungefähre Verbindungen zwischen
-  Städten und keine tatsächlichen Flugbahnen.
-</p>
+  <p class="hint">
+    Die Linien zeigen ungefähre Verbindungen zwischen
+    Städten und keine tatsächlichen Flugbahnen.
+  </p>
 
 </section>
 
 <footer>
 
-<p>
-  FlyHopGo ist ein unabhängiges Routenplanungstool
-  und steht in keiner offiziellen Verbindung zu Wizz Air.
-</p>
+  <p>
+    FlyHopGo ist ein unabhängiges Routenplanungstool
+    und steht in keiner offiziellen Verbindung zu Wizz Air.
+  </p>
 
-<p>
-  <strong>Wichtig:</strong>
-  Die offizielle Streckenliste enthält mögliche
-  Flugstrecken, jedoch keine garantierten Flugzeiten,
-  Anschlussmöglichkeiten oder freien Sitzplätze.
-</p>
+  <p>
+    <strong>Wichtig:</strong>
+    Die offizielle Streckenliste enthält mögliche
+    Flugstrecken, jedoch keine garantierten Flugzeiten,
+    Anschlussmöglichkeiten oder freien Sitzplätze.
+  </p>
 
-<p>
-  <strong>Buchungsfenster:</strong>
-  Frühestens 72 Stunden und spätestens
-  3 Stunden vor Abflug.
-</p>
+  <p>
+    <strong>Buchungsfenster:</strong>
+    Frühestens 72 Stunden und spätestens
+    3 Stunden vor Abflug.
+  </p>
 
-<p>
-  Jede Teilstrecke muss separat im offiziellen
-  Wizz-Air-Portal geprüft und gebucht werden.
-</p>
+  <p>
+    Jede Teilstrecke muss separat im offiziellen
+    Wizz-Air-Portal geprüft und gebucht werden.
+  </p>
 
-<p>
-  <a href="https://multipass.wizzair.com/"
-  target="_blank" rel="noopener noreferrer">
-    Zur offiziellen Wizz-Air-Buchung
-  </a>
-</p>
+  <p>
+    <a href="https://multipass.wizzair.com/"
+       target="_blank"
+       rel="noopener noreferrer">
+      Zur offiziellen Wizz-Air-Buchung
+    </a>
+  </p>
 
-<p>
-  © <span id="year"></span> FlyHopGo.com
-</p>
+  <p>© <span id="year"></span> FlyHopGo.com</p>
 
 </footer>
 
@@ -574,6 +518,10 @@ const normalize = value =>
     .replace(/[\u0300-\u036f]/g, "");
 
 function formatMinutes(value) {
+  if (value === null || value === undefined || value === "") {
+    return "Nicht verfügbar";
+  }
+
   const minutes = Number(value);
 
   if (!Number.isFinite(minutes) || minutes < 0) {
@@ -959,7 +907,7 @@ function renderRoutePage(page) {
     renderRoutePage(currentPage + 1);
 }
 
-/* AYCF RADAR */
+/* AYCF RADAR – NUR VERBINDUNGEN */
 
 const radarNames = new Map();
 
@@ -1031,7 +979,6 @@ function updateRadarButtons() {
     Boolean($("radarFrom").value) &&
     Boolean($("radarTo").value);
 
-  $("findFlights").disabled = !valid;
   $("findConnections").disabled = !valid;
 
   $("radarResults").replaceChildren();
@@ -1048,100 +995,14 @@ function radarParams(extra = {}) {
   });
 }
 
-/* DIREKTFLÜGE */
-
-function renderFlights(data) {
-  const flights = Array.isArray(data.flights)
-    ? data.flights
-    : [];
-
-  const selectedDate = $("flightDate").value;
-
-  const filtered = flights.filter(flight =>
-    !selectedDate ||
-    String(flight.date) === selectedDate
-  );
-
-  if (!filtered.length) {
-    $("radarResults").innerHTML = `
-      <div class="panel">
-        Keine Direktflüge gefunden.
-      </div>
-    `;
-    return;
-  }
-
-  let html = `
-    <h2>${filtered.length} mögliche Direktflüge</h2>
-  `;
-
-  filtered.forEach(flight => {
-    html += `
-      <article class="result">
-
-        <h3>${escapeHtml(formatDate(flight.date))}</h3>
-
-        <div class="flight-times">
-
-          <div>
-            <span class="hint">Abflug</span>
-            <div class="time">
-              ${escapeHtml(flight.dep || flight.time || "–")}
-            </div>
-          </div>
-
-          <div>
-            <span class="hint">Ankunft</span>
-            <div class="time">
-              ${escapeHtml(flight.arr || "–")}
-            </div>
-          </div>
-
-        </div>
-
-        <div class="warning">
-          Flugzeiten und AYCF-Sitzplätze müssen
-          bei Wizz Air überprüft werden.
-        </div>
-
-      </article>
-    `;
-  });
-
-  $("radarResults").innerHTML = html;
-}
-
-$("findFlights").onclick = async () => {
-  const button = $("findFlights");
-
-  button.disabled = true;
-
-  $("radarResults").textContent =
-    "Direktflüge werden gesucht ...";
-
-  try {
-    const data = await getJSON(
-      "/api/radar/flights?" + radarParams()
-    );
-
-    renderFlights(data);
-
-  } catch (error) {
-    $("radarResults").textContent = error.message;
-
-  } finally {
-    button.disabled = false;
-  }
-};
-
-/* ANSCHLUSSVERBINDUNGEN */
-/* KORREKTUR: UMSTEIGEZEIT AUS LAYOVERS */
+/* UMSTEIGEZEIT AUS LAYOVERS */
 
 function getLayoverMinutes(connection, index) {
   if (
     Array.isArray(connection.layovers) &&
     connection.layovers[index] !== undefined &&
-    connection.layovers[index] !== null
+    connection.layovers[index] !== null &&
+    connection.layovers[index] !== ""
   ) {
     const minutes = Number(connection.layovers[index]);
 
@@ -1152,6 +1013,8 @@ function getLayoverMinutes(connection, index) {
 
   return null;
 }
+
+/* ANSCHLUSSVERBINDUNGEN ANZEIGEN */
 
 function renderConnections(data) {
   const connections = Array.isArray(data.connections)
@@ -1303,9 +1166,6 @@ function renderConnections(data) {
         </div>
       `;
 
-      /* UMSTEIGEZEIT NACH JEDEM FLUG,
-         AUSSER NACH DEM LETZTEN */
-
       if (legIndex < legs.length - 1) {
         const minutes = getLayoverMinutes(
           connection,
@@ -1441,7 +1301,7 @@ $("findConnections").onclick = async () => {
   button.disabled = true;
 
   $("radarResults").textContent =
-    "Anschlussverbindungen werden gesucht ...";
+    "Flugverbindungen werden gesucht ...";
 
   try {
     const data = await getJSON(
