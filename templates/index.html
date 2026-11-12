@@ -188,16 +188,11 @@ button:disabled, select:disabled {
   color: #ffb3e4;
 }
 
-.source {
-  font-size: 13px;
-  color: #c9b8d7;
-}
-
 [hidden] {
   display: none !important;
 }
 
-/* KORRIGIERTE LEAFLET-KARTE */
+/* LEAFLET-KARTE */
 
 .map-panel {
   width: 100%;
@@ -385,12 +380,11 @@ footer {
     <h2>📅 Scheduled AYCF Flights</h2>
 
     <p class="muted">
-      Published schedules from AYCF Radar.
       AYCF seat availability must be checked on Wizz Air.
     </p>
 
     <div class="updated" id="radarStatus">
-      Loading AYCF Radar...
+      Loading flight information...
     </div>
 
     <div class="grid2">
@@ -444,15 +438,6 @@ footer {
   </div>
 
   <section id="radarResults" aria-live="polite"></section>
-
-  <p class="source">
-    Data:
-    <a href="https://aycfradar.com/"
-       target="_blank"
-       rel="noopener noreferrer"
-       style="color:#ef67c5">AYCF Radar</a>.
-    Independent third-party provider.
-  </p>
 </section>
 
 <!-- KARTE AUSSERHALB BEIDER ANSICHTEN -->
@@ -830,7 +815,7 @@ function tab(which) {
 $("tabRoutes").onclick = () => tab("routes");
 $("tabRadar").onclick = () => tab("radar");
 
-/* AYCF RADAR */
+/* FLIGHT DATA */
 
 const radarNames = new Map();
 
@@ -874,12 +859,12 @@ async function loadRadar() {
     updateRadarDestinations();
 
     $("radarStatus").textContent =
-      "AYCF Radar: " + (status.period || "Current window") +
+      "Flight data: " + (status.period || "Current window") +
       " · Updated: " + (status.updatedAt || "Unknown");
 
   } catch (error) {
     $("radarStatus").textContent =
-      "Radar unavailable: " + error.message;
+      "Flight data unavailable: " + error.message;
   }
 }
 
@@ -1077,7 +1062,7 @@ $("findConnections").onclick = async () => {
   }
 };
 
-/* KORRIGIERTE LEAFLET-KARTE */
+/* LEAFLET MAP */
 
 let flightMap = null;
 let flightLayer = null;
@@ -1319,7 +1304,7 @@ async function showRouteOnMap(cities) {
   }
 }
 
-/* GESPEICHERTE ROUTEN OHNE LOGIN */
+/* SAVED ROUTES WITHOUT LOGIN */
 
 const FAVORITES_KEY = "flyhopgo_favorites_v1";
 
