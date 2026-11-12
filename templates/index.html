@@ -564,6 +564,36 @@ function swissTimeZoneLabel(timestamp) {
          "Schweizer Zeit";
 }
 
+/* DURATION FORMAT */
+
+function formatDuration(minutes) {
+  if (minutes === null ||
+      minutes === undefined ||
+      minutes === "") {
+    return "Unknown";
+  }
+
+  const total = Number(minutes);
+
+  if (!Number.isFinite(total) || total < 0) {
+    return "Unknown";
+  }
+
+  const rounded = Math.round(total);
+  const hours = Math.floor(rounded / 60);
+  const mins = rounded % 60;
+
+  if (hours === 0) {
+    return mins + " min";
+  }
+
+  if (mins === 0) {
+    return hours + " h";
+  }
+
+  return hours + " h " + mins + " min";
+}
+
 /* ROUTE GRAPH */
 
 const graph = new Map();
@@ -974,8 +1004,12 @@ function renderConnections(data) {
         <h3>Via ${escapeHtml(
           (connection.via || []).join(" → ") || "Connection"
         )}</h3>
-        <p>Total travel time:
-          ${escapeHtml(connection.totalMin ?? "Unknown")} min
+
+        <p>
+          <strong>Total travel time:</strong>
+          <span class="time">
+            ${escapeHtml(formatDuration(connection.totalMin))}
+          </span>
         </p>
     `;
 
