@@ -4,12 +4,17 @@ from urllib.request import Request, urlopen
 from io import BytesIO
 from datetime import datetime
 from zoneinfo import ZoneInfo
-
+from collections import defaultdict
+from functools import lru_cache
+import unicodedata
 import os
 import re
 import time
 import threading
+
 import pdfplumber
+import airportsdata
+import pycountry
 
 from aycf_radar import radar_bp
 
@@ -23,19 +28,158 @@ cache = {
     "at": 0,
     "routes": [],
     "period": "",
-    "updated": ""
+    "updated": "",
+    "airports": []
 }
 
 cache_lock = threading.Lock()
 
 
+def normalize(value):
+    value = unicodedata.normalize(
+        "NFKD", str(value or "")
+    )
+    value = "".join(
+        c for c in value
+        if not unicodedata.combining(c)
+    )
+    return re.sub(
+        r"\s+", " ", value
+    ).strip().casefold()
+
+
+def country_name(code):
+    if not code:
+        return ""
+
+    special = {
+        "XK": "Kosovo",
+        "GB": "United Kingdom",
+        "CZ": "Czech Republic",
+        "TR": "Turkey",
+        "MD": "Moldova",
+        "MK": "North Macedonia"
+    }
+
+    code = str(code).upper()
+
+    if code in special:
+        return special[code]
+
+    country = pycountry.countries.get(alpha_2=code)
+
+    return country.name if country else ""
+
+
+@lru_cache(maxsize=1)
+def airport_database():
+    airports = airportsdata.load("IATA")
+
+    by_city = defaultdict(set)
+    by_name = defaultdict(set)
+
+    for code, airport in airports.items():
+        country = country_name(
+            airport.get("country", "")
+        )
+
+        if not country:
+            continue
+
+        city = airport.get("city", "")
+        name = airport.get("name", "")
+
+        if city:
+            by_city[normalize(city)].add(country)
+
+        if name:
+            by_name[normalize(name)].add(country)
+
+    return airports, by_city, by_name
+
+
+def airport_country(value):
+    text = str(value or "").strip()
+
+    if not text:
+        return ""
+
+    airports, by_city, by_name = airport_database()
+
+    # Prefer an explicit three-letter IATA code.
+    match = re.search(
+        r"\(([A-Z]{3})\)", text, re.IGNORECASE
+    )
+
+    if match:
+        code = match.group(1).upper()
+    elif re.fullmatch(r"[A-Z]{3}", text, re.IGNORECASE):
+        code = text.upper()
+    else:
+        code = ""
+
+    if code and code in airports:
+        return country_name(
+            airports[code].get("country", "")
+        )
+
+    normalized = normalize(text)
+
+    # Exact city match, only if all matching
+    # airports belong to the same country.
+    countries = by_city.get(normalized, set())
+
+    if len(countries) == 1:
+        return next(iter(countries))
+
+    # Exact airport name.
+    countries = by_name.get(normalized, set())
+
+    if len(countries) == 1:
+        return next(iter(countries))
+
+    # Common airport labels containing the city
+    # followed by an airport-specific suffix.
+    matches = set()
+
+    for city, countries in by_city.items():
+        if normalized.startswith(city + " "):
+            matches.update(countries)
+
+    if len(matches) == 1:
+        return next(iter(matches))
+
+    # Do not guess when the city is ambiguous.
+    return ""
+
+
+def build_airport_metadata(routes):
+    cities = set()
+
+    for departure, arrival in routes:
+        cities.add(departure)
+        cities.add(arrival)
+
+    result = []
+
+    for city in sorted(cities):
+        result.append({
+            "city": city,
+            "country": airport_country(city)
+        })
+
+    return result
+
+
 def english_datetime():
     now = datetime.now(ZoneInfo("Europe/Zurich"))
+
     months = [
         "Jan", "Feb", "Mar", "Apr",
         "May", "Jun", "Jul", "Aug",
         "Sep", "Oct", "Nov", "Dec"
     ]
+
     month = months[now.month - 1]
 
     return (
@@ -89,10 +233,12 @@ def fetch_routes():
                             if (
                                 a and b
                                 and a.lower() not in (
-                                    "departure city", "departure"
+                                    "departure city",
+                                    "departure"
                                 )
                                 and b.lower() not in (
-                                    "arrival city", "arrival"
+                                    "arrival city",
+                                    "arrival"
                                 )
                                 and len(a) < 65
                                 and len(b) < 65
@@ -104,11 +250,18 @@ def fetch_routes():
                 "No flight routes could be extracted."
             )
 
+        sorted_routes = sorted(routes)
+
+        airport_metadata = build_airport_metadata(
+            sorted_routes
+        )
+
         cache.update(
             at=time.time(),
-            routes=sorted(routes),
+            routes=sorted_routes,
             period="",
-            updated=english_datetime()
+            updated=english_datetime(),
+            airports=airport_metadata
         )
 
         return dict(cache)
@@ -126,6 +279,7 @@ def api_routes():
 
         return jsonify({
             "routes": data["routes"],
+            "airports": data["airports"],
             "period": data["period"],
             "updated": data["updated"],
             "source": URL,
@@ -138,7 +292,9 @@ def api_routes():
         })
 
     except Exception as exc:
-        app.logger.error("Route loading error: %s", exc)
+        app.logger.error(
+            "Route loading error: %s", exc
+        )
 
         return jsonify({
             "error": "Route list temporarily unavailable.",
@@ -156,6 +312,7 @@ def health():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
+
     app.run(
         host="0.0.0.0",
         port=port,
