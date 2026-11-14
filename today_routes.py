@@ -1,14 +1,11 @@
 
 """
-FlyHopGo - Direct flights in the next 72 hours.
+FlyHopGo - 72-hour departures by selected airport.
 
-Uses the existing AYCF Radar integration.
-Scans routes in the background and returns
-progress plus matching flight records.
+The scan starts only after the user selects
+a departure airport.
 
-Register in app.py:
-    from today_routes import today_bp
-    app.register_blueprint(today_bp)
+Existing aycf_radar.py remains unchanged.
 """
 
 import logging
@@ -19,7 +16,7 @@ from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 import requests
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 
 from aycf_radar import radar_get
 
@@ -30,33 +27,69 @@ logger = logging.getLogger(__name__)
 ZONE = ZoneInfo("Europe/Zurich")
 HOURS = 72
 CACHE_SECONDS = 900
-
-# Small delay to avoid overloading the provider.
-REQUEST_DELAY = 0.2
+REQUEST_DELAY = 0.15
 
 LOCK = threading.Lock()
-
-STATE = {
-    "state": "idle",
-    "routes": [],
-    "processed": 0,
-    "total": 0,
-    "updated": None,
-    "started": None,
-    "start": None,
-    "end": None,
-    "error": None,
-    "scan_id": 0
-}
+SCANS = {}
 
 
-def current_window():
-    start = datetime.now(ZONE)
-    end = start + timedelta(hours=HOURS)
-    return start, end
+def window():
+    now = datetime.now(ZONE)
+    return now, now + timedelta(hours=HOURS)
 
 
-def parse_flight_datetime(date_value, time_value):
+def get_airports():
+    graph = radar_get("graph")
+    nodes = graph.get("nodes", [])
+
+    if not isinstance(nodes, list):
+        raise ValueError("Invalid airport graph")
+
+    airports = {}
+
+    for node in nodes:
+        if not isinstance(node, dict):
+            continue
+
+        city = node.get("city")
+        destinations = node.get("dests")
+
+        if not isinstance(city, str):
+            continue
+
+        if not isinstance(destinations, list):
+            continue
+
+        city = city.strip()
+
+        valid_destinations = sorted({
+            dest.strip()
+            for dest in destinations
+            if isinstance(dest, str)
+            and dest.strip()
+            and dest.strip() != city
+        })
+
+        if not city or not valid_destinations:
+            continue
+
+        airports[city] = {
+            "city": city,
+            "country": node.get("country") or "",
+            "iata": node.get("iata") or "",
+            "destinations": valid_destinations
+        }
+
+    return airports
+
+
+def parse_departure(flight):
+    if not isinstance(flight, dict):
+        return None
+
+    date_value = flight.get("date")
+    time_value = flight.get("time")
+
     if not isinstance(date_value, str):
         return None
 
@@ -64,11 +97,8 @@ def parse_flight_datetime(date_value, time_value):
         return None
 
     try:
-        date_part = date_value.strip()[:10]
-        time_part = time_value.strip()[:5]
-
         return datetime.strptime(
-            date_part + " " + time_part,
+            date_value[:10] + " " + time_value[:5],
             "%Y-%m-%d %H:%M"
         ).replace(tzinfo=ZONE)
 
@@ -76,73 +106,16 @@ def parse_flight_datetime(date_value, time_value):
         return None
 
 
-def get_route_pairs(graph):
-    nodes = graph.get("nodes", [])
-
-    if not isinstance(nodes, list):
-        raise ValueError("Invalid graph nodes")
-
-    pairs = set()
-
-    for node in nodes:
-        if not isinstance(node, dict):
-            continue
-
-        origin = node.get("city")
-        destinations = node.get("dests", [])
-
-        if not isinstance(origin, str):
-            continue
-
-        if not isinstance(destinations, list):
-            continue
-
-        origin = origin.strip()
-
-        for destination in destinations:
-            if not isinstance(destination, str):
-                continue
-
-            destination = destination.strip()
-
-            if (
-                origin
-                and destination
-                and origin != destination
-            ):
-                pairs.add((origin, destination))
-
-    return sorted(pairs)
-
-
-def scan_flights(scan_id, start, end):
+def scan_airport(origin, destinations, start, end):
     found = {}
     failed = 0
 
     try:
-        graph = radar_get("graph")
-        pairs = get_route_pairs(graph)
-
-        if not pairs:
-            raise ValueError(
-                "No routes found in the radar graph"
-            )
-
-        with LOCK:
-            if STATE["scan_id"] != scan_id:
-                return
-
-            STATE["total"] = len(pairs)
-
-        for index, (origin, destination) in enumerate(
-            pairs, start=1
+        for index, destination in enumerate(
+            destinations, start=1
         ):
-            with LOCK:
-                if STATE["scan_id"] != scan_id:
-                    return
-
             try:
-                payload = radar_get(
+                data = radar_get(
                     "flights",
                     {
                         "from": origin,
@@ -150,23 +123,14 @@ def scan_flights(scan_id, start, end):
                     }
                 )
 
-                flights = payload.get("flights", [])
+                flights = data.get("flights", [])
 
                 if (
-                    payload.get("available")
+                    data.get("available")
                     and isinstance(flights, list)
                 ):
                     for flight in flights:
-                        if not isinstance(flight, dict):
-                            continue
-
-                        date_value = flight.get("date")
-                        time_value = flight.get("time")
-
-                        departure = parse_flight_datetime(
-                            date_value,
-                            time_value
-                        )
+                        departure = parse_departure(flight)
 
                         if departure is None:
                             continue
@@ -200,26 +164,25 @@ def scan_flights(scan_id, start, end):
                 TypeError
             ) as exc:
                 failed += 1
-
                 logger.warning(
-                    "Flight scan failed for %s -> %s: %s",
+                    "Flight lookup failed: %s -> %s: %s",
                     origin,
                     destination,
                     exc
                 )
 
             with LOCK:
-                if STATE["scan_id"] != scan_id:
+                state = SCANS.get(origin)
+
+                if state is None:
                     return
 
-                STATE["processed"] = index
-
-                STATE["routes"] = sorted(
+                state["processed"] = index
+                state["routes"] = sorted(
                     found.values(),
                     key=lambda item: (
                         item["date"],
                         item["time"],
-                        item["from"],
                         item["to"]
                     )
                 )
@@ -227,124 +190,187 @@ def scan_flights(scan_id, start, end):
             time.sleep(REQUEST_DELAY)
 
         with LOCK:
-            if STATE["scan_id"] != scan_id:
+            state = SCANS.get(origin)
+
+            if state is None:
                 return
 
-            STATE["updated"] = time.time()
+            state["updated"] = time.time()
 
-            if failed == len(pairs):
-                STATE["state"] = "error"
-                STATE["error"] = (
+            if failed == len(destinations):
+                state["state"] = "error"
+                state["error"] = (
                     "All flight requests failed."
                 )
             else:
-                STATE["state"] = "ready"
+                state["state"] = "ready"
 
                 if failed:
-                    STATE["error"] = (
-                        f"{failed} routes could not "
-                        "be checked. Results may "
-                        "be incomplete."
+                    state["error"] = (
+                        f"{failed} destinations could "
+                        "not be checked. Results "
+                        "may be incomplete."
                     )
 
     except Exception:
         logger.exception(
-            "FlyHopGo 72-hour scan failed"
+            "Departure scan failed for %s",
+            origin
         )
 
         with LOCK:
-            if STATE["scan_id"] != scan_id:
-                return
+            state = SCANS.get(origin)
 
-            STATE["state"] = "error"
-            STATE["updated"] = time.time()
-            STATE["error"] = (
-                "Unable to retrieve the flight "
-                "overview from AYCF Radar."
-            )
+            if state is not None:
+                state["state"] = "error"
+                state["error"] = (
+                    "Flight search temporarily unavailable."
+                )
+                state["updated"] = time.time()
 
 
-def start_scan():
-    start, end = current_window()
+@today_bp.get("/api/radar/airports")
+def departure_airports():
+    try:
+        airports = get_airports()
 
-    STATE["scan_id"] += 1
-    scan_id = STATE["scan_id"]
+        return jsonify({
+            "airports": [
+                {
+                    "city": item["city"],
+                    "country": item["country"],
+                    "iata": item["iata"]
+                }
+                for item in sorted(
+                    airports.values(),
+                    key=lambda item: item["city"]
+                )
+            ]
+        })
 
-    STATE.update({
-        "state": "loading",
-        "routes": [],
-        "processed": 0,
-        "total": 0,
-        "updated": None,
-        "started": time.time(),
-        "start": start.isoformat(),
-        "end": end.isoformat(),
-        "error": None
-    })
+    except (
+        requests.RequestException,
+        ValueError,
+        TypeError
+    ):
+        logger.exception("Airport list failed")
 
-    thread = threading.Thread(
-        target=scan_flights,
-        args=(scan_id, start, end),
-        daemon=True
-    )
-
-    thread.start()
+        return jsonify({
+            "error": "Airport list unavailable.",
+            "airports": []
+        }), 502
 
 
 @today_bp.get("/api/radar/today")
 def daily_routes():
+    origin = request.args.get("from", "").strip()
+
+    if not origin:
+        return jsonify({
+            "state": "idle",
+            "routes": [],
+            "processed": 0,
+            "total": 0,
+            "complete": False,
+            "error": None,
+            "note": "Select a departure airport to search."
+        })
+
+    if len(origin) > 120:
+        return jsonify({
+            "error": "Invalid departure airport."
+        }), 400
+
+    try:
+        airports = get_airports()
+
+    except (
+        requests.RequestException,
+        ValueError,
+        TypeError
+    ):
+        logger.exception("Unable to load airport graph")
+
+        return jsonify({
+            "state": "error",
+            "routes": [],
+            "error": "Airport data unavailable."
+        }), 502
+
+    if origin not in airports:
+        return jsonify({
+            "error": "Unknown departure airport."
+        }), 400
+
+    destinations = airports[origin]["destinations"]
+
     with LOCK:
+        state = SCANS.get(origin)
         now = time.time()
 
         expired = (
-            STATE["updated"] is not None
-            and now - STATE["updated"]
-            >= CACHE_SECONDS
+            state is not None
+            and state["updated"] is not None
+            and now - state["updated"] >= CACHE_SECONDS
         )
 
         stale_loading = (
-            STATE["state"] == "loading"
-            and STATE["started"] is not None
-            and now - STATE["started"] > 1800
+            state is not None
+            and state["state"] == "loading"
+            and now - state["started"] > 600
         )
 
-        if (
-            STATE["state"] == "idle"
-            or expired
-            or stale_loading
-        ):
-            start_scan()
+        if state is None or expired or stale_loading:
+            start, end = window()
+
+            state = {
+                "state": "loading",
+                "routes": [],
+                "processed": 0,
+                "total": len(destinations),
+                "started": now,
+                "updated": None,
+                "start": start.isoformat(),
+                "end": end.isoformat(),
+                "error": None
+            }
+
+            SCANS[origin] = state
+
+            threading.Thread(
+                target=scan_airport,
+                args=(
+                    origin,
+                    destinations,
+                    start,
+                    end
+                ),
+                daemon=True
+            ).start()
 
         return jsonify({
-            "state": STATE["state"],
-            "routes": list(STATE["routes"]),
-            "processed": STATE["processed"],
-            "total": STATE["total"],
-            "complete": (
-                STATE["state"] == "ready"
-            ),
-            "start": STATE["start"],
-            "end": STATE["end"],
+            "state": state["state"],
+            "from": origin,
+            "routes": list(state["routes"]),
+            "processed": state["processed"],
+            "total": state["total"],
+            "complete": state["state"] == "ready",
+            "start": state["start"],
+            "end": state["end"],
             "hours": HOURS,
-            "error": STATE["error"],
+            "error": state["error"],
             "note": (
-                "Flight times are reported by "
-                "the external AYCF Radar service. "
-                "AYCF seat availability is not "
-                "guaranteed. Verify each flight "
-                "with Wizz Air before booking."
+                "Flight information is supplied by "
+                "AYCF Radar. Booking availability "
+                "must be checked with Wizz Air."
             )
         })
 
 
 @today_bp.get("/api/radar/today/health")
 def today_health():
-    with LOCK:
-        return jsonify({
-            "status": "ok",
-            "service": "FlyHopGo 72-hour overview",
-            "state": STATE["state"],
-            "processed": STATE["processed"],
-            "total": STATE["total"],
-            "flights": len(STATE["routes"])
-        })
+    return jsonify({
+        "status": "ok",
+        "service": "FlyHopGo departure search",
+        "mode": "airport-specific"
+    })
